@@ -1,0 +1,15 @@
+{
+"endOfLine": "auto",
+"tabWidth": 4,
+"printWidth": 80,
+"eslintIntegration": true,
+"singleQuote": true,
+"semi": false,
+"bracketSpacing": true,
+"extends": ["prettier"],
+"plugins": ["prettier"],
+"rules": {
+    "prettier/prettier": "error",
+    "prefer-arrow-callback": "off"
+  }
+}
