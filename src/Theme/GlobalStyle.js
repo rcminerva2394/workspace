@@ -7,14 +7,15 @@ const GlobalStyle = createGlobalStyle`
 }
 
 html { 
-    font-size: 6.25%
+    font-size: 6.25%;
+    scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     text-rendering: geometricPrecision !important;
-    font-size: 14rem;
+    font-size: 13rem;
     min-height: 100%;
     line-height: 1.4;
     background-color: ${({ theme }) => theme.darkerGray};
@@ -40,6 +41,19 @@ input {
     border-radius: 4px;
     padding: 8rem;
 }
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+    text-align: start;
+    font-weight: 400;
+}
+
+
 `
 
 export default GlobalStyle

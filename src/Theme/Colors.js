@@ -3,6 +3,7 @@ const Colors = {
     darkerGray: '#323434',
     darkGray: '#899090',
     lightGray: '#DDD5D5',
+    boardWrap: '#4B4E4E',
     fontColors: {
         inActive: '#A2A4A4',
         title: '#E4E7E7',

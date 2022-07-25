@@ -23,19 +23,28 @@ const ButtonWrapper = styled.button`
         ${(props) =>
             props.primary
                 ? ({ theme }) => theme.button.blue
-                : ({ theme }) => theme.lightGray};
+                : props.secondary
+                ? ({ theme }) => theme.lightGray
+                : 'transparent'};
     border-radius: 4rem;
-    color: ${(props) => (props.primary ? '#ffffff' : '#000000')};
+    color: ${(props) =>
+        props.primary ? '#ffffff' : props.secondary ? '#000000' : '#ffffff'};
     font-weight: 500;
     font-size: 12rem;
     :hover {
         background-color: ${(props) =>
-            props.primary ? ({ theme }) => theme.button.hover : 'transparent'};
+            props.primary
+                ? ({ theme }) => theme.button.hover
+                : props.secondary
+                ? 'transparent'
+                : `rgba(221, 213, 213, 0.22)`};
         border: 2px solid
             ${(props) =>
                 props.primary
                     ? ({ theme }) => theme.button.hover
-                    : ({ theme }) => theme.darkGray};
+                    : props.secondary
+                    ? ({ theme }) => theme.darkGray
+                    : 'transparent'};
     }
 `
 export default Button
