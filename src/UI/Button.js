@@ -29,7 +29,7 @@ const ButtonWrapper = styled.button`
     border-radius: 4rem;
     color: ${(props) =>
         props.primary ? '#ffffff' : props.secondary ? '#000000' : '#ffffff'};
-    font-weight: 500;
+    font-weight: 300;
     font-size: 12rem;
     :hover {
         background-color: ${(props) =>
@@ -45,6 +45,7 @@ const ButtonWrapper = styled.button`
                     : props.secondary
                     ? ({ theme }) => theme.darkGray
                     : 'transparent'};
+        font-weight: 500;
     }
 `
 export default Button

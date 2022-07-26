@@ -24,6 +24,13 @@ body {
     padding: 20rem 20rem ;
 }
 
+h2, h3 {
+    font-weight: 600;
+    margin-bottom: -1rem;
+}
+
+
+
 button {
     font-family: inherit;
 }
