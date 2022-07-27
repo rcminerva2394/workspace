@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import SectionWrapper from '../../UI/SectionWrapper'
 import BoardType from './BoardType'
+import device from '../../UI/Breakpoint'
 
 const BoardList = ({ boardList }) => {
     return (
@@ -10,9 +11,11 @@ const BoardList = ({ boardList }) => {
                 {boardList.map((board) => (
                     <BoardItem key={board.id} id={board.id}>
                         <h3>{board.name}</h3>
-                        <BoardType name="Todo" />
-                        <BoardType name="Doing" />
-                        <BoardType name="Done" />
+                        <BoardTypesWrapper>
+                            <BoardType name="Todo" />
+                            <BoardType name="Doing" />
+                            <BoardType name="Done" />
+                        </BoardTypesWrapper>
                     </BoardItem>
                 ))}
             </ul>
@@ -23,5 +26,12 @@ const BoardList = ({ boardList }) => {
 const BoardItem = styled.li`
     margin-top: 20rem;
 `
-
+const BoardTypesWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    @media only screen and ${device.tablet} {
+        flex-direction: row;
+    }
+`
 export default BoardList

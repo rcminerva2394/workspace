@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
+import Cards from '../Cards/Cards'
 
 const BoardType = ({ name }) => {
-    const [isAddBoard, setIsAddBoard] = useState(false)
-    const [boardTitle, setBoardTitle] = useState('')
+    const [isAddCard, setIsAddCard] = useState(false)
+    const [cardTitle, setCardTitle] = useState('')
     const [cards, setCards] = useState([])
-    const [changeCardTitle, setChangeCardTitle] = useState('')
     const color = (boardType) => {
         const boardTypeName = boardType.toLowerCase()
         let colorOfIcon
@@ -21,62 +21,48 @@ const BoardType = ({ name }) => {
         }
         return colorOfIcon
     }
-    const submitNewBoardHandler = (e) => {
+    const submitNewCardHandler = (e) => {
         e.preventDefault()
         setCards((prevState) => {
             return [
                 ...prevState,
                 {
-                    title: boardTitle,
+                    title: cardTitle,
                     id: uuidv4(),
                 },
             ]
         })
-        setIsAddBoard(false)
+        setIsAddCard(false)
     }
-    const changeCardTitleHandler = (e, id) => {
-        setChangeCardTitle(e.target.value)
-        const newCards = cards.map((card) => {
-            const cardElement = card
-            if (cardElement.id === id) {
-                cardElement.title = changeCardTitle
-            }
-            return cardElement
-        })
-        setCards(newCards)
+    const updateCardsHandler = (updatedCards) => {
+        setCards(updatedCards)
     }
+    console.log(cards)
     return (
         <BoardWrapper>
             <IconTitle>
                 <Icon name={name} iconColor={color(name)} />
-                <p>{name}</p>
+                <Title>{name}</Title>
             </IconTitle>
-            {isAddBoard && (
-                <form onSubmit={(e) => submitNewBoardHandler(e)}>
-                    <textarea
+            <Cards cards={cards} onUpdateCards={updateCardsHandler} />
+            {isAddCard && (
+                <form onSubmit={(e) => submitNewCardHandler(e)}>
+                    <AddCardInput
                         placeholder="Write a title for this card"
-                        rows="5"
-                        autoCorrect="on"
-                        onChange={(e) => setBoardTitle(e.target.value)}
+                        onChange={(e) => setCardTitle(e.target.value)}
                     />
-                    <Button type="submit" primary>
-                        Add Card
-                    </Button>
-                    <Button onClick={() => setIsAddBoard(false)}>Cancel</Button>
+                    <FormBtnGrp>
+                        <Button type="submit" primary>
+                            Add Card
+                        </Button>
+                        <Button onClick={() => setIsAddCard(false)}>
+                            Cancel
+                        </Button>
+                    </FormBtnGrp>
                 </form>
             )}
-            <ul>
-                {cards.map((card) => (
-                    <li key={card.id}>
-                        <input
-                            onChange={(e) => changeCardTitleHandler(e, card.id)}
-                            value={card.title}
-                        />
-                    </li>
-                ))}
-            </ul>
-            {!isAddBoard && (
-                <Button onClick={() => setIsAddBoard(true)}>+ Add Card</Button>
+            {!isAddCard && (
+                <Button onClick={() => setIsAddCard(true)}>+ Add Card</Button>
             )}
         </BoardWrapper>
     )
@@ -85,7 +71,7 @@ const BoardType = ({ name }) => {
 const BoardWrapper = styled.div`
     background-color: ${({ theme }) => theme.boardWrap};
     margin: 15rem 0;
-    padding: 10rem;
+    padding: 15rem;
     border-radius: 5px;
 `
 const IconTitle = styled.div`
@@ -93,5 +79,17 @@ const IconTitle = styled.div`
     flex-direction: row;
     place-items: center;
 `
-
+const Title = styled.p`
+    font-size: 17rem;
+    font-weight: 400;
+`
+const AddCardInput = styled.input`
+    disply: inline-block;
+    padding: 10rem 10rem;
+    line-height: 10rem;
+    width: 100%;
+`
+const FormBtnGrp = styled.div`
+    margin-top: 10rem;
+`
 export default BoardType

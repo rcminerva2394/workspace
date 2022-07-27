@@ -30,7 +30,13 @@ h2, h3 {
 }
 
 
+h2 {
+    font-size: 20px;
+}
 
+h3 {
+    font-size: 18px;
+}
 button {
     font-family: inherit;
 }

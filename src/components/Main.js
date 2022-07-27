@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import BoardListPrev from './Boards/BoardListPrev'
 import CreateBoard from './CreateBoard'
-
 import CreateBoardModal from '../UI/CreateBoardModal'
-
 import BoardList from './Boards/BoardList'
 
 const Main = () => {

@@ -5,6 +5,7 @@ import {
     FaBusinessTime,
     FaWalking,
     FaCheckCircle,
+    FaEllipsisH,
 } from 'react-icons/fa'
 
 const icons = {
@@ -12,6 +13,7 @@ const icons = {
     Todo: FaBusinessTime,
     Doing: FaWalking,
     Done: FaCheckCircle,
+    Ellipsis: FaEllipsisH,
 }
 
 const Icon = ({ name, onClick, iconColor }) => {
