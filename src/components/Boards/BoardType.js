@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
+import BoardsContext from '../../context/boards-context'
 
-const BoardType = ({ name }) => {
+const BoardType = ({ name, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
-    const [cards, setCards] = useState([])
+    const { setBoards } = useContext(BoardsContext)
     const color = (boardType) => {
         const boardTypeName = boardType.toLowerCase()
         let colorOfIcon
@@ -23,30 +24,32 @@ const BoardType = ({ name }) => {
     }
     const submitNewCardHandler = (e) => {
         e.preventDefault()
-        setCards((prevState) => {
-            return [
-                ...prevState,
-                {
-                    title: cardTitle,
-                    id: uuidv4(),
-                },
-            ]
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === id) {
+                    return {
+                        ...project,
+                        [name]: [
+                            ...project[name],
+                            { id: uuidv4(), title: cardTitle },
+                        ],
+                    }
+                }
+                return project
+            })
+            return updatedBoards
         })
         setIsAddCard(false)
     }
-    const updateCardsHandler = (updatedCards) => {
-        setCards(updatedCards)
-    }
-    console.log(cards)
     return (
         <BoardWrapper>
             <IconTitle>
                 <Icon name={name} iconColor={color(name)} />
                 <Title>{name}</Title>
             </IconTitle>
-            <Cards cards={cards} onUpdateCards={updateCardsHandler} />
+            <Cards cards={cards} onUpdateCards />
             {isAddCard && (
-                <form onSubmit={(e) => submitNewCardHandler(e)}>
+                <form onSubmit={submitNewCardHandler}>
                     <AddCardInput
                         placeholder="Write a title for this card"
                         onChange={(e) => setCardTitle(e.target.value)}

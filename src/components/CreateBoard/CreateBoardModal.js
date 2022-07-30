@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import Button from './Button'
-import device from './Breakpoint'
+import Button from '../../UI/Button'
+import device from '../../UI/Breakpoint'
 
 const ModalBackdrop = ({ onCancel }) => (
     <Backdrop onClick={() => onCancel(false)} />

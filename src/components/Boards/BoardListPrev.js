@@ -1,17 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import SectionWrapper from '../../UI/SectionWrapper'
 import boardPhoto from '../../assets/night-view.png'
 import device from '../../UI/Breakpoint'
+import BoardsContext from '../../context/boards-context'
 
-const BoardListPrev = ({ boardList }) => {
+const BoardListPrev = () => {
+    const { boards } = useContext(BoardsContext)
     return (
         <SectionWrapper>
             <h2>Your Boards</h2>
             <BoardListWrapper>
-                {boardList.map((board) => (
-                    <a href={`#${board.id}`} key={board.id}>
-                        <BoardName>{board.name}</BoardName>
+                {boards.map((board) => (
+                    <a key={board.id} href={`#${board.id}`}>
+                        <BoardName>{board.boardName}</BoardName>
                         <BGPhoto src={boardPhoto} alt="night view" />
                     </a>
                 ))}

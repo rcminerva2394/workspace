@@ -1,6 +1,6 @@
 import React from 'react'
-import SectionWrapper from '../UI/SectionWrapper'
-import Button from '../UI/Button'
+import SectionWrapper from '../../UI/SectionWrapper'
+import Button from '../../UI/Button'
 
 const CreateBoard = ({ onAddBoard }) => {
     return (

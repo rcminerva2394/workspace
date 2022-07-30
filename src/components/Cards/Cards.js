@@ -1,25 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
-const Cards = ({ cards, onUpdateCards }) => {
-    const [changeCardTitle, setChangeCardTitle] = useState('')
-    const changeCardTitleHandler = (e, id) => {
-        setChangeCardTitle(e.target.value)
-        const newCards = cards.map((card) => {
-            const cardElement = card
-            if (cardElement.id === id) {
-                cardElement.title = changeCardTitle
-            }
-            return cardElement
-        })
-        onUpdateCards(newCards)
-    }
+const Cards = ({ cards }) => {
+    // const [changeCardTitle, setChangeCardTitle] = useState('')
+    // const changeCardTitleHandler = (e, id) => {
+    //     setChangeCardTitle(e.target.value)
+    //     const newCards = cards.map((card) => {
+    //         const cardElement = card
+    //         if (cardElement.id === id) {
+    //             cardElement.title = changeCardTitle
+    //         }
+    //         return cardElement
+    //     })
+    //     onUpdateCards(newCards)
+    // }
     return (
         <ul>
             {cards.map((card) => (
                 <CardWrapper key={card.id}>
                     <CardTitle
-                        onChange={(e) => changeCardTitleHandler(e, card.id)}
+                    // onChange={(e) => changeCardTitleHandler(e, card.id)}
                     >
                         {card.title}
                     </CardTitle>
@@ -37,6 +37,6 @@ const CardWrapper = styled.li`
     justify-content: center;
 `
 const CardTitle = styled.p`
-    font-size: 16rem;
+    font-size: 15rem;
 `
 export default Cards

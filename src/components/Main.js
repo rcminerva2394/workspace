@@ -1,24 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import BoardListPrev from './Boards/BoardListPrev'
-import CreateBoard from './CreateBoard'
-import CreateBoardModal from '../UI/CreateBoardModal'
+import CreateBoard from './CreateBoard/CreateBoard'
+import CreateBoardModal from './CreateBoard/CreateBoardModal'
 import BoardList from './Boards/BoardList'
+import BoardsContext from '../context/boards-context'
+import exampleBoards from '../UI/exampleBoards'
 
 const Main = () => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
-    const [boardList, setBoardList] = useState([])
+    const [boards, setBoards] = useState(exampleBoards)
+    const value = useMemo(() => ({ boards, setBoards }), [boards])
     const addBoardHandler = () => {
         setIsCreatingBoard(true)
     }
     const createBoardHandler = (response) => {
         if (response.stat === true) {
-            setBoardList((prevState) => {
+            setBoards((prevState) => {
                 return [
                     ...prevState,
                     {
                         id: uuidv4(),
-                        name: response.name,
+                        boardName: response.name,
+                        Todo: [],
+                        Doing: [],
+                        Done: [],
                     },
                 ]
             })
@@ -27,15 +33,16 @@ const Main = () => {
             setIsCreatingBoard(false)
         }
     }
+    console.log(boards)
     return (
-        <>
+        <BoardsContext.Provider value={value}>
             <CreateBoard onAddBoard={addBoardHandler} />
             {isCreatingBoard && (
                 <CreateBoardModal onConfirm={createBoardHandler} />
             )}
-            <BoardListPrev boardList={boardList} />
-            <BoardList boardList={boardList} />
-        </>
+            <BoardListPrev />
+            <BoardList />
+        </BoardsContext.Provider>
     )
 }
 
