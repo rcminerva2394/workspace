@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
 import device from '../../UI/Breakpoint'
@@ -19,7 +20,12 @@ const ModalOverlay = ({ onCancel, onConfirm }) => {
     return (
         <OverlayWrapper onSubmit={boardNameSubmitHandler}>
             <label htmlFor="boardname">Board Name</label>
-            <input onChange={inputNameHandler} type="text" id="boardname" />
+            <input
+                onChange={inputNameHandler}
+                type="text"
+                id="boardname"
+                placeholder="Write the name of your project"
+            />
             <BtnWrapper>
                 <Button type="submit" name="Create" primary>
                     Create
@@ -41,8 +47,17 @@ const CreateBoardModal = ({ onConfirm }) => {
     }
     return (
         <>
-            <ModalBackdrop onCancel={cancelHandler} />
-            <ModalOverlay onCancel={cancelHandler} onConfirm={confirmHandler} />
+            {ReactDOM.createPortal(
+                <ModalBackdrop onCancel={cancelHandler} />,
+                document.getElementById('modal-backdrop')
+            )}
+            {ReactDOM.createPortal(
+                <ModalOverlay
+                    onCancel={cancelHandler}
+                    onConfirm={confirmHandler}
+                />,
+                document.getElementById('modal-overlay')
+            )}
         </>
     )
 }

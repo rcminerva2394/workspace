@@ -5,6 +5,7 @@ import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
 import BoardsContext from '../../context/boards-context'
+import device from '../../UI/Breakpoint'
 
 const BoardType = ({ name, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
@@ -31,7 +32,7 @@ const BoardType = ({ name, id, cards }) => {
                         ...project,
                         [name]: [
                             ...project[name],
-                            { id: uuidv4(), title: cardTitle },
+                            { id: uuidv4(), title: cardTitle, status: [name] },
                         ],
                     }
                 }
@@ -65,7 +66,13 @@ const BoardType = ({ name, id, cards }) => {
                 </form>
             )}
             {!isAddCard && (
-                <Button onClick={() => setIsAddCard(true)}>+ Add Card</Button>
+                <Button
+                    onClick={() => setIsAddCard(true)}
+                    fontSize="16rem"
+                    padding="6rem"
+                >
+                    + Add Card
+                </Button>
             )}
         </BoardWrapper>
     )
@@ -74,8 +81,15 @@ const BoardType = ({ name, id, cards }) => {
 const BoardWrapper = styled.div`
     background-color: ${({ theme }) => theme.boardWrap};
     margin: 15rem 0;
-    padding: 15rem;
+    padding: 0 15rem 15rem 15rem;
     border-radius: 5px;
+    width: 100%;
+    @media only screen and ${device.mobileXL} {
+        width: 45%;
+    }
+    @media only screen and ${device.laptop} {
+        width: 30%;
+    }
 `
 const IconTitle = styled.div`
     display: flex;
@@ -83,9 +97,10 @@ const IconTitle = styled.div`
     place-items: center;
 `
 const Title = styled.p`
-    font-size: 17rem;
+    font-size: 16rem;
     font-weight: 400;
 `
+
 const AddCardInput = styled.input`
     disply: inline-block;
     padding: 10rem 10rem;

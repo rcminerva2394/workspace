@@ -22,21 +22,24 @@ body {
     font-weight: 200;
     color: #ffffff;
     padding: 20rem 20rem ;
+    letter-spacing: 1px;
 }
 
 h2, h3 {
-    font-weight: 600;
     margin-bottom: -1rem;
 }
 
 
 h2 {
     font-size: 20px;
+    font-weight: 600;
 }
 
 h3 {
     font-size: 18px;
+    font-weight: 500;
 }
+
 button {
     font-family: inherit;
 }
@@ -59,6 +62,7 @@ ul {
     list-style-type: none;
     padding: 0;
 }
+
 a {
     text-decoration: none;
     color: inherit;
@@ -66,7 +70,9 @@ a {
     font-weight: 400;
 }
 
-
+form {
+    margin-top: 5rem;
+}
 `
 
 export default GlobalStyle

@@ -42,7 +42,7 @@ const BGPhoto = styled.img`
 `
 const BoardName = styled.p`
     position: absolute;
-    z-index: 10;
+    z-index: 5;
     padding-left: 10rem;
 `
 

@@ -38,13 +38,14 @@ const BoardList = () => {
 }
 
 const BoardItem = styled.li`
-    margin-top: 20rem;
+    margin-top: 50rem;
 `
 const BoardTypesWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    @media only screen and ${device.tablet} {
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    @media only screen and ${device.mobileXL} {
         flex-direction: row;
     }
 `

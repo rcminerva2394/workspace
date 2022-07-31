@@ -1,13 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Button = ({ children, onClick, type, primary, secondary }) => {
+const Button = ({
+    children,
+    onClick,
+    type,
+    primary,
+    secondary,
+    fontSize,
+    padding,
+}) => {
     return (
         <ButtonWrapper
             onClick={onClick}
             type={type || 'button'}
             primary={primary}
             secondary={secondary}
+            fontSize={fontSize}
+            padding={padding}
         >
             {children}
         </ButtonWrapper>
@@ -17,8 +27,10 @@ const Button = ({ children, onClick, type, primary, secondary }) => {
 const ButtonWrapper = styled.button`
     background-color: ${(props) =>
         props.primary ? ({ theme }) => theme.button.blue : 'transparent'};
-    padding: 10rem 20rem;
+    padding: ${(props) => (props.padding ? props.padding : '10rem 20rem')};
     outline: none;
+    margin-top: 5rem;
+    cursor: pointer;
     border: 2px solid
         ${(props) =>
             props.primary
@@ -30,7 +42,7 @@ const ButtonWrapper = styled.button`
     color: ${(props) =>
         props.primary ? '#ffffff' : props.secondary ? '#000000' : '#ffffff'};
     font-weight: 300;
-    font-size: 12rem;
+    font-size: '12rem';
     :hover {
         background-color: ${(props) =>
             props.primary
