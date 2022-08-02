@@ -37,7 +37,7 @@ h2 {
 
 h3 {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 button {
@@ -72,6 +72,32 @@ a {
 
 form {
     margin-top: 5rem;
+}
+
+textarea {
+    font-family: inherit;
+    resize: none;
+    background-color: ${({ theme }) => theme.darkestGray};
+    border:  1px solid rgba(163, 164, 177, 0.2);
+    padding: 10rem;
+    outline: none;
+    caret-color: #ffffff;
+    height: 100px;
+}
+
+select  {
+    background-color: ${({ theme }) => theme.darkLight};
+    color: #ffffff;
+    padding: 2rem;
+    border-radius: 4px;
+    font-family: inherit;
+    font-weight: 300;
+    outline: none;
+}
+
+select option {
+    background-color: #ffffff;
+    color: #000000;
 }
 `
 

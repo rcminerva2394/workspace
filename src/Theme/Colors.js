@@ -2,6 +2,7 @@ const Colors = {
     darkestGray: '#252727',
     darkerGray: '#323434',
     darkGray: '#899090',
+    darkLight: '#6A6A6B',
     lightGray: '#DDD5D5',
     boardWrap: '#4B4E4E',
     fontColors: {

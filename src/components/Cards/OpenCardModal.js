@@ -7,43 +7,63 @@ import device from '../../UI/Breakpoint'
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
 const OpenCardModal = ({ card, onClose }) => {
+    const cardStatus = ['Todo', 'Doing', 'Done']
+    const filteredStatus = cardStatus.filter((status) => status !== card.status)
+    const optionStatus = filteredStatus.map((status) => {
+        return <option value={status}>{status}</option>
+    })
     return (
         <>
             <ModalBackdrop onClose={onClose} />
             <OpenCardWrapper>
                 <Close onClick={onClose}>
-                    <Icon name="Close" />
+                    <Icon
+                        name="Close"
+                        iconColor="#899090"
+                        hoverColor="#ffffff"
+                    />
                 </Close>
-                <div>
-                    <h3>{card.title}</h3>
-                    <LabelWrapper>
-                        <Label htmlFor={card.id}>Description</Label>
-                        <Input
-                            id={card.id}
-                            placeholder="e.g. Set up a meeting with the stakeholders regarding the targets next year"
-                        />
-                    </LabelWrapper>
-                    <LabelWrapper>
-                        <Label htmlFor="card-status">Status</Label>
-                        <select id="card-status" name="card status">
-                            <option value={card.status}>{card.status}</option>
-                            <option value="Todo">Todo</option>
-                            <option value="Doing">Doing</option>
-                            <option value="Done">Done</option>
-                        </select>
-                    </LabelWrapper>
-                </div>
-                <div>
-                    <AddCardWrapper>
-                        <Text>Add to Card</Text>
-                        <Button>Deadline</Button>
-                        <Button>Subtasks</Button>
-                    </AddCardWrapper>
+                <CardDetails>
                     <div>
-                        <Text>Actions</Text>
-                        <Button>Delete</Button>
+                        <h3>{card.title}</h3>
+                        <LabelWrapper>
+                            <Label htmlFor={card.id}>Description</Label>
+                            <Description
+                                id={card.id}
+                                placeholder="e.g. Set up a meeting with the stakeholders regarding the targets next year"
+                            />
+                        </LabelWrapper>
+                        <LabelWrapper>
+                            <Label htmlFor="card-status">Status</Label>
+                            <select id="card-status" name="card status">
+                                <option value={card.status}>
+                                    {card.status}
+                                </option>
+                                {optionStatus}
+                            </select>
+                        </LabelWrapper>
                     </div>
-                </div>
+                    <BtnGrp>
+                        <AddCardWrapper>
+                            <Text>Add to Card</Text>
+                            <Button tertiary padding="auto" width="100px">
+                                <Icon name="Clock" iconColor="#323434" />
+                                <span>Deadline</span>
+                            </Button>
+                            <Button tertiary padding="auto" width="100px">
+                                <Icon name="Subtask" iconColor="#323434" />
+                                <span>Subtasks</span>
+                            </Button>
+                        </AddCardWrapper>
+                        <Actions>
+                            <Text>Actions</Text>
+                            <Button del padding="auto" with="100px">
+                                <Icon name="Trash" />
+                                <span>Delete</span>
+                            </Button>
+                        </Actions>
+                    </BtnGrp>
+                </CardDetails>
             </OpenCardWrapper>
         </>
     )
@@ -66,7 +86,7 @@ const Close = styled.span`
 const OpenCardWrapper = styled.div`
     z-index: 100;
     background-color: ${({ theme }) => theme.darkestGray};
-    padding: 30rem;
+    padding: 20rem 20rem 30rem 20rem;
     width: 100%;
     position: fixed;
     top: 50%;
@@ -74,6 +94,11 @@ const OpenCardWrapper = styled.div`
     transform: translate(-50%, -50%);
     @media only screen and ${device.mobileXL} {
         width: 600px;
+        padding-left: 30rem;
+        padding-bottom: 80rem;
+    }
+    @media only screen and ${device.tablet} {
+        width: 700px;
     }
 `
 const LabelWrapper = styled.div`
@@ -84,20 +109,38 @@ const LabelWrapper = styled.div`
 `
 const Label = styled.label`
     color: #ffffff;
-    font-weight: 400;
+    font-weight: 300;
 `
-const Input = styled.input`
+const Description = styled.textarea`
     display: block;
     width: 100%;
-    height: 100px;
-    padding: 0;
 `
 const AddCardWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
 
-const Text = styled.p`
+const Text = styled.span`
     color: ${({ theme }) => theme.lightGray};
+    padding-bottom: 5rem;
+    font-size: 11rem;
+    font-weight: 200;
 `
+const BtnGrp = styled.div`
+    margin-top: 30rem;
+`
+
+const Actions = styled.div`
+    margin-top: 20rem;
+`
+
+const CardDetails = styled.div`
+    @media only screen and ${device.mobileXL} {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-columns: 4fr 1fr;
+        column-gap: 40rem;
+    }
+`
+
 export default OpenCardModal

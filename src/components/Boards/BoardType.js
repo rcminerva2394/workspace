@@ -109,5 +109,8 @@ const AddCardInput = styled.input`
 `
 const FormBtnGrp = styled.div`
     margin-top: 10rem;
+    display: flex;
+    justify-content: flex-start;
+    gap: 5rem;
 `
 export default BoardType

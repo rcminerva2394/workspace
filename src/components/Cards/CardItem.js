@@ -23,6 +23,7 @@ const CardItem = ({ card }) => {
                         name="Ellipsis"
                         iconColor="#899090"
                         onClick={openCardHandler}
+                        hoverColor="#ffffff"
                     />
                 </CardTitleMenuWrap>
             </CardWrapper>
