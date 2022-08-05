@@ -83,6 +83,7 @@ textarea {
     outline: none;
     caret-color: #ffffff;
     height: 100px;
+    box-sizing: border-box;
 }
 
 select  {
@@ -98,6 +99,11 @@ select  {
 select option {
     background-color: #ffffff;
     color: #000000;
+}
+
+p { 
+    line-height: 1.4;
+    font-weight: 200;
 }
 `
 

@@ -33,6 +33,7 @@ const Main = () => {
             setIsCreatingBoard(false)
         }
     }
+    console.log(boards)
     return (
         <BoardsContext.Provider value={value}>
             <CreateBoard onAddBoard={addBoardHandler} />

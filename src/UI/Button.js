@@ -82,7 +82,6 @@ const ButtonWrapper = styled.button`
                     : props.secondary
                     ? ({ theme }) => theme.darkGray
                     : 'transparent'};
-        font-weight: 500;
     }
 `
 export default Button

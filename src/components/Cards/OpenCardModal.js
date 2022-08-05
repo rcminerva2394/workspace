@@ -1,17 +1,121 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
+import BoardsContext from '../../context/boards-context'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
-const OpenCardModal = ({ card, onClose }) => {
-    const cardStatus = ['Todo', 'Doing', 'Done']
-    const filteredStatus = cardStatus.filter((status) => status !== card.status)
+const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
+    const [isChangeCardTitle, setIsChangeCardTitle] = useState(false)
+    const [newCardTitle, setNewCardTitle] = useState(card.title)
+    const [isWriteDescription, setIsWriteDescription] = useState(false)
+    const [cardDescription, setCardDescription] = useState(card.description)
+    const [selected, setSelected] = useState(card.status)
+    const { setBoards } = useContext(BoardsContext)
+
+    // Renaming Card Title
+    const submitNewCardTitleHandler = (e) => {
+        e.preventDefault()
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    title: newCardTitle,
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+        setIsChangeCardTitle(false)
+    }
+
+    // Adding Description
+    const addDescriptionHandler = (e) => {
+        e.preventDefault()
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    description: cardDescription,
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+        setIsWriteDescription(false)
+    }
+
+    // Card Status Options
+    const cardStatusArr = ['Todo', 'Doing', 'Done']
+    const filteredStatus = cardStatusArr.filter(
+        (status) => status !== card.status
+    )
     const optionStatus = filteredStatus.map((status) => {
-        return <option value={status}>{status}</option>
+        return (
+            <option key={status} value={status}>
+                {status}
+            </option>
+        )
     })
+
+    // Change the status of the card
+    const changeCardStatusHandler = (e) => {
+        setSelected(e.target.value)
+
+        if (card.status !== e.target.value) {
+            const newCardItem = {
+                ...card,
+                status: e.target.value,
+            }
+            setBoards((prevState) => {
+                const updatedBoards = prevState.map((project) => {
+                    if (project.id === boardId) {
+                        const updatedCardSet = project[boardStatus].filter(
+                            (cardItem) => cardItem.id !== card.id
+                        )
+                        return {
+                            ...project,
+                            [boardStatus]: updatedCardSet,
+                            [e.target.value]: [
+                                ...project[e.target.value],
+                                newCardItem,
+                            ],
+                        }
+                    }
+                    return project
+                })
+                return updatedBoards
+            })
+        }
+    }
     return (
         <>
             <ModalBackdrop onClose={onClose} />
@@ -25,18 +129,96 @@ const OpenCardModal = ({ card, onClose }) => {
                 </Close>
                 <CardDetails>
                     <div>
-                        <h3>{card.title}</h3>
+                        {isChangeCardTitle ? (
+                            <form onSubmit={submitNewCardTitleHandler}>
+                                <input
+                                    onChange={(e) =>
+                                        setNewCardTitle(e.target.value)
+                                    }
+                                    placeholder="Change Card Title"
+                                    style={{ width: '100%' }}
+                                />
+                                <Btns>
+                                    <Button
+                                        primary
+                                        type="submit"
+                                        padding="auto"
+                                    >
+                                        Rename
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            setIsChangeCardTitle(false)
+                                        }
+                                        padding="auto"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </Btns>
+                            </form>
+                        ) : (
+                            <H3
+                                role="presentation"
+                                onClick={() => setIsChangeCardTitle(true)}
+                            >
+                                {card.title}
+                            </H3>
+                        )}
                         <LabelWrapper>
                             <Label htmlFor={card.id}>Description</Label>
-                            <Description
-                                id={card.id}
-                                placeholder="e.g. Set up a meeting with the stakeholders regarding the targets next year"
-                            />
+                            {isWriteDescription ? (
+                                <form onSubmit={addDescriptionHandler}>
+                                    <Description
+                                        id={card.id}
+                                        placeholder="e.g. Set up a meeting with the stakeholders regarding the targets next year"
+                                        value={cardDescription}
+                                        onChange={(e) =>
+                                            setCardDescription(e.target.value)
+                                        }
+                                    />
+                                    <Btns>
+                                        <Button
+                                            primary
+                                            type="submit"
+                                            padding="auto"
+                                        >
+                                            Add
+                                        </Button>
+                                        <Button
+                                            onClick={() =>
+                                                setIsWriteDescription(false)
+                                            }
+                                            padding="auto"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Btns>
+                                </form>
+                            ) : cardDescription ? (
+                                <p
+                                    role="presentation"
+                                    onClick={() => setIsWriteDescription(true)}
+                                >
+                                    {card.description}
+                                </p>
+                            ) : (
+                                <DisplayDescription
+                                    role="presentation"
+                                    onClick={() => setIsWriteDescription(true)}
+                                >
+                                    Click to add a description
+                                </DisplayDescription>
+                            )}
                         </LabelWrapper>
                         <LabelWrapper>
                             <Label htmlFor="card-status">Status</Label>
-                            <select id="card-status" name="card status">
-                                <option value={card.status}>
+                            <select
+                                id="card-status"
+                                name="card status"
+                                value={selected}
+                                onChange={changeCardStatusHandler}
+                            >
+                                <option key={card.status} value={card.status}>
                                     {card.status}
                                 </option>
                                 {optionStatus}
@@ -81,6 +263,7 @@ const Backdrop = styled.div`
 const Close = styled.span`
     display: flex;
     justify-content: flex-end;
+    margin-bottom: 20rem;
 `
 
 const OpenCardWrapper = styled.div`
@@ -109,11 +292,13 @@ const LabelWrapper = styled.div`
 `
 const Label = styled.label`
     color: #ffffff;
-    font-weight: 300;
+    font-weight: 400;
 `
 const Description = styled.textarea`
     display: block;
     width: 100%;
+    color: #ffffff;
+    font-weight: 200;
 `
 const AddCardWrapper = styled.div`
     display: flex;
@@ -142,5 +327,24 @@ const CardDetails = styled.div`
         column-gap: 40rem;
     }
 `
-
+const Btns = styled.div`
+    display: flex;
+    gap: 5rem;
+`
+const H3 = styled.h3`
+    padding: 0 0 20rem 0;
+    :hover {
+        border: 1px solid ${({ theme }) => theme.darkGray};
+    }
+    cursor: pointer;
+`
+const DisplayDescription = styled.p`
+    color: #000000;
+    font-weight: 400;
+    padding: 20rem;
+    background-color: ${({ theme }) => theme.lightGray};
+    :hover {
+        background-color: ${({ theme }) => theme.darkGray};
+    }
+`
 export default OpenCardModal

@@ -15,17 +15,17 @@ const BoardList = () => {
                         <h3>{board.boardName}</h3>
                         <BoardTypesWrapper>
                             <BoardType
-                                name="Todo"
+                                boardStatus="Todo"
                                 id={board.id}
                                 cards={board.Todo}
                             />
                             <BoardType
-                                name="Doing"
+                                boardStatus="Doing"
                                 id={board.id}
                                 cards={board.Doing}
                             />
                             <BoardType
-                                name="Done"
+                                boardStatus="Done"
                                 id={board.id}
                                 cards={board.Done}
                             />

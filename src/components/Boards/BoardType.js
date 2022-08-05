@@ -7,7 +7,7 @@ import Cards from '../Cards/Cards'
 import BoardsContext from '../../context/boards-context'
 import device from '../../UI/Breakpoint'
 
-const BoardType = ({ name, id, cards }) => {
+const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
     const { setBoards } = useContext(BoardsContext)
@@ -30,9 +30,13 @@ const BoardType = ({ name, id, cards }) => {
                 if (project.id === id) {
                     return {
                         ...project,
-                        [name]: [
-                            ...project[name],
-                            { id: uuidv4(), title: cardTitle, status: [name] },
+                        [boardStatus]: [
+                            ...project[boardStatus],
+                            {
+                                id: uuidv4(),
+                                title: cardTitle,
+                                status: [boardStatus],
+                            },
                         ],
                     }
                 }
@@ -45,10 +49,10 @@ const BoardType = ({ name, id, cards }) => {
     return (
         <BoardWrapper>
             <IconTitle>
-                <Icon name={name} iconColor={color(name)} />
-                <Title>{name}</Title>
+                <Icon name={boardStatus} iconColor={color(boardStatus)} />
+                <Title>{boardStatus}</Title>
             </IconTitle>
-            <Cards cards={cards} onUpdateCards />
+            <Cards cards={cards} boardId={id} boardStatus={boardStatus} />
             {isAddCard && (
                 <form onSubmit={submitNewCardHandler}>
                     <AddCardInput
@@ -56,10 +60,19 @@ const BoardType = ({ name, id, cards }) => {
                         onChange={(e) => setCardTitle(e.target.value)}
                     />
                     <FormBtnGrp>
-                        <Button type="submit" primary>
+                        <Button
+                            type="submit"
+                            primary
+                            fontSize="16rem"
+                            padding="6rem"
+                        >
                             Add Card
                         </Button>
-                        <Button onClick={() => setIsAddCard(false)}>
+                        <Button
+                            onClick={() => setIsAddCard(false)}
+                            fontSize="16rem"
+                            padding="6rem"
+                        >
                             Cancel
                         </Button>
                     </FormBtnGrp>

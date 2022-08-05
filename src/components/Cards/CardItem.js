@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from './OpenCardModal'
 
-const CardItem = ({ card }) => {
+const CardItem = ({ card, boardId, boardStatus }) => {
     const [isOpenCard, setIsOpenCard] = useState(false)
     const openCardHandler = () => {
         setIsOpenCard(true)
@@ -14,11 +14,16 @@ const CardItem = ({ card }) => {
     return (
         <>
             {isOpenCard && (
-                <OpenCardModal card={card} onClose={closeCardHandler} />
+                <OpenCardModal
+                    card={card}
+                    onClose={closeCardHandler}
+                    boardId={boardId}
+                    boardStatus={boardStatus}
+                />
             )}
             <CardWrapper>
                 <CardTitleMenuWrap>
-                    <CardTitle> {card.title}</CardTitle>
+                    <CardTitle>{card.title}</CardTitle>
                     <Icon
                         name="Ellipsis"
                         iconColor="#899090"
