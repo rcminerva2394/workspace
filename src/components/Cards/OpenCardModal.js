@@ -4,6 +4,7 @@ import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
 import BoardsContext from '../../context/boards-context'
+import SetDate from '../Dates/SetDate'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
@@ -13,6 +14,10 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
     const [isWriteDescription, setIsWriteDescription] = useState(false)
     const [cardDescription, setCardDescription] = useState(card.description)
     const [selected, setSelected] = useState(card.status)
+    const [isDeadlineOpen, setIsDeadlineOpen] = useState(false)
+    const [startDate, setStartDate] = useState(card.date.startDate)
+    const [dueDate, setDueDate] = useState(card.date.dueDate)
+    const [deadlineTime, setDeadlineTime] = useState(card.date.time)
     const { setBoards } = useContext(BoardsContext)
 
     // Renaming Card Title
@@ -116,6 +121,13 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
             })
         }
     }
+
+    const dateHandler = (dateObj) => {
+        setStartDate(dateObj.startDate)
+        setDueDate(dateObj.dueDate)
+        setDeadlineTime(dateObj.time)
+    }
+
     return (
         <>
             <ModalBackdrop onClose={onClose} />
@@ -163,6 +175,29 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                             >
                                 {card.title}
                             </H3>
+                        )}
+                        {startDate && dueDate ? (
+                            <div>
+                                <Label>Duration</Label>
+                                <p>
+                                    From {startDate} - {dueDate}
+                                    {` ${deadlineTime}`}
+                                </p>
+                            </div>
+                        ) : !dueDate && startDate ? (
+                            <div>
+                                <Label>Start Date</Label>
+                                <p>{startDate}</p>
+                            </div>
+                        ) : dueDate && !startDate ? (
+                            <div>
+                                <Label> Due Date</Label>
+                                <p>
+                                    {dueDate} {deadlineTime}
+                                </p>
+                            </div>
+                        ) : (
+                            ''
                         )}
                         <LabelWrapper>
                             <Label htmlFor={card.id}>Description</Label>
@@ -228,7 +263,14 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                     <BtnGrp>
                         <AddCardWrapper>
                             <Text>Add to Card</Text>
-                            <Button tertiary padding="auto" width="100px">
+                            <Button
+                                tertiary
+                                padding="auto"
+                                width="100px"
+                                onClick={() =>
+                                    setIsDeadlineOpen((prevState) => !prevState)
+                                }
+                            >
                                 <Icon name="Clock" iconColor="#323434" />
                                 <span>Deadline</span>
                             </Button>
@@ -246,6 +288,7 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                         </Actions>
                     </BtnGrp>
                 </CardDetails>
+                {isDeadlineOpen && <SetDate onUpdateDate={dateHandler} />}
             </OpenCardWrapper>
         </>
     )
@@ -265,16 +308,23 @@ const Close = styled.span`
     justify-content: flex-end;
     margin-bottom: 20rem;
 `
-
 const OpenCardWrapper = styled.div`
-    z-index: 100;
+    z-index: 50;
     background-color: ${({ theme }) => theme.darkestGray};
     padding: 20rem 20rem 30rem 20rem;
     width: 100%;
-    position: fixed;
     top: 50%;
     left: 50%;
+    position: fixed;
+    max-height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
     transform: translate(-50%, -50%);
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+    }
     @media only screen and ${device.mobileXL} {
         width: 600px;
         padding-left: 30rem;

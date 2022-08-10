@@ -102,8 +102,9 @@ select option {
 }
 
 p { 
-    line-height: 1.4;
+    line-height: 1.5;
     font-weight: 200;
+    color: ${({ theme }) => theme.lightGray};
 }
 `
 

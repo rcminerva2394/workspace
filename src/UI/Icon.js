@@ -8,7 +8,7 @@ import {
     FaEllipsisH,
     FaRegClock,
     FaCheckDouble,
-    FaTrash,
+    FaTrashAlt,
 } from 'react-icons/fa'
 
 import { ImCross } from 'react-icons/im'
@@ -22,7 +22,7 @@ const icons = {
     Close: ImCross,
     Clock: FaRegClock,
     Subtask: FaCheckDouble,
-    Trash: FaTrash,
+    Trash: FaTrashAlt,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor }) => {
