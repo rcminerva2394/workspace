@@ -12,7 +12,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -23,7 +23,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -36,7 +36,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -47,7 +47,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -60,7 +60,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -71,7 +71,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -88,7 +88,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -99,7 +99,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -112,7 +112,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -123,7 +123,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -136,7 +136,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },
@@ -147,7 +147,7 @@ const exampleBoards = [
                 date: {
                     startDate: '',
                     dueDate: '',
-                    time: '',
+                    deadlineTime: '',
                     completed: false,
                 },
             },

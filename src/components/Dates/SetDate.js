@@ -1,14 +1,31 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
+import Icon from '../../UI/Icon'
+import device from '../../UI/Breakpoint'
 
-const SetDate = ({ onUpdateDate }) => {
+const DateBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
+
+const SetDate = ({ onUpdateDate, onClose, card }) => {
     const todayDate = new Date().toISOString().substring(0, 10)
-    const [startDateVal, setStartDateVal] = useState('')
-    const [dueDateVal, setDueDateVal] = useState('')
-    const [dueDateTime, setDueDateTime] = useState('')
-    const [isStartDateChecked, setIsStartDateChecked] = useState(false)
-    const [isDueDateChecked, setIsDueDateChecked] = useState(false)
+    const [startDateVal, setStartDateVal] = useState(card.date.startDate)
+    const [dueDateVal, setDueDateVal] = useState(card.date.dueDate)
+    const [dueDateTime, setDueDateTime] = useState(card.date.deadlineTime)
+    const startDateValValidity = () => {
+        if (startDateVal) {
+            return true
+        }
+        return false
+    }
+    const [isStartDateChecked, setIsStartDateChecked] =
+        useState(startDateValValidity)
+    const dueDateValValidity = () => {
+        if (dueDateVal) {
+            return true
+        }
+        return false
+    }
+    const [isDueDateChecked, setIsDueDateChecked] = useState(dueDateValValidity)
 
     const months = [
         'Jan',
@@ -26,8 +43,8 @@ const SetDate = ({ onUpdateDate }) => {
     ]
     const yearNow = new Date().getFullYear()
 
-    //  Parsing the Date format
-    const parseDateHandler = (date) => {
+    // Edit the date into a right string format ('Month date')
+    const editDateHandler = (date) => {
         const dateArr = date.split('-')
         const month = months[parseInt(`${dateArr[1]}`, 10) - 1]
         let updatedDate
@@ -42,15 +59,33 @@ const SetDate = ({ onUpdateDate }) => {
         return updatedDate
     }
 
+    // Used to check if the saved dates are YYYY-MM-DD or not
+    const dateRegexPatternCheck = (date) => {
+        const dateReg = /^\d{4}[./-]\d{2}[./-]\d{2}$/
+        return dateReg.test(date)
+    }
     const submitDateHandler = (e) => {
         e.preventDefault()
-        const parsedStartDate = parseDateHandler(startDateVal)
-        const parsedDueDate = parseDateHandler(dueDateVal)
+
+        const regexCheckStartDate = dateRegexPatternCheck(startDateVal)
+        const regexCheckDueDate = dateRegexPatternCheck(dueDateVal)
         const dateObj = {
-            startDate: parsedStartDate,
-            dueDate: parsedDueDate,
-            time: dueDateTime,
+            startDate: startDateVal,
+            dueDate: dueDateVal,
+            deadlineTime: dueDateTime,
             completed: false,
+        }
+
+        if (regexCheckStartDate === true && regexCheckDueDate === false) {
+            dateObj.startDate = editDateHandler(startDateVal)
+        } else if (regexCheckStartDate === true && regexCheckDueDate === true) {
+            dateObj.startDate = editDateHandler(startDateVal)
+            dateObj.dueDate = editDateHandler(dueDateVal)
+        } else if (
+            regexCheckStartDate === false &&
+            regexCheckDueDate === true
+        ) {
+            dateObj.dueDate = editDateHandler(dueDateVal)
         }
 
         if (isStartDateChecked && !isDueDateChecked) {
@@ -63,75 +98,136 @@ const SetDate = ({ onUpdateDate }) => {
         } else if (!isDueDateChecked && !isStartDateChecked) {
             dateObj.startDate = ''
             dateObj.dueDate = ''
+            dateObj.deadlineTime = ''
             onUpdateDate(dateObj)
         } else if (isDueDateChecked && isStartDateChecked) {
             onUpdateDate(dateObj)
         }
+        onClose()
+    }
+
+    const removeDateHandler = () => {
+        const dateObj = {
+            startDate: '',
+            dueDate: '',
+            deadlineTime: '',
+            completed: false,
+        }
+        onUpdateDate(dateObj)
+        onClose()
+    }
+
+    const startDateCheckboxHandler = () => {
+        setIsStartDateChecked((prevState) => !prevState)
+    }
+
+    const dueDateCheckboxHandler = () => {
+        setIsDueDateChecked((prevState) => !prevState)
     }
 
     return (
-        <Form onSubmit={submitDateHandler}>
-            <Text>Start Date</Text>
-            <DateWrap>
-                <label htmlFor="start-date">
-                    <Input
-                        type="checkbox"
-                        onChange={() =>
-                            setIsStartDateChecked((prevState) => !prevState)
-                        }
+        <>
+            <DateBackdrop onClose={onClose} />
+            <Form onSubmit={submitDateHandler}>
+                <Close onClick={onClose}>
+                    <Icon
+                        name="Close"
+                        iconColor="#899090"
+                        hoverColor="#ffffff"
                     />
-                </label>
-                {!isStartDateChecked ? (
-                    <DateFormat>dd-mm-yyyy</DateFormat>
-                ) : (
-                    <Input
-                        type="date"
-                        min={todayDate}
-                        value={startDateVal}
-                        onChange={(e) => setStartDateVal(e.target.value)}
-                    />
-                )}
-            </DateWrap>
-            <Text>Due Date</Text>
-            <DateWrap>
-                <label htmlFor="due-date">
-                    <Input
-                        type="checkbox"
-                        onChange={() =>
-                            setIsDueDateChecked((prevState) => !prevState)
-                        }
-                    />
-                </label>
-                {!isDueDateChecked ? (
-                    <span>
+                </Close>
+                <Text>Start Date</Text>
+                <DateWrap>
+                    <label htmlFor="start-date">
+                        <InputCheckbox
+                            type="checkbox"
+                            onChange={startDateCheckboxHandler}
+                            checked={isStartDateChecked}
+                        />
+                    </label>
+                    {!isStartDateChecked ? (
                         <DateFormat>dd-mm-yyyy</DateFormat>
-                        <DateFormat>hh:mm AM/PM</DateFormat>
-                    </span>
-                ) : (
-                    <span>
+                    ) : (
                         <Input
-                            type="date"
-                            min={startDateVal}
-                            value={dueDateVal}
-                            onChange={(e) => setDueDateVal(e.target.value)}
+                            type="text"
+                            min={todayDate}
+                            value={startDateVal}
+                            placeholder={todayDate}
+                            onChange={(e) => setStartDateVal(e.target.value)}
+                            onBlur={(e) => {
+                                e.target.type = 'text'
+                            }}
+                            onFocus={(e) => {
+                                e.target.type = 'date'
+                            }}
                         />
-                        <Input
-                            onChange={(e) => setDueDateTime(e.target.value)}
-                            placeholder="time"
-                            style={{ width: '10ch' }}
+                    )}
+                </DateWrap>
+                <Text>Due Date</Text>
+                <DateWrap>
+                    <label htmlFor="due-date">
+                        <InputCheckbox
+                            type="checkbox"
+                            onChange={dueDateCheckboxHandler}
+                            checked={isDueDateChecked}
                         />
-                    </span>
-                )}
-            </DateWrap>
-            <BtnGrp>
-                <Button primary type="submit" padding="auto">
-                    Save
-                </Button>
-                <Button padding="auto"> Remove </Button>
-            </BtnGrp>
-        </Form>
+                    </label>
+                    {!isDueDateChecked ? (
+                        <Span>
+                            <DateFormat>dd-mm-yyyy</DateFormat>
+                            <DateFormat>hh:mm</DateFormat>
+                        </Span>
+                    ) : (
+                        <Span>
+                            <Input
+                                type="text"
+                                min={startDateVal}
+                                value={dueDateVal}
+                                placeholder={todayDate}
+                                onChange={(e) => setDueDateVal(e.target.value)}
+                                onBlur={(e) => {
+                                    e.target.type = 'text'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.type = 'date'
+                                }}
+                            />
+                            <Input
+                                onChange={(e) => setDueDateTime(e.target.value)}
+                                placeholder="set time"
+                                style={{ width: '10ch' }}
+                                value={dueDateTime}
+                            />
+                        </Span>
+                    )}
+                </DateWrap>
+                <BtnGrp>
+                    <Button primary type="submit" padding="auto">
+                        Save
+                    </Button>
+                    <Button padding="auto" onClick={removeDateHandler}>
+                        Remove
+                    </Button>
+                </BtnGrp>
+            </Form>
+        </>
     )
 }
+
+const Backdrop = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 15;
+    background-color: transparent;
+`
+const Close = styled.span`
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20rem;
+`
 
 const Text = styled.p`
     color: ${({ theme }) => theme.lightGray};
@@ -141,33 +237,49 @@ const Text = styled.p`
 `
 const Form = styled.form`
     margin-top: 20rem;
-    z-index: 110;
+    z-index: 100;
     background-color: #4b4e4e;
     padding: 20rem;
     border-radius: 2px;
+    width: 320px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @media only screen and ${device.mobileM} {
+        left: 75%;
+    }
 `
 const DateWrap = styled.div`
     display: flex;
-    place-items: center;
-    gap: 10rem;
+    align-items: center;
+    justify-content: flex-start;
     margin-top: 10rem;
+    margin-left: -10rem;
 `
 const Input = styled.input`
-    width: auto;
-    margin-left: 10rem;
+    max-width: 16ch;
+    margin-left: -10rem;
+`
+const InputCheckbox = styled(Input)`
+    margin-right: -10rem;
 `
 const DateFormat = styled.span`
-    padding: 10rem;
+    padding: 5rem;
     border: 1px solid;
     border-radius: 4px;
     color: ${({ theme }) => theme.darkGray};
     font-weight: 400;
-    margin-left: 10rem;
+    margin-left: -10rem;
 `
 const BtnGrp = styled.div`
     display: flex;
     margin-top: 40rem;
     gap: 5rem;
+`
+const Span = styled.span`
+    display: flex;
+    gap: 15rem;
 `
 
 export default SetDate

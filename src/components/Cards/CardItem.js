@@ -4,16 +4,16 @@ import Icon from '../../UI/Icon'
 import OpenCardModal from './OpenCardModal'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
-    const [isOpenCard, setIsOpenCard] = useState(false)
+    const [isCardOpen, setIsCardOpen] = useState(false)
     const openCardHandler = () => {
-        setIsOpenCard(true)
+        setIsCardOpen(true)
     }
     const closeCardHandler = () => {
-        setIsOpenCard(false)
+        setIsCardOpen(false)
     }
     return (
         <>
-            {isOpenCard && (
+            {isCardOpen && (
                 <OpenCardModal
                     card={card}
                     onClose={closeCardHandler}

@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
@@ -8,7 +9,7 @@ import SetDate from '../Dates/SetDate'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
-const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
+const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [isChangeCardTitle, setIsChangeCardTitle] = useState(false)
     const [newCardTitle, setNewCardTitle] = useState(card.title)
     const [isWriteDescription, setIsWriteDescription] = useState(false)
@@ -17,8 +18,41 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
     const [isDeadlineOpen, setIsDeadlineOpen] = useState(false)
     const [startDate, setStartDate] = useState(card.date.startDate)
     const [dueDate, setDueDate] = useState(card.date.dueDate)
-    const [deadlineTime, setDeadlineTime] = useState(card.date.time)
+    const [deadlineTime, setDeadlineTime] = useState(card.date.deadlineTime)
+    const [isDueDateCompleted, setIsDueDateCompleted] = useState(
+        card.date.completed
+    )
     const { setBoards } = useContext(BoardsContext)
+
+    // Updating the completion status of the duedate / deadline
+    useEffect(() => {
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    date: {
+                                        ...cardItem.date,
+                                        completed: isDueDateCompleted,
+                                    },
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+    }, [isDueDateCompleted])
 
     // Renaming Card Title
     const submitNewCardTitleHandler = (e) => {
@@ -125,12 +159,39 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
     const dateHandler = (dateObj) => {
         setStartDate(dateObj.startDate)
         setDueDate(dateObj.dueDate)
-        setDeadlineTime(dateObj.time)
+        setDeadlineTime(dateObj.deadlineTime)
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    date: dateObj,
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+    }
+
+    // Change card due date completion status
+    const changeDueDateCompletionHandler = () => {
+        setIsDueDateCompleted((prevState) => !prevState)
     }
 
     return (
         <>
-            <ModalBackdrop onClose={onClose} />
             <OpenCardWrapper>
                 <Close onClick={onClose}>
                     <Icon
@@ -149,6 +210,7 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                                     }
                                     placeholder="Change Card Title"
                                     style={{ width: '100%' }}
+                                    value={newCardTitle}
                                 />
                                 <Btns>
                                     <Button
@@ -177,25 +239,53 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                             </H3>
                         )}
                         {startDate && dueDate ? (
-                            <div>
+                            <LabelWrapper>
                                 <Label>Duration</Label>
-                                <p>
-                                    From {startDate} - {dueDate}
-                                    {` ${deadlineTime}`}
-                                </p>
-                            </div>
+                                <DateCheckWrapper>
+                                    <CheckDateComplete
+                                        type="checkbox"
+                                        onChange={
+                                            changeDueDateCompletionHandler
+                                        }
+                                        checked={isDueDateCompleted}
+                                    />
+                                    <DateText>
+                                        From {startDate} - {dueDate}
+                                        {` ${deadlineTime}`}
+                                    </DateText>
+                                </DateCheckWrapper>
+                            </LabelWrapper>
                         ) : !dueDate && startDate ? (
-                            <div>
+                            <LabelWrapper>
                                 <Label>Start Date</Label>
-                                <p>{startDate}</p>
-                            </div>
+                                <DateCheckWrapper>
+                                    <CheckDateComplete
+                                        type="checkbox"
+                                        onChange={
+                                            changeDueDateCompletionHandler
+                                        }
+                                        checked={isDueDateCompleted}
+                                    />
+                                    <DateText>{startDate}</DateText>
+                                </DateCheckWrapper>
+                            </LabelWrapper>
                         ) : dueDate && !startDate ? (
-                            <div>
+                            <LabelWrapper>
                                 <Label> Due Date</Label>
-                                <p>
-                                    {dueDate} {deadlineTime}
-                                </p>
-                            </div>
+                                <DateCheckWrapper>
+                                    <CheckDateComplete
+                                        type="checkbox"
+                                        onChange={
+                                            changeDueDateCompletionHandler
+                                        }
+                                        checked={isDueDateCompleted}
+                                    />
+                                    <DateText>
+                                        {dueDate}
+                                        {deadlineTime}
+                                    </DateText>
+                                </DateCheckWrapper>
+                            </LabelWrapper>
                         ) : (
                             ''
                         )}
@@ -230,12 +320,12 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                                     </Btns>
                                 </form>
                             ) : cardDescription ? (
-                                <p
+                                <Paragraph
                                     role="presentation"
                                     onClick={() => setIsWriteDescription(true)}
                                 >
                                     {card.description}
-                                </p>
+                                </Paragraph>
                             ) : (
                                 <DisplayDescription
                                     role="presentation"
@@ -288,8 +378,34 @@ const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
                         </Actions>
                     </BtnGrp>
                 </CardDetails>
-                {isDeadlineOpen && <SetDate onUpdateDate={dateHandler} />}
             </OpenCardWrapper>
+            {isDeadlineOpen && (
+                <SetDate
+                    onUpdateDate={dateHandler}
+                    onClose={() => setIsDeadlineOpen(false)}
+                    card={card}
+                />
+            )}
+        </>
+    )
+}
+
+const OpenCardModal = ({ card, onClose, boardId, boardStatus }) => {
+    return (
+        <>
+            {ReactDOM.createPortal(
+                <ModalBackdrop onClose={onClose} />,
+                document.getElementById('modal-backdrop')
+            )}
+            {ReactDOM.createPortal(
+                <Main
+                    card={card}
+                    onClose={onClose}
+                    boardId={boardId}
+                    boardStatus={boardStatus}
+                />,
+                document.getElementById('modal-overlay')
+            )}
         </>
     )
 }
@@ -349,6 +465,26 @@ const Description = styled.textarea`
     width: 100%;
     color: #ffffff;
     font-weight: 200;
+    border-radius: 2px;
+`
+
+const Paragraph = styled.p`
+    margin-top: -5rem;
+`
+const DateText = styled.span`
+    display: inline;
+    margin-left: -80rem;
+    color: ${({ theme }) => theme.lightGray};
+`
+const DateCheckWrapper = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: -10rem;
+    justify-items: flex-start;
+`
+const CheckDateComplete = styled.input`
+    margin-left: -80rem;
 `
 const AddCardWrapper = styled.div`
     display: flex;
@@ -392,6 +528,7 @@ const DisplayDescription = styled.p`
     color: #000000;
     font-weight: 400;
     padding: 20rem;
+    border-radius: 2px;
     background-color: ${({ theme }) => theme.lightGray};
     :hover {
         background-color: ${({ theme }) => theme.darkGray};
