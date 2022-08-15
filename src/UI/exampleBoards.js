@@ -15,6 +15,18 @@ const exampleBoards = [
                     deadlineTime: '',
                     completed: false,
                 },
+                // subtasks: [
+                //     {
+                //         id: uuidv4(),
+                //         title: '',
+                //         completed: false,
+                //     },
+                //     {
+                //         id: uuidv4(),
+                //         title: '',
+                //         completed: false,
+                //     }
+                // ],
             },
             {
                 id: uuidv4(),

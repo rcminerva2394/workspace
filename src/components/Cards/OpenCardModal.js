@@ -6,6 +6,7 @@ import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
 import BoardsContext from '../../context/boards-context'
 import SetDate from '../Dates/SetDate'
+import Subtasks from '../Subtasks/Subtasks'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
@@ -22,6 +23,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [isDueDateCompleted, setIsDueDateCompleted] = useState(
         card.date.completed
     )
+    const [hasSubtasks, setHasSubtasks] = useState(card.subtasks)
     const { setBoards } = useContext(BoardsContext)
 
     // Updating the completion status of the duedate / deadline
@@ -190,6 +192,34 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
         setIsDueDateCompleted((prevState) => !prevState)
     }
 
+    // Adding Subtasks
+    const addSubtasksHandler = () => {
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    subtasks: [],
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+        setHasSubtasks(true)
+    }
+
     return (
         <>
             <OpenCardWrapper>
@@ -281,8 +311,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                         checked={isDueDateCompleted}
                                     />
                                     <DateText>
-                                        {dueDate}
-                                        {deadlineTime}
+                                        {dueDate} {deadlineTime}
                                     </DateText>
                                 </DateCheckWrapper>
                             </LabelWrapper>
@@ -335,6 +364,13 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                 </DisplayDescription>
                             )}
                         </LabelWrapper>
+                        {hasSubtasks && (
+                            <Subtasks
+                                card={card}
+                                boardId={boardId}
+                                boardStatus={boardStatus}
+                            />
+                        )}
                         <LabelWrapper>
                             <Label htmlFor="card-status">Status</Label>
                             <select
@@ -364,14 +400,21 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                 <Icon name="Clock" iconColor="#323434" />
                                 <span>Deadline</span>
                             </Button>
-                            <Button tertiary padding="auto" width="100px">
-                                <Icon name="Subtask" iconColor="#323434" />
-                                <span>Subtasks</span>
-                            </Button>
+                            {!hasSubtasks && (
+                                <Button
+                                    tertiary
+                                    padding="auto"
+                                    width="100px"
+                                    onClick={addSubtasksHandler}
+                                >
+                                    <Icon name="Subtask" iconColor="#323434" />
+                                    <span>Subtasks</span>
+                                </Button>
+                            )}
                         </AddCardWrapper>
                         <Actions>
                             <Text>Actions</Text>
-                            <Button del padding="auto" with="100px">
+                            <Button del padding="auto">
                                 <Icon name="Trash" />
                                 <span>Delete</span>
                             </Button>
@@ -464,10 +507,8 @@ const Description = styled.textarea`
     display: block;
     width: 100%;
     color: #ffffff;
-    font-weight: 200;
     border-radius: 2px;
 `
-
 const Paragraph = styled.p`
     margin-top: -5rem;
 `

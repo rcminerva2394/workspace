@@ -36,6 +36,12 @@ const BoardType = ({ boardStatus, id, cards }) => {
                                 id: uuidv4(),
                                 title: cardTitle,
                                 status: [boardStatus],
+                                date: {
+                                    startDate: '',
+                                    dueDate: '',
+                                    deadlineTime: '',
+                                    completed: false,
+                                },
                             },
                         ],
                     }

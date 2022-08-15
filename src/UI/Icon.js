@@ -9,6 +9,8 @@ import {
     FaRegClock,
     FaCheckDouble,
     FaTrashAlt,
+    FaPencilAlt,
+    FaSave,
 } from 'react-icons/fa'
 
 import { ImCross } from 'react-icons/im'
@@ -23,6 +25,8 @@ const icons = {
     Clock: FaRegClock,
     Subtask: FaCheckDouble,
     Trash: FaTrashAlt,
+    Edit: FaPencilAlt,
+    Save: FaSave,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor }) => {
