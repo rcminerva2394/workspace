@@ -69,14 +69,14 @@ const BoardType = ({ boardStatus, id, cards }) => {
                         <Button
                             type="submit"
                             primary
-                            fontSize="16rem"
+                            fontSize="12rem"
                             padding="6rem"
                         >
                             Add Card
                         </Button>
                         <Button
                             onClick={() => setIsAddCard(false)}
-                            fontSize="16rem"
+                            fontSize="12rem"
                             padding="6rem"
                         >
                             Cancel
@@ -87,7 +87,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
             {!isAddCard && (
                 <Button
                     onClick={() => setIsAddCard(true)}
-                    fontSize="16rem"
+                    fontSize="14rem"
                     padding="6rem"
                 >
                     + Add Card
@@ -125,6 +125,12 @@ const AddCardInput = styled.input`
     padding: 10rem 10rem;
     line-height: 10rem;
     width: 100%;
+    background-color: transparent;
+    border: 1px solid rgba(163, 164, 177, 0.2);
+    color: #ffffff;
+    font-weight: 300;
+    font-family: inherit;
+    text-align: center;
 `
 const FormBtnGrp = styled.div`
     margin-top: 10rem;

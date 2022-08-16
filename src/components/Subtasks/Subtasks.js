@@ -5,7 +5,7 @@ import Button from '../../UI/Button'
 import BoardsContext from '../../context/boards-context'
 import SubtasksList from './SubtasksList'
 
-const Subtasks = ({ card, boardId, boardStatus }) => {
+const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
     const [willAddSubtask, setWillAddSubtask] = useState(true)
     const [newSubtask, setNewSubtask] = useState('')
     const { setBoards } = useContext(BoardsContext)
@@ -42,6 +42,7 @@ const Subtasks = ({ card, boardId, boardStatus }) => {
             })
             return updatedBoards
         })
+        onShow(true)
     }
 
     const deleteEntireSubtasks = () => {
@@ -52,9 +53,7 @@ const Subtasks = ({ card, boardId, boardStatus }) => {
                         (cardItem) => {
                             if (cardItem.id === card.id) {
                                 const { subtasks, ...rest } = cardItem
-                                return {
-                                    rest,
-                                }
+                                return rest
                             }
                             return cardItem
                         }
@@ -68,12 +67,18 @@ const Subtasks = ({ card, boardId, boardStatus }) => {
             })
             return updatedBoards
         })
+        onShow(false)
     }
     return (
-        <>
+        <SubtasksWrapper>
             <TitleDeleteWrapper>
                 <Title>Subtasks</Title>
-                <Button tertiary padding="auto" onClick={deleteEntireSubtasks}>
+                <Button
+                    tertiary
+                    padding="auto"
+                    onClick={deleteEntireSubtasks}
+                    fontSize="11rem"
+                >
                     Delete
                 </Button>
             </TitleDeleteWrapper>
@@ -108,14 +113,18 @@ const Subtasks = ({ card, boardId, boardStatus }) => {
                     tertiary
                     padding="auto"
                     onClick={() => setWillAddSubtask(true)}
+                    fontSize="11rem"
                 >
                     Add Item
                 </Button>
             )}
-        </>
+        </SubtasksWrapper>
     )
 }
 
+const SubtasksWrapper = styled.div`
+    margin-bottom: 35rem;
+`
 const Title = styled.p`
     color: #ffffff;
     font-weight: 400;
@@ -139,5 +148,6 @@ const TitleDeleteWrapper = styled.div`
     justify-content: space-between;
     margin-top: 10rem;
     margin-bottom: 10rem;
+    align-items: center;
 `
 export default Subtasks

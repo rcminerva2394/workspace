@@ -140,7 +140,9 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
                     }
                     checked={isSubtaskCompleted}
                 />
-                {!isEditSubtask ? (
+                {!isEditSubtask && isSubtaskCompleted ? (
+                    <CompletedSubtask>{subtask.title}</CompletedSubtask>
+                ) : !isEditSubtask && !isSubtaskCompleted ? (
                     <span>{subtask.title}</span>
                 ) : (
                     <InputEdit
@@ -222,11 +224,10 @@ const InputEdit = styled.input`
 const InputCheckbox = styled.input`
     width: 15px;
     height: 15px;
+    accent-color: green;
 `
-// const SaveButton = styled.button`
-//     padding: 0;
-//     background: transparent;
-//     border: 0;
-//     outline: 0;
-// `
+const CompletedSubtask = styled.span`
+    color: ${({ theme }) => theme.darkGray};
+`
+
 export default SubtaskItem

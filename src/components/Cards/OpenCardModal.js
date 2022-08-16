@@ -23,7 +23,16 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [isDueDateCompleted, setIsDueDateCompleted] = useState(
         card.date.completed
     )
-    const [hasSubtasks, setHasSubtasks] = useState(card.subtasks)
+
+    // Assess whether subtasks are undefined if not, get length to establish if truthy or falsy
+    const { subtasks } = card
+    const subtasksLength = () => {
+        if (subtasks === undefined) {
+            return undefined
+        }
+        return subtasks.length
+    }
+    const [hasSubtasks, setHasSubtasks] = useState(subtasksLength())
     const { setBoards } = useContext(BoardsContext)
 
     // Updating the completion status of the duedate / deadline
@@ -220,6 +229,9 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
         setHasSubtasks(true)
     }
 
+    const hideSubtasksIfZero = (value) => {
+        setHasSubtasks(value)
+    }
     return (
         <>
             <OpenCardWrapper>
@@ -279,10 +291,17 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                         }
                                         checked={isDueDateCompleted}
                                     />
-                                    <DateText>
-                                        From {startDate} - {dueDate}
-                                        {` ${deadlineTime}`}
-                                    </DateText>
+                                    {isDueDateCompleted ? (
+                                        <DateCompleted>
+                                            From {startDate} - {dueDate}
+                                            {` ${deadlineTime}`}
+                                        </DateCompleted>
+                                    ) : (
+                                        <DateText>
+                                            From {startDate} - {dueDate}
+                                            {` ${deadlineTime}`}
+                                        </DateText>
+                                    )}
                                 </DateCheckWrapper>
                             </LabelWrapper>
                         ) : !dueDate && startDate ? (
@@ -296,7 +315,13 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                         }
                                         checked={isDueDateCompleted}
                                     />
-                                    <DateText>{startDate}</DateText>
+                                    {isDueDateCompleted ? (
+                                        <DateCompleted>
+                                            {startDate}
+                                        </DateCompleted>
+                                    ) : (
+                                        <DateText>{startDate}</DateText>
+                                    )}
                                 </DateCheckWrapper>
                             </LabelWrapper>
                         ) : dueDate && !startDate ? (
@@ -310,9 +335,15 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                                         }
                                         checked={isDueDateCompleted}
                                     />
-                                    <DateText>
-                                        {dueDate} {deadlineTime}
-                                    </DateText>
+                                    {isDueDateCompleted ? (
+                                        <DateCompleted>
+                                            {dueDate} {deadlineTime}
+                                        </DateCompleted>
+                                    ) : (
+                                        <DateText>
+                                            {dueDate} {deadlineTime}
+                                        </DateText>
+                                    )}
                                 </DateCheckWrapper>
                             </LabelWrapper>
                         ) : (
@@ -366,6 +397,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                         </LabelWrapper>
                         {hasSubtasks && (
                             <Subtasks
+                                onShow={hideSubtasksIfZero}
                                 card={card}
                                 boardId={boardId}
                                 boardStatus={boardStatus}
@@ -526,6 +558,7 @@ const DateCheckWrapper = styled.div`
 `
 const CheckDateComplete = styled.input`
     margin-left: -80rem;
+    accent-color: green;
 `
 const AddCardWrapper = styled.div`
     display: flex;
@@ -574,5 +607,8 @@ const DisplayDescription = styled.p`
     :hover {
         background-color: ${({ theme }) => theme.darkGray};
     }
+`
+const DateCompleted = styled(DateText)`
+    color: ${({ theme }) => theme.darkGray};
 `
 export default OpenCardModal

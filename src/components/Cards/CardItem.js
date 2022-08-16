@@ -5,6 +5,7 @@ import OpenCardModal from './OpenCardModal'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
     const [isCardOpen, setIsCardOpen] = useState(false)
+    const { dueDate } = card.date
 
     const openCardHandler = () => {
         setIsCardOpen(true)
@@ -55,12 +56,14 @@ const CardItem = ({ card, boardId, boardStatus }) => {
                 </CardTitleMenuWrap>
                 {subtasks === undefined ? (
                     ''
+                ) : subtasks.length === 0 ? (
+                    ''
                 ) : (
                     <p>
                         {completedSubtasksArr.length} of {card.subtasks.length} {verb} completed
                     </p>
                 )}
-                {card.date.dueDate && (
+                {dueDate && (
                     <DueDateWrapper>
                         <Icon name="Clock" iconColor="#AEB7B7" />
                         <DueDate>{card.date.dueDate}</DueDate>

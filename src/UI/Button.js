@@ -60,8 +60,8 @@ const ButtonWrapper = styled.button`
             : props.tertiary
             ? '#000000'
             : '#ffffff'};
-    font-weight: 300;
-    font-size: '12rem';
+    font-weight: 400;
+    font-size: ${(props) => (props.fontSize ? props.fontSize : '12rem')};
     display: flex;
     place-items: center;
     :hover {
