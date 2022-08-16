@@ -7,6 +7,7 @@ import device from '../../UI/Breakpoint'
 import BoardsContext from '../../context/boards-context'
 import SetDate from '../Dates/SetDate'
 import Subtasks from '../Subtasks/Subtasks'
+import DeleteModal from '../../UI/DeleteModal'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
@@ -27,12 +28,13 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     // Assess whether subtasks are undefined if not, get length to establish if truthy or falsy
     const { subtasks } = card
     const subtasksLength = () => {
-        if (subtasks === undefined) {
+        if (subtasks === undefined || subtasks.length === 0) {
             return undefined
         }
         return subtasks.length
     }
     const [hasSubtasks, setHasSubtasks] = useState(subtasksLength())
+    const [willDeleteCard, setWillDeleteCard] = useState(false)
     const { setBoards } = useContext(BoardsContext)
 
     // Updating the completion status of the duedate / deadline
@@ -232,6 +234,26 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const hideSubtasksIfZero = (value) => {
         setHasSubtasks(value)
     }
+
+    const deleteItem = () => {
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].filter(
+                        (cardItem) => cardItem.id !== card.id
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+        setWillDeleteCard(false)
+    }
+
     return (
         <>
             <OpenCardWrapper>
@@ -446,7 +468,11 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                         </AddCardWrapper>
                         <Actions>
                             <Text>Actions</Text>
-                            <Button del padding="auto">
+                            <Button
+                                del
+                                padding="auto"
+                                onClick={() => setWillDeleteCard(true)}
+                            >
                                 <Icon name="Trash" />
                                 <span>Delete</span>
                             </Button>
@@ -454,6 +480,13 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                     </BtnGrp>
                 </CardDetails>
             </OpenCardWrapper>
+            {willDeleteCard && (
+                <DeleteModal
+                    type="carditem"
+                    onDelete={deleteItem}
+                    onCancel={() => setWillDeleteCard(false)}
+                />
+            )}
             {isDeadlineOpen && (
                 <SetDate
                     onUpdateDate={dateHandler}

@@ -4,10 +4,12 @@ import { v4 as uuidv4 } from 'uuid'
 import Button from '../../UI/Button'
 import BoardsContext from '../../context/boards-context'
 import SubtasksList from './SubtasksList'
+import DeleteModal from '../../UI/DeleteModal'
 
 const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
     const [willAddSubtask, setWillAddSubtask] = useState(true)
     const [newSubtask, setNewSubtask] = useState('')
+    const [willDeletSubtasks, setWillDeleteSubtasks] = useState(false)
     const { setBoards } = useContext(BoardsContext)
 
     const submitAddedSubtaskHandler = (e) => {
@@ -69,6 +71,7 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
         })
         onShow(false)
     }
+
     return (
         <SubtasksWrapper>
             <TitleDeleteWrapper>
@@ -76,12 +79,19 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
                 <Button
                     tertiary
                     padding="auto"
-                    onClick={deleteEntireSubtasks}
+                    onClick={() => setWillDeleteSubtasks(true)}
                     fontSize="11rem"
                 >
                     Delete
                 </Button>
             </TitleDeleteWrapper>
+            {willDeletSubtasks && (
+                <DeleteModal
+                    type="subtasks"
+                    onDelete={deleteEntireSubtasks}
+                    onCancel={() => setWillDeleteSubtasks(false)}
+                />
+            )}
             <SubtasksList
                 card={card}
                 boardId={boardId}

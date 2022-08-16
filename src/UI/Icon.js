@@ -29,12 +29,19 @@ const icons = {
     Save: FaSave,
 }
 
-const Icon = ({ name, onClick, iconColor, hoverColor }) => {
+const Icon = ({ name, onClick, iconColor, hoverColor, size }) => {
     const [hover, setHover] = useState(false)
 
     let finalHoverColor = hoverColor
     if (hoverColor === undefined) {
         finalHoverColor = iconColor
+    }
+
+    let finalSize
+    if (size) {
+        finalSize = size
+    } else {
+        finalSize = '20px'
     }
     const style = {
         color: hover ? finalHoverColor : iconColor,
@@ -51,7 +58,7 @@ const Icon = ({ name, onClick, iconColor, hoverColor }) => {
         <FinalIcon
             onClick={onClick}
             style={style}
-            size="20px"
+            size={finalSize}
             onMouseEnter={mouseEnterHandler}
             onMouseLeave={mouseLeaveHandler}
         />
