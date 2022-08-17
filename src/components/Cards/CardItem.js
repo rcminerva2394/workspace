@@ -1,17 +1,48 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from './OpenCardModal'
+import BoardsContext from '../../context/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
-    const [isCardOpen, setIsCardOpen] = useState(false)
+    const [isCardOpened, setIsCardOpened] = useState(card.isCardOpen)
+    const [isHold, setIsHold] = useState(false)
+    const [displayStyle, setDisplayStyle] = useState(false)
+    const { setBoards } = useContext(BoardsContext)
     const { dueDate } = card.date
 
+    // Update isCardOpenStatus to remain the open modal card open despite changes to its status
+    useEffect(() => {
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    isCardOpen: isCardOpened,
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
+    }, [isCardOpened])
+
     const openCardHandler = () => {
-        setIsCardOpen(true)
+        setIsCardOpened(true)
     }
     const closeCardHandler = () => {
-        setIsCardOpen(false)
+        setIsCardOpened(false)
     }
 
     const { subtasks } = card
@@ -34,9 +65,18 @@ const CardItem = ({ card, boardId, boardStatus }) => {
         }
     }
 
+    const dragStartHandler = () => {
+        setIsHold(true)
+        setTimeout(() => setDisplayStyle(true), 0)
+    }
+
+    const dragEndHandler = () => {
+        setIsHold(false)
+        setDisplayStyle(false)
+    }
     return (
         <>
-            {isCardOpen && (
+            {isCardOpened && (
                 <OpenCardModal
                     card={card}
                     onClose={closeCardHandler}
@@ -44,7 +84,14 @@ const CardItem = ({ card, boardId, boardStatus }) => {
                     boardStatus={boardStatus}
                 />
             )}
-            <CardWrapper>
+            <CardWrapper
+                onClick={openCardHandler}
+                draggable="true"
+                onDragStart={dragStartHandler}
+                onDragEnd={dragEndHandler}
+                hold={isHold}
+                display={displayStyle}
+            >
                 <CardTitleMenuWrap>
                     <CardTitle>{card.title}</CardTitle>
                     <Icon
@@ -54,18 +101,16 @@ const CardItem = ({ card, boardId, boardStatus }) => {
                         hoverColor="#ffffff"
                     />
                 </CardTitleMenuWrap>
-                {subtasks === undefined ? (
-                    ''
-                ) : subtasks.length === 0 ? (
+                {subtasks === undefined || subtasks.length === 0 ? (
                     ''
                 ) : (
-                    <p>
+                    <CompletedTasksNum>
                         {completedSubtasksArr.length} of {card.subtasks.length} {verb} completed
-                    </p>
+                    </CompletedTasksNum>
                 )}
                 {dueDate && (
                     <DueDateWrapper>
-                        <Icon name="Clock" iconColor="#AEB7B7" />
+                        <Icon name="Clock" iconColor="#AEB7B7" size="18px" />
                         <DueDate>{card.date.dueDate}</DueDate>
                     </DueDateWrapper>
                 )}
@@ -78,6 +123,11 @@ const CardWrapper = styled.li`
     background-color: ${({ theme }) => theme.darkestGray};
     padding: 0 10rem 10rem 10rem;
     border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid
+        ${(props) =>
+            props.hold ? ({ theme }) => theme.lightGray : 'transparent'};
+    display: ${(props) => (props.display ? 'none' : 'block')};
 `
 const CardTitleMenuWrap = styled.div`
     display: flex;
@@ -90,11 +140,20 @@ const CardTitle = styled.p`
 `
 const DueDate = styled.span`
     font-size: 12rem;
-    color: ${({ theme }) => theme.fontColors.date};
+    color: ${({ theme }) => theme.darkGray};
+    font-weight: 400;
 `
 const DueDateWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-left: 5rem;
+    font-weight: 300;
+    margin-top: -5rem;
+    margin-left: 10rem;
+`
+const CompletedTasksNum = styled.p`
+    color: ${({ theme }) => theme.darkGray};
+    font-weight: 400;
+    margin-top: -5rem;
+    font-size: 13rem;
 `
 export default CardItem

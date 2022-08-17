@@ -36,6 +36,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
                                 id: uuidv4(),
                                 title: cardTitle,
                                 status: [boardStatus],
+                                isCardOpen: false,
                                 date: {
                                     startDate: '',
                                     dueDate: '',
@@ -55,7 +56,11 @@ const BoardType = ({ boardStatus, id, cards }) => {
     return (
         <BoardWrapper>
             <IconTitle>
-                <Icon name={boardStatus} iconColor={color(boardStatus)} />
+                <Icon
+                    name={boardStatus}
+                    iconColor={color(boardStatus)}
+                    size="24rem"
+                />
                 <Title>{boardStatus}</Title>
             </IconTitle>
             <Cards cards={cards} boardId={id} boardStatus={boardStatus} />
@@ -117,7 +122,7 @@ const IconTitle = styled.div`
 `
 const Title = styled.p`
     font-size: 16rem;
-    font-weight: 400;
+    font-weight: 500;
 `
 
 const AddCardInput = styled.input`

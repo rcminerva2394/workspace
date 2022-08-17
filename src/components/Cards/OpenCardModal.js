@@ -145,6 +145,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
         if (card.status !== e.target.value) {
             const newCardItem = {
                 ...card,
+                isCardOpen: true,
                 status: e.target.value,
             }
             setBoards((prevState) => {
