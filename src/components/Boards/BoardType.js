@@ -11,6 +11,58 @@ const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
     const { setBoards } = useContext(BoardsContext)
+
+    // Dropping the Task Item into the desired board status
+    const dragOverHandler = (e) => {
+        if (e.dataTransfer.types.includes('custom-type')) {
+            e.preventDefault()
+        }
+    }
+    const dragEnterHandler = (e) => {
+        e.preventDefault()
+    }
+
+    const dropHandler = (e) => {
+        const stringData = e.dataTransfer.getData('custom-type')
+        const cardData = JSON.parse(stringData)
+        if (
+            e.dataTransfer.types.includes('custom-type') &&
+            cardData.boardType !== boardStatus
+        ) {
+            e.preventDefault()
+            // Transfer and delete card to the new board type
+
+            const newCardItem = {
+                ...cardData.cardObj,
+                status: boardStatus,
+            }
+
+            // Deleting the card item from its first board type and moving it to the target drag element
+            setBoards((prevState) => {
+                const updatedBoards = prevState.map((project) => {
+                    if (project.id === cardData.idBoard) {
+                        const updatedCardSet = project[
+                            cardData.boardType
+                        ].filter(
+                            (cardItem) => cardItem.id !== cardData.cardObj.id
+                        )
+                        return {
+                            ...project,
+                            [cardData.boardType]: updatedCardSet,
+                            [boardStatus]: [
+                                ...project[boardStatus],
+                                newCardItem,
+                            ],
+                        }
+                    }
+                    return project
+                })
+                return updatedBoards
+            })
+        }
+    }
+
+    // Color function for the Icon
     const color = (boardType) => {
         const boardTypeName = boardType.toLowerCase()
         let colorOfIcon
@@ -23,6 +75,8 @@ const BoardType = ({ boardStatus, id, cards }) => {
         }
         return colorOfIcon
     }
+
+    // Adding a new card item
     const submitNewCardHandler = (e) => {
         e.preventDefault()
         setBoards((prevState) => {
@@ -53,8 +107,13 @@ const BoardType = ({ boardStatus, id, cards }) => {
         })
         setIsAddCard(false)
     }
+
     return (
-        <BoardWrapper>
+        <BoardWrapper
+            onDragOver={dragOverHandler}
+            onDragEnter={dragEnterHandler}
+            onDrop={dropHandler}
+        >
             <IconTitle>
                 <Icon
                     name={boardStatus}

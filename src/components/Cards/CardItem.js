@@ -11,7 +11,7 @@ const CardItem = ({ card, boardId, boardStatus }) => {
     const { setBoards } = useContext(BoardsContext)
     const { dueDate } = card.date
 
-    // Update isCardOpenStatus to remain the open modal card open despite changes to its status
+    // Update isCardOpen status for modal
     useEffect(() => {
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
@@ -65,15 +65,23 @@ const CardItem = ({ card, boardId, boardStatus }) => {
         }
     }
 
-    const dragStartHandler = () => {
+    // For enabling drag and drop API
+    const dragStartHandler = (e) => {
         setIsHold(true)
         setTimeout(() => setDisplayStyle(true), 0)
+        const cardData = {
+            cardObj: card,
+            idBoard: boardId,
+            boardType: boardStatus,
+        }
+        e.dataTransfer.setData('custom-type', JSON.stringify(cardData))
     }
 
     const dragEndHandler = () => {
         setIsHold(false)
         setDisplayStyle(false)
     }
+
     return (
         <>
             {isCardOpened && (
@@ -86,7 +94,7 @@ const CardItem = ({ card, boardId, boardStatus }) => {
             )}
             <CardWrapper
                 onClick={openCardHandler}
-                draggable="true"
+                draggable
                 onDragStart={dragStartHandler}
                 onDragEnd={dragEndHandler}
                 hold={isHold}
@@ -120,7 +128,7 @@ const CardItem = ({ card, boardId, boardStatus }) => {
 }
 
 const CardWrapper = styled.li`
-    background-color: ${({ theme }) => theme.darkestGray};
+    background-color: rgba(38, 39, 39, 1);
     padding: 0 10rem 10rem 10rem;
     border-radius: 4px;
     cursor: pointer;
@@ -128,6 +136,7 @@ const CardWrapper = styled.li`
         ${(props) =>
             props.hold ? ({ theme }) => theme.lightGray : 'transparent'};
     display: ${(props) => (props.display ? 'none' : 'block')};
+    pointer-events: ${(props) => (props.hold ? 'none' : 'auto')};
 `
 const CardTitleMenuWrap = styled.div`
     display: flex;

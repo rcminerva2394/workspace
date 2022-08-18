@@ -7,15 +7,6 @@ import BoardsContext from '../../context/boards-context'
 
 const BoardList = () => {
     const { boards } = useContext(BoardsContext)
-    const dragOverHandler = (e) => {
-        e.preventDefault()
-    }
-    const dragEnterHandler = (e) => {
-        e.preventDefaul()
-    }
-    const dragLeaveHandler = () => {}
-    const dropHandler = () => {}
-
     return (
         <SectionWrapper>
             <ul>
@@ -27,10 +18,6 @@ const BoardList = () => {
                                 boardStatus="Todo"
                                 id={board.id}
                                 cards={board.Todo}
-                                onDragOver={dragOverHandler}
-                                onDragEnter={dragEnterHandler}
-                                onDragLeave={dragLeaveHandler}
-                                onDrop={dropHandler}
                             />
                             <BoardType
                                 boardStatus="Doing"

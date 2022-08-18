@@ -24,22 +24,18 @@ A work in progress task management app (Kanban board) specifically inspired by T
 - styled-components
 - react-icons
 - uuid
-- Drag and Drop API
-- Firebase
+- HTML Drag and Drop API
+
 
 ## Motivation
 The goal is to practice React with Firebase integration.
 
 ## Challenges
- 
-  ### Visualizing the app without data
-      I struggled checking how my code works at first when I didn't have sample data yet.
-      What I did is I set up a sample boards array of objects data to figure out how will I tackle the operation.
 
-  ### Firebase integration
 
 ## Learnings
-   ## useContext
-   ## inline arrow function for onClicks
+
    
 ## Areas for Improvement
+   - Drag and Drop for on touch devices
+   - Sorting or ranking of task items per board status based on level of importance
