@@ -20,7 +20,7 @@ const ModalOverlay = ({ onCancel, onConfirm }) => {
     return (
         <OverlayWrapper onSubmit={boardNameSubmitHandler}>
             <label htmlFor="boardname">Board Name</label>
-            <input
+            <Input
                 onChange={inputNameHandler}
                 type="text"
                 id="boardname"
@@ -30,7 +30,7 @@ const ModalOverlay = ({ onCancel, onConfirm }) => {
                 <Button type="submit" name="Create" primary>
                     Create
                 </Button>
-                <Button name="Cancel" secondary onClick={() => onCancel(false)}>
+                <Button name="Cancel" onClick={() => onCancel(false)}>
                     Cancel
                 </Button>
             </BtnWrapper>
@@ -73,7 +73,7 @@ const Backdrop = styled.div`
 `
 
 const OverlayWrapper = styled.form`
-    background-color: #ffffff;
+    background-color: ${({ theme }) => theme.darkLight};
     position: fixed;
     top: 50%;
     left: 50%;
@@ -85,16 +85,28 @@ const OverlayWrapper = styled.form`
     gap: 10rem;
     display: flex;
     flex-direction: column;
-    place-items: center;
+    justify-content: flex-start;
 
     @media only screen and ${device.mobileL} {
         max-width: 500px;
     }
 `
-
+const Input = styled.input`
+    background-color: transparent;
+    padding: 15rem;
+    width: 100%;
+    border: 2px solid ${({ theme }) => theme.darkGray};
+    ::placeholder {
+        color: ${({ theme }) => theme.darkGray};
+        font-size: 15rem;
+    }
+    :focus {
+        color: #ffffff;
+    }
+`
 const BtnWrapper = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 5rem;
     margin-top: 10rem;
 `

@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
-import OpenCardModal from './OpenCardModal'
+import OpenCardModal from '../OpenedCardModal/OpenCardModal'
 import BoardsContext from '../../context/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
     const [isCardOpened, setIsCardOpened] = useState(card.isCardOpen)
     const [isHold, setIsHold] = useState(false)
-    const [displayStyle, setDisplayStyle] = useState(false)
+    const [displayStyle, setDisplayStyle] = useState('block')
     const { setBoards } = useContext(BoardsContext)
     const { dueDate } = card.date
 
@@ -68,7 +68,7 @@ const CardItem = ({ card, boardId, boardStatus }) => {
     // For enabling drag and drop API
     const dragStartHandler = (e) => {
         setIsHold(true)
-        setTimeout(() => setDisplayStyle(true), 0)
+        setTimeout(() => setDisplayStyle('none'), 0)
         const cardData = {
             cardObj: card,
             idBoard: boardId,
@@ -79,7 +79,7 @@ const CardItem = ({ card, boardId, boardStatus }) => {
 
     const dragEndHandler = () => {
         setIsHold(false)
-        setDisplayStyle(false)
+        setDisplayStyle('block')
     }
 
     return (
@@ -135,8 +135,7 @@ const CardWrapper = styled.li`
     border: 2px solid
         ${(props) =>
             props.hold ? ({ theme }) => theme.lightGray : 'transparent'};
-    display: ${(props) => (props.display ? 'none' : 'block')};
-    pointer-events: ${(props) => (props.hold ? 'none' : 'auto')};
+    display: ${(props) => props.display};
 `
 const CardTitleMenuWrap = styled.div`
     display: flex;

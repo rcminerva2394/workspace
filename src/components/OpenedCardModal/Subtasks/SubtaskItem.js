@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
-import Icon from '../../UI/Icon'
-import BoardsContext from '../../context/boards-context'
-import device from '../../UI/Breakpoint'
+import Icon from '../../../UI/Icon'
+import BoardsContext from '../../../context/boards-context'
+import device from '../../../UI/Breakpoint'
 
 const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
     const [isEditSubtask, setIsEditSubtask] = useState(false)
@@ -124,12 +124,6 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
         })
     }
 
-    const handleEnterPress = (e) => {
-        if (e.key === 'Enter') {
-            submitEditedTaskHandler(e)
-        }
-    }
-
     return (
         <SubtaskItemWrapper>
             <InputWrapper>
@@ -149,7 +143,9 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
                         type="text"
                         value={editedSubtask}
                         onChange={(e) => setEditedSubtask(e.target.value)}
-                        onKeyDown={handleEnterPress}
+                        onKeyDown={(e) =>
+                            e.key === 'Enter' && submitEditedTaskHandler(e)
+                        }
                     />
                 )}
             </InputWrapper>

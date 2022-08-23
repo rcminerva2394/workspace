@@ -74,9 +74,6 @@ const Overlay = styled.div`
     }
 `
 
-// const DeleteModalWrapper = styled.div`
-//     height: 100vh;
-// `
 const Title = styled.p`
     font-size: 15rem;
     font-weight: 500;

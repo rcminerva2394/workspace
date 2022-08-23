@@ -15,15 +15,17 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     text-rendering: geometricPrecision !important;
-    font-size: 13rem;
+    font-size: 14rem;
     min-height: 100%;
     line-height: 1.4;
     background-color: ${({ theme }) => theme.darkerGray};
-    font-weight: 200;
+    font-weight: 300;
     color: #ffffff;
     padding: 20rem 20rem ;
     letter-spacing: 1px;
 }
+
+
 
 h2, h3 {
     margin-bottom: -1rem;
@@ -45,7 +47,6 @@ button {
 }
 
 label {
-    color: #000000;
     font-weight: 500;
 }
 

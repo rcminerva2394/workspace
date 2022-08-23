@@ -44,6 +44,7 @@ const BoardName = styled.p`
     position: absolute;
     z-index: 5;
     padding-left: 10rem;
+    font-weight: 500;
 `
 
 export default BoardListPrev

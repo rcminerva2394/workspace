@@ -12,7 +12,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
     const [cardTitle, setCardTitle] = useState('')
     const { setBoards } = useContext(BoardsContext)
 
-    // Dropping the Task Item into the desired board status
+    // Dropping the card into the desired board status
     const dragOverHandler = (e) => {
         if (e.dataTransfer.types.includes('custom-type')) {
             e.preventDefault()
@@ -37,7 +37,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
                 status: boardStatus,
             }
 
-            // Deleting the card item from its first board type and moving it to the target drag element
+            // Deleting the card item from its first board type and moving it to the target board type
             setBoards((prevState) => {
                 const updatedBoards = prevState.map((project) => {
                     if (project.id === cardData.idBoard) {

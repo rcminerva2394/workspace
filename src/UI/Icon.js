@@ -11,6 +11,10 @@ import {
     FaTrashAlt,
     FaPencilAlt,
     FaSave,
+    FaFacebook,
+    FaGoogle,
+    FaGithub,
+    FaUserAlt,
 } from 'react-icons/fa'
 
 import { ImCross } from 'react-icons/im'
@@ -27,6 +31,10 @@ const icons = {
     Trash: FaTrashAlt,
     Edit: FaPencilAlt,
     Save: FaSave,
+    Facebook: FaFacebook,
+    Google: FaGoogle,
+    Github: FaGithub,
+    Guest: FaUserAlt,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor, size }) => {
@@ -47,6 +55,7 @@ const Icon = ({ name, onClick, iconColor, hoverColor, size }) => {
         color: hover ? finalHoverColor : iconColor,
         paddingRight: '5rem',
     }
+
     const mouseEnterHandler = () => {
         setHover(true)
     }
