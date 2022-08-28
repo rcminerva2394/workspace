@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 
 const CardDescription = ({ card, boardId, boardStatus }) => {
     const [isWriteDescription, setIsWriteDescription] = useState(false)

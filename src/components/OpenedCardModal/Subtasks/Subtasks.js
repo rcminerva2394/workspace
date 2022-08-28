@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 import Button from '../../../UI/Button'
-import BoardsContext from '../../../context/boards-context'
+import BoardsContext from '../../../contexts/boards-context'
 import SubtasksList from './SubtasksList'
 import DeleteModal from '../../../UI/DeleteModal'
 

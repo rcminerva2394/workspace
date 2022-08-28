@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 
 const DeadlineCheckbox = ({ card, boardId, boardStatus }) => {
     const [isDueDateCompleted, setIsDueDateCompleted] = useState(

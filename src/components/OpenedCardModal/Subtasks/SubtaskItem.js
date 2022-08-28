@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../../UI/Icon'
-import BoardsContext from '../../../context/boards-context'
+import BoardsContext from '../../../contexts/boards-context'
 import device from '../../../UI/Breakpoint'
 
 const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {

@@ -15,9 +15,13 @@ import {
     FaGoogle,
     FaGithub,
     FaUserAlt,
+    FaPlus,
+    FaHome,
 } from 'react-icons/fa'
 
 import { ImCross } from 'react-icons/im'
+import { BiExit } from 'react-icons/bi'
+import { FiSettings } from 'react-icons/fi'
 
 const icons = {
     Menu: FaBars,
@@ -35,9 +39,13 @@ const icons = {
     Google: FaGoogle,
     Github: FaGithub,
     Guest: FaUserAlt,
+    LogOut: BiExit,
+    Plus: FaPlus,
+    Settings: FiSettings,
+    Home: FaHome,
 }
 
-const Icon = ({ name, onClick, iconColor, hoverColor, size }) => {
+const Icon = ({ name, onClick, iconColor, hoverColor, size, margin }) => {
     const [hover, setHover] = useState(false)
 
     let finalHoverColor = hoverColor
@@ -51,9 +59,17 @@ const Icon = ({ name, onClick, iconColor, hoverColor, size }) => {
     } else {
         finalSize = '20px'
     }
+
+    let finalMarginRight
+    if (margin) {
+        finalMarginRight = margin
+    } else {
+        finalMarginRight = '5rem'
+    }
+
     const style = {
         color: hover ? finalHoverColor : iconColor,
-        paddingRight: '5rem',
+        marginRight: finalMarginRight,
     }
 
     const mouseEnterHandler = () => {

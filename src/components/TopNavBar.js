@@ -1,20 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 const TopNavBar = () => {
     return (
         <Nav>
             <Brand>Workspace</Brand>
             <HeaderLinks>
-                <li href>Sign In</li>
-                <SignLink>Sign up</SignLink>
+                <li>
+                    <Link to="/signin">Sign In</Link>
+                </li>
+                <SignLink>
+                    <Link to="/signup">Sign up</Link>
+                </SignLink>
             </HeaderLinks>
         </Nav>
     )
 }
 
 const Brand = styled.p`
-    font-size: 20rem;
+    font-size: 18rem;
     font-weight: 600;
     color: inherit;
 `
@@ -40,7 +45,10 @@ const SignLink = styled.li`
     background-color: blue;
     display: flex;
     align-items: center;
-    padding: 0 30rem;
+    padding: 0 20rem;
+    :hover {
+        background-color: #3434e3;
+    }
 `
 
 export default TopNavBar

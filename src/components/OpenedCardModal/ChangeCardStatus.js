@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 
 const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     const [selected, setSelected] = useState(card.status)

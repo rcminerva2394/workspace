@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from '../OpenedCardModal/OpenCardModal'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
     const [isCardOpened, setIsCardOpened] = useState(card.isCardOpen)
@@ -113,7 +113,8 @@ const CardItem = ({ card, boardId, boardStatus }) => {
                     ''
                 ) : (
                     <CompletedTasksNum>
-                        {completedSubtasksArr.length} of {card.subtasks.length} {verb} completed
+                        {completedSubtasksArr.length} of {card.subtasks.length}{' '}
+                        {verb} completed
                     </CompletedTasksNum>
                 )}
                 {dueDate && (

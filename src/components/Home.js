@@ -1,28 +1,38 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+
+import TopNavBar from './TopNavBar'
 import Button from '../UI/Button'
 import backgroundPhoto from '../assets/man-writing.png'
 import device from '../UI/Breakpoint'
 
 const Home = () => {
     return (
-        <HomeWrapper>
-            <span>
-                <Photo src={backgroundPhoto} alt="Man writing and planning" />
-            </span>
-            <TextDiv>
-                <Text>
-                    Workspace helps you organize and track your project progress
-                </Text>
-                <SubText>
-                    You can now break down your projects into managaeble pieces.
-                    Reach productivity peaks without any cost.
-                </SubText>
-                <Button primary signUp fontSize="16rem">
-                    Sign up for free
-                </Button>
-            </TextDiv>
-        </HomeWrapper>
+        <>
+            <TopNavBar />
+            <HomeWrapper>
+                <span>
+                    <Photo
+                        src={backgroundPhoto}
+                        alt="Man writing and planning"
+                    />
+                </span>
+                <TextDiv>
+                    <Text>
+                        Workspace helps you organize and track your project
+                        progress
+                    </Text>
+                    <SubText>
+                        You can now break down your projects into managaeble
+                        pieces. Reach productivity peaks without any cost.
+                    </SubText>
+                    <Button primary fontSize="16rem" width="inherit">
+                        <Link to="/signup">Sign up for free</Link>
+                    </Button>
+                </TextDiv>
+            </HomeWrapper>
+        </>
     )
 }
 
@@ -53,6 +63,7 @@ const SubText = styled.p`
 `
 const TextDiv = styled.div`
     text-align: center;
+    width: 100%;
     @media only screen and ${device.mobileL} {
         width: 350px;
     }

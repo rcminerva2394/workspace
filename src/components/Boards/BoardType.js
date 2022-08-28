@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 import device from '../../UI/Breakpoint'
 
 const BoardType = ({ boardStatus, id, cards }) => {

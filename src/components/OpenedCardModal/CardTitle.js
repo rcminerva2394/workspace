@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 import Button from '../../UI/Button'
 
 const CardTitle = ({ card, boardId, boardStatus }) => {

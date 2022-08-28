@@ -13,7 +13,7 @@ const Button = ({
     fontSize,
     padding,
     width,
-    signUp,
+    flexStart,
     green,
 }) => {
     return (
@@ -27,7 +27,7 @@ const Button = ({
             fontSize={fontSize}
             padding={padding}
             width={width}
-            signUp={signUp}
+            flexStart={flexStart}
             green={green}
         >
             {children}
@@ -71,9 +71,8 @@ const ButtonWrapper = styled.button`
     font-size: ${(props) => (props.fontSize ? props.fontSize : '12rem')};
     display: flex;
     place-items: center;
-    justify-content: center;
     gap: 10rem;
-    text-align: left;
+    justify-content: ${(props) => (props.flexStart ? 'flex-start' : 'center')};
     :hover {
         background-color: ${(props) =>
             props.primary
@@ -96,10 +95,10 @@ const ButtonWrapper = styled.button`
                     : 'transparent'};
     }
     @media only screen and ${device.mobileS} {
-        width: ${(props) => props.signUp && '100%'};
+        justify-content: 'flex-start';
     }
     @media only screen and ${device.tablet} {
-        width: ${(props) => props.signUp && 'auto'};
+        width: ${(props) => props.flexStart && 'auto'};
     }
 `
 export default Button

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import SectionWrapper from '../../UI/SectionWrapper'
 import boardPhoto from '../../assets/night-view.png'
 import device from '../../UI/Breakpoint'
-import BoardsContext from '../../context/boards-context'
+import BoardsContext from '../../contexts/boards-context'
 
 const BoardListPrev = () => {
     const { boards } = useContext(BoardsContext)
