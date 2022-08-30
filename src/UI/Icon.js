@@ -22,6 +22,7 @@ import {
 import { ImCross } from 'react-icons/im'
 import { BiExit } from 'react-icons/bi'
 import { FiSettings } from 'react-icons/fi'
+import { MdOutlineSpaceDashboard } from 'react-icons/md'
 
 const icons = {
     Menu: FaBars,
@@ -43,6 +44,7 @@ const icons = {
     Plus: FaPlus,
     Settings: FiSettings,
     Home: FaHome,
+    Board: MdOutlineSpaceDashboard,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor, size, margin }) => {

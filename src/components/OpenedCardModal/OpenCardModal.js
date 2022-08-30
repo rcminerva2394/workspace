@@ -232,7 +232,7 @@ const Backdrop = styled.div`
     left: 0;
     width: 100%;
     height: 100vh;
-    z-index: 10;
+    z-index: 52;
     background-color: hsla(0, 0%, 22%, 0.83);
 `
 const Close = styled.span`
@@ -241,10 +241,10 @@ const Close = styled.span`
     margin-bottom: 20rem;
 `
 const OpenCardWrapper = styled.div`
-    z-index: 50;
+    z-index: 100;
     background-color: ${({ theme }) => theme.darkestGray};
     padding: 20rem 20rem 30rem 20rem;
-    width: 100%;
+    width: 100vw;
     top: 50%;
     left: 50%;
     position: fixed;

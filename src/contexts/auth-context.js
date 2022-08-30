@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import {
     auth,
     googleProvider,
@@ -14,21 +16,33 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState()
-    // const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
-    const logInWithGoogle = () => {
-        return auth.signInWithPopup(googleProvider)
-        // will be used for sign up too using additional AdditionalUserinfo.isNewUser
+    const logInWithGoogle = async () => {
+        try {
+            await auth.signInWithPopup(googleProvider)
+            navigate('/dashboard')
+        } catch (err) {
+            console.log(err)
+        }
     }
 
-    const logInWithFacebook = () => {
-        return auth.signInWithPopup(facebookProvider)
-        // will be used for sign up too using additional AdditionalUserinfo.isNewUser
+    const logInWithFacebook = async () => {
+        try {
+            await auth.signInWithPopup(facebookProvider)
+            navigate('/dashboard')
+        } catch (err) {
+            console.log(err)
+        }
     }
 
-    const logInWithGithub = () => {
-        return auth.signInWithPopup(githubProvider)
-        // will be used for sign up too using additional AdditionalUserinfor.isNewUser
+    const logInWithGithub = async () => {
+        try {
+            await auth.signInWithPopup(githubProvider)
+            navigate('/dashboard')
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     const signUpWithEmailPassword = (email, password) => {
@@ -46,7 +60,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             setCurrentUser(user)
-            // setLoading(false)
         })
         return unsubscribe
     }, [])
@@ -65,8 +78,8 @@ export const AuthProvider = ({ children }) => {
     )
 
     return (
-        <AuthProvider.Provider value={authValue}>
+        <AuthContext.Provider value={authValue}>
             {children}
-        </AuthProvider.Provider>
+        </AuthContext.Provider>
     )
 }

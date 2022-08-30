@@ -1,17 +1,46 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
-import { auth, googleProvider } from '../firebase'
+import { useAuth } from '../contexts/auth-context'
 import Button from '../UI/Button'
 import Icon from '../UI/Icon'
 import device from '../UI/Breakpoint'
 import TopNavBar from './TopNavBar'
 
 const LogIn = () => {
-    const logInWithGoogle = () => {
-        auth.signInWithPopup(googleProvider)
+    const {
+        logInWithFacebook,
+        logInWithGoogle,
+        logInWithGithub,
+        signInWithEmailPassword,
+    } = useAuth()
+
+    const navigate = useNavigate()
+
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const [logInError, setLogInError] = useState('')
+    const [loading, setLoading] = useState(false) // needed for disabling the button while awaiting for form to be submitted
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+
+        try {
+            setLogInError('')
+            setLoading(true)
+            await signInWithEmailPassword(
+                emailRef.current.value,
+                passwordRef.current.value
+            )
+            navigate('/dashboard')
+        } catch (err) {
+            setLogInError('Failed to log in')
+            console.log(err)
+        }
+        setLoading(false)
     }
+
     return (
         <>
             <TopNavBar />
@@ -20,11 +49,19 @@ const LogIn = () => {
                     <Title>Sign In</Title>
                     <Span>
                         <SubText>Do not have an account?</SubText>
-                        <SignLink>Sign Up</SignLink>
+                        <SignLink>
+                            <Link to="/signup">Sign Up</Link>
+                        </SignLink>
                     </Span>
                 </header>
                 <BtnGrp>
-                    <Button primary fontSize="15rem" width="260px" flexStart>
+                    <Button
+                        primary
+                        fontSize="15rem"
+                        width="260px"
+                        flexStart
+                        onClick={logInWithFacebook}
+                    >
                         <Icon name="Facebook" size="24px" />
                         <span>Sign in with Facebook</span>
                     </Button>
@@ -38,7 +75,13 @@ const LogIn = () => {
                         <Icon name="Google" size="24px" />
                         <span>Sign in with Google</span>
                     </Button>
-                    <Button tertiary fontSize="15rem" width="260px" flexStart>
+                    <Button
+                        tertiary
+                        fontSize="15rem"
+                        width="260px"
+                        flexStart
+                        onClick={logInWithGithub}
+                    >
                         <Icon name="Github" size="24px" />
                         <span>Sign in with Github</span>
                     </Button>
@@ -48,10 +91,28 @@ const LogIn = () => {
                     </Button>
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
-                <SignForm>
-                    <Input placeholder="Email Address" />
-                    <Input placeholder="Password" />
-                    <Button primary width="100%">
+                {logInError && <Error>{logInError}</Error>}
+                <SignForm onSubmit={submitHandler}>
+                    <Input
+                        placeholder="Email Address"
+                        type="email"
+                        ref={emailRef}
+                        required
+                        autoComplete="on"
+                    />
+                    <Input
+                        placeholder="Password"
+                        type="password"
+                        ref={passwordRef}
+                        required
+                        autoComplete="on"
+                    />
+                    <Button
+                        primary
+                        width="100%"
+                        type="submit"
+                        disabled={loading}
+                    >
                         Sign In
                     </Button>
                 </SignForm>
@@ -146,6 +207,7 @@ const Input = styled.input`
         color: #a2a4a4;
     }
     height: 50px;
+    color: inherit;
 `
 
 const SignForm = styled.form`
@@ -153,5 +215,11 @@ const SignForm = styled.form`
     flex-direction: column;
     width: 260px;
     gap: 10rem;
+    color: #ffffff;
 `
+const Error = styled.span`
+    background-color: rgba(255, 0, 0, 0.4);
+    padding: 10rem;
+`
+
 export default LogIn

@@ -1,4 +1,6 @@
 import React, { useContext } from 'react'
+import { Link } from 'react-router-dom'
+
 import styled from 'styled-components'
 import SectionWrapper from '../../UI/SectionWrapper'
 import boardPhoto from '../../assets/night-view.png'
@@ -12,10 +14,12 @@ const BoardListPrev = () => {
             <h2>Your Boards</h2>
             <BoardListWrapper>
                 {boards.map((board) => (
-                    <a key={board.id} href={`#${board.id}`}>
-                        <BoardName>{board.boardName}</BoardName>
-                        <BGPhoto src={boardPhoto} alt="night view" />
-                    </a>
+                    <Link to={`board/${board.id}`}>
+                        <li key={board.id}>
+                            <BoardName>{board.boardName}</BoardName>
+                            <BGPhoto src={boardPhoto} alt="night view" />
+                        </li>
+                    </Link>
                 ))}
             </BoardListWrapper>
         </SectionWrapper>

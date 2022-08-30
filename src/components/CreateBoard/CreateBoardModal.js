@@ -68,7 +68,7 @@ const Backdrop = styled.div`
     left: 0;
     width: 100%;
     height: 100vh;
-    z-index: 10;
+    z-index: 52;
     background-color: hsla(0, 0%, 22%, 0.83);
 `
 

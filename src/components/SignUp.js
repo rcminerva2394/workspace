@@ -1,11 +1,49 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+import { Link, useNavigate } from 'react-router-dom'
+
+import { useAuth } from '../contexts/auth-context'
 import Button from '../UI/Button'
 import Icon from '../UI/Icon'
 import device from '../UI/Breakpoint'
 import TopNavBar from './TopNavBar'
 
 const SignUp = () => {
+    const {
+        logInWithGoogle,
+        logInWithFacebook,
+        logInWithGithub,
+        signUpWithEmailPassword,
+    } = useAuth()
+
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const passwordConfirmRef = useRef()
+    const [signUpError, setSignUpError] = useState('')
+    const [loading, setLoading] = useState(false) // needed for disabling submit button while creating account to avoid creating multiple accounts
+
+    const navigate = useNavigate()
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+            setSignUpError('Passwords do not match')
+        }
+
+        try {
+            setSignUpError('')
+            setLoading(true)
+            await signUpWithEmailPassword(
+                emailRef.current.value,
+                passwordRef.current.value
+            )
+            navigate('/dashboard')
+        } catch (err) {
+            setSignUpError('Failed to create an account')
+        }
+        setLoading(false)
+    }
+
     return (
         <>
             <TopNavBar />
@@ -14,19 +52,39 @@ const SignUp = () => {
                     <Title>Sign Up</Title>
                     <Span>
                         <SubText>Have an account?</SubText>
-                        <SignLink>Sign In</SignLink>
+                        <SignLink>
+                            <Link to="/signin">Sign In</Link>
+                        </SignLink>
                     </Span>
                 </header>
                 <BtnGrp>
-                    <Button primary fontSize="15rem" width="260px" flexStart>
+                    <Button
+                        primary
+                        fontSize="15rem"
+                        width="260px"
+                        flexStart
+                        onClick={logInWithFacebook}
+                    >
                         <Icon name="Facebook" size="24px" />
                         <span>Sign up with Facebook</span>
                     </Button>
-                    <Button red fontSize="15rem" width="260px" flexStart>
+                    <Button
+                        red
+                        fontSize="15rem"
+                        width="260px"
+                        flexStart
+                        onClick={logInWithGoogle}
+                    >
                         <Icon name="Google" size="24px" />
                         <span>Sign up with Google</span>
                     </Button>
-                    <Button tertiary fontSize="15rem" width="260px" flexStart>
+                    <Button
+                        tertiary
+                        fontSize="15rem"
+                        width="260px"
+                        flexStart
+                        onClick={logInWithGithub}
+                    >
                         <Icon name="Github" size="24px" />
                         <span>Sign up with Github</span>
                     </Button>
@@ -36,11 +94,35 @@ const SignUp = () => {
                     </Button>
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
-                <SignForm>
-                    <Input placeholder="Email Address" />
-                    <Input placeholder="Password" />
-                    <Input placeholder="Password Confirmation" />
-                    <Button primary width="100%">
+                {signUpError && <Error>{signUpError}</Error>}
+                <SignForm onSubmit={submitHandler}>
+                    <Input
+                        placeholder="Email Address"
+                        type="email"
+                        ref={emailRef}
+                        required
+                        autoComplete="on"
+                    />
+                    <Input
+                        placeholder="Password"
+                        type="password"
+                        ref={passwordRef}
+                        required
+                        autoComplete="on"
+                    />
+                    <Input
+                        placeholder="Password Confirmation"
+                        type="password"
+                        ref={passwordConfirmRef}
+                        required
+                        autoComplete="on"
+                    />
+                    <Button
+                        primary
+                        width="100%"
+                        type="submit"
+                        disable={loading}
+                    >
                         Sign Up
                     </Button>
                 </SignForm>
@@ -132,6 +214,7 @@ const Input = styled.input`
         color: #a2a4a4;
     }
     height: 50px;
+    color: inherit;
 `
 
 const SignForm = styled.form`
@@ -139,5 +222,11 @@ const SignForm = styled.form`
     flex-direction: column;
     width: 260px;
     gap: 10rem;
+    color: #ffffff;
+`
+
+const Error = styled.span`
+    background-color: rgba(255, 0, 0, 0.4);
+    padding: 10rem;
 `
 export default SignUp

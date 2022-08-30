@@ -24,7 +24,7 @@ A work in progress task management app (Kanban board) specifically inspired by T
 -   React
 -   styled-components
 -   react-icons
--   react-router
+-   react-router v6
 -   uuid
 -   HTML Drag and Drop API
 -   Firebase
@@ -52,3 +52,4 @@ The goal is to practice React with Firebase integration.
 
 -   Refactoring Needed
     -   Refactor the setDate/ Deadline Component
+    -   Refactor repeated codes for UI like forms and inputs
