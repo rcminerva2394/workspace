@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from 'uuid'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { signOut } from 'firebase/auth'
+import { auth } from '../firebase.config'
 import Icon from '../UI/Icon'
-import { auth } from '../firebase'
 import device from '../UI/Breakpoint'
 import BoardsContext from '../contexts/boards-context'
 import CreateBoardModal from './CreateBoard/CreateBoardModal'
@@ -16,8 +17,8 @@ const SideNavBackdrop = ({ onClose }) => {
 const SideNav = ({ onClose }) => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
     const { boards, setBoards } = useContext(BoardsContext)
-    const signOut = () => {
-        return auth.signOut()
+    const logOut = () => {
+        return signOut(auth)
     }
 
     const addBoardHandler = () => {
@@ -95,7 +96,7 @@ const SideNav = ({ onClose }) => {
                                 <Icon
                                     name="LogOut"
                                     margin="20rem"
-                                    onClick={signOut}
+                                    onClick={logOut}
                                 />
                                 Log Out
                             </Span>

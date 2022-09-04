@@ -8,20 +8,35 @@ import device from '../../UI/Breakpoint'
 import BoardsContext from '../../contexts/boards-context'
 
 const BoardListPrev = () => {
+    // const [areBoardsNull, setAreBoardsNull] = useState(false)
     const { boards } = useContext(BoardsContext)
+    let areBoardsNull = false
+
+    if (boards !== undefined || boards !== null) {
+        areBoardsNull = true
+    }
+
     return (
         <SectionWrapper>
-            <h2>Your Boards</h2>
-            <BoardListWrapper>
-                {boards.map((board) => (
-                    <Link to={`board/${board.id}`}>
-                        <li key={board.id}>
-                            <BoardName>{board.boardName}</BoardName>
-                            <BGPhoto src={boardPhoto} alt="night view" />
-                        </li>
-                    </Link>
-                ))}
-            </BoardListWrapper>
+            {areBoardsNull && (
+                <>
+                    <h2>Your Boards</h2>
+                    <BoardListWrapper>
+                        {areBoardsNull &&
+                            boards.map((board) => (
+                                <Link to={`board/${board.id}`}>
+                                    <li key={board.id}>
+                                        <BoardName>{board.boardName}</BoardName>
+                                        <BGPhoto
+                                            src={boardPhoto}
+                                            alt="night view"
+                                        />
+                                    </li>
+                                </Link>
+                            ))}
+                    </BoardListWrapper>
+                </>
+            )}
         </SectionWrapper>
     )
 }

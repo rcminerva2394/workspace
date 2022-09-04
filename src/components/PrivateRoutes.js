@@ -1,8 +1,8 @@
 import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 
+import { auth } from '../firebase.config'
 import SideNavBar from './SideNavBar'
-import { auth } from '../firebase'
 
 const PrivateRoutes = () => {
     const user = auth.currentUser

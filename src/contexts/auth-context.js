@@ -2,11 +2,18 @@ import React, { useContext, useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import {
-    auth,
-    googleProvider,
-    facebookProvider,
-    githubProvider,
-} from '../firebase'
+    GoogleAuthProvider,
+    FacebookAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    onAuthStateChanged,
+} from 'firebase/auth'
+
+import { doc, setDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase.config'
 
 const AuthContext = React.createContext()
 
@@ -15,12 +22,41 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState()
+    const googleProvider = new GoogleAuthProvider()
+    const facebookProvider = new FacebookAuthProvider()
+    const githubProvider = new GithubAuthProvider()
+    const [user, setUser] = useState()
     const navigate = useNavigate()
+
+    // function to create user document
+    const setUserDoc = async () => {
+        try {
+            const { uid, email, displayName, photoURL } = auth.currentUser
+            console.log(auth.currentUser)
+
+            // Use the uid as a firestore user docID
+            const docRef = doc(db, 'users', uid)
+
+            // Set it
+            await setDoc(
+                docRef,
+                {
+                    id: uid,
+                    name: displayName,
+                    userEmail: email,
+                    photo: photoURL,
+                },
+                { merge: true }
+            )
+        } catch (err) {
+            console.log('Error setting a document', err)
+        }
+    }
 
     const logInWithGoogle = async () => {
         try {
-            await auth.signInWithPopup(googleProvider)
+            await signInWithPopup(auth, googleProvider)
+            setUserDoc()
             navigate('/dashboard')
         } catch (err) {
             console.log(err)
@@ -29,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
     const logInWithFacebook = async () => {
         try {
-            await auth.signInWithPopup(facebookProvider)
+            await signInWithPopup(auth, facebookProvider)
             navigate('/dashboard')
         } catch (err) {
             console.log(err)
@@ -38,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
     const logInWithGithub = async () => {
         try {
-            await auth.signInWithPopup(githubProvider)
+            await signInWithPopup(auth, githubProvider)
             navigate('/dashboard')
         } catch (err) {
             console.log(err)
@@ -46,27 +82,27 @@ export const AuthProvider = ({ children }) => {
     }
 
     const signUpWithEmailPassword = (email, password) => {
-        return auth.createUserWithEmailAndPassword(email, password)
+        return createUserWithEmailAndPassword(auth, email, password)
     }
 
     const signInWithEmailPassword = (email, password) => {
-        return auth.signInWithEmailAndPassword(email, password)
+        return signInWithEmailAndPassword(auth, email, password)
     }
 
     const resetPassword = (email) => {
-        return auth.sendPasswordResetEmail(email)
+        return sendPasswordResetEmail(auth, email)
     }
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            setCurrentUser(user)
+        const unsubscribe = onAuthStateChanged(auth, (theUser) => {
+            setUser(theUser)
         })
         return unsubscribe
     }, [])
 
     const authValue = useMemo(
         () => ({
-            currentUser,
+            user,
             logInWithGoogle,
             logInWithFacebook,
             logInWithGithub,
