@@ -19,7 +19,7 @@ import {
     FaHome,
 } from 'react-icons/fa'
 
-import { ImCross } from 'react-icons/im'
+import { ImCross, ImSpinner6 } from 'react-icons/im'
 import { BiExit } from 'react-icons/bi'
 import { FiSettings } from 'react-icons/fi'
 import { MdOutlineSpaceDashboard } from 'react-icons/md'
@@ -45,6 +45,7 @@ const icons = {
     Settings: FiSettings,
     Home: FaHome,
     Board: MdOutlineSpaceDashboard,
+    Spinner: ImSpinner6,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor, size, margin }) => {

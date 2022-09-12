@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { useAuth } from '../contexts/auth-context'
 import Button from '../UI/Button'
@@ -10,6 +10,7 @@ import TopNavBar from './TopNavBar'
 
 const SignUp = () => {
     const {
+        error,
         logInWithGoogle,
         logInWithFacebook,
         logInWithGithub,
@@ -20,27 +21,26 @@ const SignUp = () => {
     const passwordRef = useRef()
     const passwordConfirmRef = useRef()
     const [signUpError, setSignUpError] = useState('')
-    const [loading, setLoading] = useState(false) // needed for disabling submit button while creating account to avoid creating multiple accounts
+    const [loading, setLoading] = useState(false)
 
-    const navigate = useNavigate()
-
-    const submitHandler = async (e) => {
+    const submitHandler = (e) => {
         e.preventDefault()
+
         if (passwordRef.current.value !== passwordConfirmRef.current.value) {
             setSignUpError('Passwords do not match')
-        }
-
-        try {
-            setSignUpError('')
-            setLoading(true)
-            await signUpWithEmailPassword(
+        } else if (
+            passwordRef.current.value.length <= 5 ||
+            passwordConfirmRef.current.value.length <= 5
+        ) {
+            setSignUpError('Password should be at least 6 characters')
+        } else {
+            signUpWithEmailPassword(
                 emailRef.current.value,
                 passwordRef.current.value
             )
-            navigate('/dashboard')
-        } catch (err) {
-            setSignUpError('Failed to create an account')
+            setLoading(true)
         }
+
         setLoading(false)
     }
 
@@ -95,6 +95,7 @@ const SignUp = () => {
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
                 {signUpError && <Error>{signUpError}</Error>}
+                {error && <Error>{error}</Error>}
                 <SignForm onSubmit={submitHandler}>
                     <Input
                         placeholder="Email Address"
@@ -123,7 +124,7 @@ const SignUp = () => {
                         type="submit"
                         disable={loading}
                     >
-                        Sign Up
+                        {!loading ? 'Sign Up' : <Icon name="spinner" />}
                     </Button>
                 </SignForm>
             </Wrapper>

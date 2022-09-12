@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { useAuth } from '../contexts/auth-context'
 import Button from '../UI/Button'
@@ -16,7 +16,7 @@ const LogIn = () => {
         signInWithEmailPassword,
     } = useAuth()
 
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const emailRef = useRef()
     const passwordRef = useRef()
@@ -33,9 +33,8 @@ const LogIn = () => {
                 emailRef.current.value,
                 passwordRef.current.value
             )
-            navigate('/dashboard')
         } catch (err) {
-            setLogInError('Failed to log in')
+            setLogInError('Failed to log in. Make sure to sign up first.')
             console.log(err)
         }
         setLoading(false)
