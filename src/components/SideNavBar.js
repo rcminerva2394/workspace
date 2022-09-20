@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -30,7 +29,7 @@ const SideNav = ({ onClose }) => {
                 return [
                     ...prevState,
                     {
-                        id: uuidv4(),
+                        // id: //uuidv4(),
                         boardName: response.name,
                         Todo: [],
                         Doing: [],

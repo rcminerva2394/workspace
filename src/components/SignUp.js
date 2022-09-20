@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/auth-context'
 import Button from '../UI/Button'
@@ -8,9 +8,14 @@ import Icon from '../UI/Icon'
 import device from '../UI/Breakpoint'
 import TopNavBar from './TopNavBar'
 
+const AUTHERRORS = {
+    'auth/weak-password': 'Password should be at least 6 characters',
+    'auth/email-already-in-use':
+        'Email is already in use. Please make sure to use the sign-in form',
+}
+
 const SignUp = () => {
     const {
-        error,
         logInWithGoogle,
         logInWithFacebook,
         logInWithGithub,
@@ -23,22 +28,31 @@ const SignUp = () => {
     const [signUpError, setSignUpError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    const submitHandler = (e) => {
+    const navigate = useNavigate()
+
+    const submitHandler = async (e) => {
         e.preventDefault()
 
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            setSignUpError('Passwords do not match')
-        } else if (
-            passwordRef.current.value.length <= 5 ||
-            passwordConfirmRef.current.value.length <= 5
-        ) {
-            setSignUpError('Password should be at least 6 characters')
-        } else {
-            signUpWithEmailPassword(
-                emailRef.current.value,
-                passwordRef.current.value
-            )
+        try {
+            setSignUpError('')
+            if (
+                passwordRef.current.value !== passwordConfirmRef.current.value
+            ) {
+                setSignUpError('Passwords do not match')
+            }
+
+            if (
+                passwordRef.current.value === passwordConfirmRef.current.value
+            ) {
+                await signUpWithEmailPassword(
+                    emailRef.current.value,
+                    passwordRef.current.value
+                )
+                navigate('/dashboard')
+            }
             setLoading(true)
+        } catch (err) {
+            setSignUpError(AUTHERRORS[err.code])
         }
 
         setLoading(false)
@@ -95,7 +109,6 @@ const SignUp = () => {
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
                 {signUpError && <Error>{signUpError}</Error>}
-                {error && <Error>{error}</Error>}
                 <SignForm onSubmit={submitHandler}>
                     <Input
                         placeholder="Email Address"
@@ -124,7 +137,7 @@ const SignUp = () => {
                         type="submit"
                         disable={loading}
                     >
-                        {!loading ? 'Sign Up' : <Icon name="spinner" />}
+                        Sign Up
                     </Button>
                 </SignForm>
             </Wrapper>

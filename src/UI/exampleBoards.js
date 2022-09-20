@@ -1,12 +1,10 @@
-import { v4 as uuidv4 } from 'uuid'
-
-const exampleBoards = [
+export const exampleBoards = [
     {
-        id: uuidv4(),
+        // id: uuidv4(),
         boardName: 'Project Sunrise',
         Todo: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Write Todos',
                 status: 'Todo',
                 isCardOpen: false,
@@ -30,7 +28,7 @@ const exampleBoards = [
                 // ],
             },
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Set a meeting',
                 status: 'Todo',
                 isCardOpen: false,
@@ -44,7 +42,7 @@ const exampleBoards = [
         ],
         Doing: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Writing Reports',
                 status: 'Doing',
                 isCardOpen: false,
@@ -56,7 +54,7 @@ const exampleBoards = [
                 },
             },
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Contacting Clients',
                 status: 'Doing',
                 isCardOpen: false,
@@ -70,7 +68,7 @@ const exampleBoards = [
         ],
         Done: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Finalized Report',
                 status: 'Done',
                 isCardOpen: false,
@@ -82,7 +80,7 @@ const exampleBoards = [
                 },
             },
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Sent Report',
                 status: 'Done',
                 isCardOpen: false,
@@ -96,11 +94,11 @@ const exampleBoards = [
         ],
     },
     {
-        id: uuidv4(),
+        // id: uuidv4(),
         boardName: 'Project Noontime',
         Todo: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Write Invitation',
                 status: 'Todo',
                 isCardOpen: false,
@@ -112,7 +110,7 @@ const exampleBoards = [
                 },
             },
             {
-                id: uuidv4(),
+                //     id: uuidv4(),
                 title: 'Set a round-table discussion',
                 status: 'Todo',
                 isCardOpen: false,
@@ -126,7 +124,7 @@ const exampleBoards = [
         ],
         Doing: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Writing Quarterly Report',
                 status: 'Doing',
                 isCardOpen: false,
@@ -138,7 +136,7 @@ const exampleBoards = [
                 },
             },
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Contacting stakeholders',
                 status: 'Doing',
                 isCardOpen: false,
@@ -152,7 +150,7 @@ const exampleBoards = [
         ],
         Done: [
             {
-                id: uuidv4(),
+                // id: uuidv4(),
                 title: 'Finalized Contract',
                 status: 'Done',
                 isCardOpen: false,
@@ -164,7 +162,7 @@ const exampleBoards = [
                 },
             },
             {
-                id: uuidv4(),
+                //     id: uuidv4(),
                 title: 'Sent Meeting Agenda',
                 status: 'Done',
                 isCardOpen: false,
@@ -179,4 +177,16 @@ const exampleBoards = [
     },
 ]
 
-export default exampleBoards
+export const sampleTaskItem = {
+    title: 'A Task Title',
+    description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
+numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
+optio, eaque rerum! Provident similique accusantium nemo autem.`,
+    date: {
+        startDate: '',
+        dueDate: '',
+        deadlineTime: '',
+        completed: false,
+    },
+}

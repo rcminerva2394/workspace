@@ -25,7 +25,6 @@ A work in progress task management app (Kanban board) specifically inspired by T
 -   styled-components
 -   react-icons
 -   react-router v6
--   uuid
 -   HTML Drag and Drop API
 -   Firebase
     -   Authentication
