@@ -2,26 +2,19 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import { AuthProvider } from './contexts/auth-context'
-import Home from './components/Home'
-import SignUp from './components/SignUp'
-import LogIn from './components/LogIn'
-import ForgotPassword from './components/ForgotPassword'
-import PrivateRoutes from './components/PrivateRoutes'
+import Home from './components/Pages/Home'
+import SignUp from './components/Pages/SignUp'
+import LogIn from './components/Pages/LogIn'
+import ForgotPassword from './components/Pages/ForgotPassword'
+import PrivateRoutes from './components/Pages/PrivateRoutes'
 
-// import BoardsContext from './contexts/boards-context'
-// import exampleBoards from './UI/exampleBoards'
 import BoardItem from './components/Boards/BoardItem'
 import CreateBoard from './components/CreateBoard/CreateBoard'
-import NotFound from './components/NotFound'
+import NotFound from './components/Pages/NotFound'
 
 const App = () => {
-    // boards sample
-    // const [boards, setBoards] = useState()
-    // const boardsValue = useMemo(() => ({ boards, setBoards }), [boards])
-
     return (
         <AuthProvider>
-            {/* <BoardsContext.Provider value={boardsValue}> */}
             <Routes>
                 <Route exact path="/" element={<Home />} />
                 <Route path="/signin" element={<LogIn />} />
@@ -33,7 +26,6 @@ const App = () => {
                     <Route path="board/:id" element={<BoardItem />} />
                 </Route>
             </Routes>
-            {/* </BoardsContext.Provider> */}
         </AuthProvider>
     )
 }

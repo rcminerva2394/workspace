@@ -1,7 +1,7 @@
 export const exampleBoards = [
     {
         // id: uuidv4(),
-        boardName: 'Project Sunrise',
+        name: 'Project Sunrise',
         Todo: [
             {
                 // id: uuidv4(),
@@ -95,7 +95,7 @@ export const exampleBoards = [
     },
     {
         // id: uuidv4(),
-        boardName: 'Project Noontime',
+        name: 'Project Noontime',
         Todo: [
             {
                 // id: uuidv4(),

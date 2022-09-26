@@ -1,19 +1,20 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import BoardType from './BoardType'
 import device from '../../UI/Breakpoint'
-import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 
 const BoardItem = () => {
-    const { boards } = useContext(BoardsContext)
     const { id } = useParams()
+    const { boards } = useBoards()
+
     const Board = boards.filter((board) => board.id === id)
 
     return (
         <ContentWrap>
-            <h3>{Board[0].boardName}</h3>
+            <h3>{Board[0].name}</h3>
             <BoardTypesWrapper>
                 <BoardType
                     boardStatus="Todo"

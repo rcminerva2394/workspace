@@ -1,14 +1,15 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from '../OpenedCardModal/OpenCardModal'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
     const [isCardOpened, setIsCardOpened] = useState(card.isCardOpen)
     const [isHold, setIsHold] = useState(false)
     const [displayStyle, setDisplayStyle] = useState('block')
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
     const { dueDate } = card.date
 
     // Update isCardOpen status for modal

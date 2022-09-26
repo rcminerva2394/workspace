@@ -30,12 +30,16 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate()
 
     const logInWithGoogle = async () => {
-        const result = await signInWithPopup(auth, googleProvider)
-        const { isNewUser } = getAdditionalUserInfo(result)
-        if (isNewUser) {
-            setData(auth.currentUser)
+        try {
+            const result = await signInWithPopup(auth, googleProvider)
+            const { isNewUser } = getAdditionalUserInfo(result)
+            if (isNewUser) {
+                setData(auth.currentUser)
+            }
+            navigate('/dashboard')
+        } catch (err) {
+            console.log(err)
         }
-        navigate('/dashboard')
     }
 
     const logInWithFacebook = async () => {
@@ -70,7 +74,6 @@ export const AuthProvider = ({ children }) => {
             email,
             password
         )
-
         setData(result.user)
     }
 
@@ -87,7 +90,6 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, (theUser) => {
             setUser(theUser)
         })
-
         return unsubscribe
     }, [])
 

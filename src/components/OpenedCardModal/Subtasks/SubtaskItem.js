@@ -1,7 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../../UI/Icon'
-import BoardsContext from '../../../contexts/boards-context'
+// import BoardsContext from '../../../contexts/boards-context'
+import { useBoards } from '../../../contexts/boards-context'
 import device from '../../../UI/Breakpoint'
 
 const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
@@ -10,7 +11,7 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
     const [isSubtaskCompleted, setIsSubtaskCompleted] = useState(
         subtask.completed
     )
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Update subtask item status
     useEffect(() => {

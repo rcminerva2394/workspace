@@ -1,12 +1,11 @@
-// import React, { useContext } from 'react'
+// import React from 'react'
 
 // import SectionWrapper from '../../UI/SectionWrapper'
-// import BoardsContext from '../../contexts/boards-context'
+// import { useBoards } from '../../contexts/boards-context'
 // import BoardItem from './BoardItem'
 
 // const BoardList = () => {
-//     const { boards } = useContext(BoardsContext)
-//     console.log(boards)
+//     const { boards, setBoards } = useBoards()
 //     return (
 //         <SectionWrapper>
 //             <ul>

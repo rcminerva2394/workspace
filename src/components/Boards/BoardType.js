@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
+
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
-import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 import device from '../../UI/Breakpoint'
 
 const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Dropping the card into the desired board status
     const dragOverHandler = (e) => {
@@ -87,7 +87,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
                         [boardStatus]: [
                             ...project[boardStatus],
                             {
-                                id: uuidv4(),
+                                // id: uuidv4(),
                                 title: cardTitle,
                                 status: [boardStatus],
                                 isCardOpen: false,

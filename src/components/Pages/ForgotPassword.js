@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import device from '../UI/Breakpoint'
-import Button from '../UI/Button'
+import device from '../../UI/Breakpoint'
+import Button from '../../UI/Button'
 import TopNavBar from './TopNavBar'
 
 const ForgotPassword = () => {

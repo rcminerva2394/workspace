@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import styled from 'styled-components'
+import React, { useState } from 'react'
 
-import BoardsContext from '../../contexts/boards-context'
+import styled from 'styled-components'
+import { useBoards } from '../../contexts/boards-context'
 import CreateBoardModal from './CreateBoardModal'
 import SectionWrapper from '../../UI/SectionWrapper'
 import Button from '../../UI/Button'
@@ -11,7 +10,8 @@ import device from '../../UI/Breakpoint'
 
 const CreateBoard = () => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
+
     const addBoardHandler = () => {
         setIsCreatingBoard(true)
     }
@@ -21,7 +21,7 @@ const CreateBoard = () => {
                 return [
                     ...prevState,
                     {
-                        id: uuidv4(),
+                        // id: uuidv4(),
                         boardName: response.name,
                         Todo: [],
                         Doing: [],
@@ -34,6 +34,7 @@ const CreateBoard = () => {
             setIsCreatingBoard(false)
         }
     }
+
     return (
         <ContentWrap>
             <SectionWrapper>

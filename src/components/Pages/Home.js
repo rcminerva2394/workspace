@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import TopNavBar from './TopNavBar'
-import Button from '../UI/Button'
-import backgroundPhoto from '../assets/man-writing.png'
-import device from '../UI/Breakpoint'
+import Button from '../../UI/Button'
+import backgroundPhoto from '../../assets/man-writing.png'
+import device from '../../UI/Breakpoint'
 
 const Home = () => {
     return (

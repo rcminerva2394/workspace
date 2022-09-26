@@ -2,46 +2,59 @@ import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { useAuth } from '../contexts/auth-context'
-import Button from '../UI/Button'
-import Icon from '../UI/Icon'
-import device from '../UI/Breakpoint'
+import { useAuth } from '../../contexts/auth-context'
+import Button from '../../UI/Button'
+import Icon from '../../UI/Icon'
+import device from '../../UI/Breakpoint'
 import TopNavBar from './TopNavBar'
 
 const AUTHERRORS = {
-    'auth/user-not-found': 'Failed to log in. Make sure to sign up first.',
-    'auth/wrong-password': 'Wrong password',
+    'auth/weak-password': 'Password should be at least 6 characters',
+    'auth/email-already-in-use':
+        'Email is already in use. Please make sure to use the sign-in form',
 }
 
-const LogIn = () => {
+const SignUp = () => {
     const {
-        logInWithFacebook,
         logInWithGoogle,
+        logInWithFacebook,
         logInWithGithub,
-        signInWithEmailPassword,
+        signUpWithEmailPassword,
     } = useAuth()
-    const navigate = useNavigate()
 
     const emailRef = useRef()
     const passwordRef = useRef()
-    const [logInError, setLogInError] = useState('')
-    const [loading, setLoading] = useState(false) // needed for disabling the button while awaiting for form to be submitted
+    const passwordConfirmRef = useRef()
+    const [signUpError, setSignUpError] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate()
 
     const submitHandler = async (e) => {
         e.preventDefault()
 
         try {
-            setLogInError('')
+            setSignUpError('')
+            if (
+                passwordRef.current.value !== passwordConfirmRef.current.value
+            ) {
+                setSignUpError('Passwords do not match')
+            }
+
+            if (
+                passwordRef.current.value === passwordConfirmRef.current.value
+            ) {
+                await signUpWithEmailPassword(
+                    emailRef.current.value,
+                    passwordRef.current.value
+                )
+                navigate('/dashboard')
+            }
             setLoading(true)
-            await signInWithEmailPassword(
-                emailRef.current.value,
-                passwordRef.current.value
-            )
-            navigate('/dashboard')
         } catch (err) {
-            console.log(err.code)
-            setLogInError(AUTHERRORS[err.code])
+            setSignUpError(AUTHERRORS[err.code])
         }
+
         setLoading(false)
     }
 
@@ -50,11 +63,11 @@ const LogIn = () => {
             <TopNavBar />
             <Wrapper>
                 <header>
-                    <Title>Sign In</Title>
+                    <Title>Sign Up</Title>
                     <Span>
-                        <SubText>Do not have an account?</SubText>
+                        <SubText>Have an account?</SubText>
                         <SignLink>
-                            <Link to="/signup">Sign Up</Link>
+                            <Link to="/signin">Sign In</Link>
                         </SignLink>
                     </Span>
                 </header>
@@ -67,7 +80,7 @@ const LogIn = () => {
                         onClick={logInWithFacebook}
                     >
                         <Icon name="Facebook" size="24px" />
-                        <span>Sign in with Facebook</span>
+                        <span>Sign up with Facebook</span>
                     </Button>
                     <Button
                         red
@@ -77,7 +90,7 @@ const LogIn = () => {
                         onClick={logInWithGoogle}
                     >
                         <Icon name="Google" size="24px" />
-                        <span>Sign in with Google</span>
+                        <span>Sign up with Google</span>
                     </Button>
                     <Button
                         tertiary
@@ -87,15 +100,15 @@ const LogIn = () => {
                         onClick={logInWithGithub}
                     >
                         <Icon name="Github" size="24px" />
-                        <span>Sign in with Github</span>
+                        <span>Sign up with Github</span>
                     </Button>
                     <Button green fontSize="15rem" width="260px" flexStart>
                         <Icon name="Guest" size="24px" />
-                        <span>Sign in as a guest</span>
+                        <span>Sign up as a guest</span>
                     </Button>
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
-                {logInError && <Error>{logInError}</Error>}
+                {signUpError && <Error>{signUpError}</Error>}
                 <SignForm onSubmit={submitHandler}>
                     <Input
                         placeholder="Email Address"
@@ -111,18 +124,22 @@ const LogIn = () => {
                         required
                         autoComplete="on"
                     />
+                    <Input
+                        placeholder="Password Confirmation"
+                        type="password"
+                        ref={passwordConfirmRef}
+                        required
+                        autoComplete="on"
+                    />
                     <Button
                         primary
                         width="100%"
                         type="submit"
-                        disabled={loading}
+                        disable={loading}
                     >
-                        Sign In
+                        Sign Up
                     </Button>
                 </SignForm>
-                <SignLink>
-                    <Link to="/reset-password">Forgotten Your Password?</Link>
-                </SignLink>
             </Wrapper>
         </>
     )
@@ -221,9 +238,9 @@ const SignForm = styled.form`
     gap: 10rem;
     color: #ffffff;
 `
+
 const Error = styled.span`
     background-color: rgba(255, 0, 0, 0.4);
     padding: 10rem;
 `
-
-export default LogIn
+export default SignUp

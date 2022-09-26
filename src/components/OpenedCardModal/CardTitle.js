@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 import Button from '../../UI/Button'
 
 const CardTitle = ({ card, boardId, boardStatus }) => {
     const [isChangeCardTitle, setIsChangeCardTitle] = useState(false)
     const [newCardTitle, setNewCardTitle] = useState(card.title)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Renaming Card Title
     const submitNewCardTitleHandler = (e) => {

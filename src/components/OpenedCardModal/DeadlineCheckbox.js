@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 
 const DeadlineCheckbox = ({ card, boardId, boardStatus }) => {
     const [isDueDateCompleted, setIsDueDateCompleted] = useState(
         card.date.completed
     )
     const { startDate, dueDate, deadlineTime } = card.date
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Updating the completion status of the duedate / deadline
     useEffect(() => {

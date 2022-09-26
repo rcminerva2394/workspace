@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 import SetDate from './Dates/SetDate'
 import Subtasks from './Subtasks/Subtasks'
 import DeleteModal from '../../UI/DeleteModal'
@@ -28,7 +29,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     }
     const [hasSubtasks, setHasSubtasks] = useState(subtasksLength())
     const [willDeleteCard, setWillDeleteCard] = useState(false)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     const dateHandler = (dateObj) => {
         setBoards((prevState) => {

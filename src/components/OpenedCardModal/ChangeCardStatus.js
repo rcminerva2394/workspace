@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 
 const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     const [selected, setSelected] = useState(card.status)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Card Status Options
     const cardStatusArr = ['Todo', 'Doing', 'Done']

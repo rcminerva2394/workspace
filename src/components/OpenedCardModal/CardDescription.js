@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import Button from '../../UI/Button'
-import BoardsContext from '../../contexts/boards-context'
+// import BoardsContext from '../../contexts/boards-context'
+import { useBoards } from '../../contexts/boards-context'
 
 const CardDescription = ({ card, boardId, boardStatus }) => {
     const [isWriteDescription, setIsWriteDescription] = useState(false)
     const [cardDescription, setCardDescription] = useState(card.description)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     // Adding Description
     const addDescriptionHandler = (e) => {

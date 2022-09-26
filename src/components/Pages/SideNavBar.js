@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { signOut } from 'firebase/auth'
-import { auth } from '../firebase.config'
-import Icon from '../UI/Icon'
-import device from '../UI/Breakpoint'
-import BoardsContext from '../contexts/boards-context'
-import CreateBoardModal from './CreateBoard/CreateBoardModal'
+import { auth } from '../../firebase.config'
+import Icon from '../../UI/Icon'
+import device from '../../UI/Breakpoint'
+import { useBoards } from '../../contexts/boards-context'
+import CreateBoardModal from '../CreateBoard/CreateBoardModal'
 
 const SideNavBackdrop = ({ onClose }) => {
     return <Backdrop onClick={onClose} />
@@ -15,7 +15,7 @@ const SideNavBackdrop = ({ onClose }) => {
 
 const SideNav = ({ onClose }) => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
-    const { boards, setBoards } = useContext(BoardsContext)
+    const { boards, setBoards } = useBoards()
     const logOut = () => {
         return signOut(auth)
     }
@@ -73,16 +73,21 @@ const SideNav = ({ onClose }) => {
                                     onClick={addBoardHandler}
                                 />
                             </AllBoardsWrap>
-                            <ul>
-                                {boards.map((board) => (
-                                    <Link to={`board/${board.id}`}>
-                                        <Span key={board.id}>
-                                            <Icon name="Board" margin="20rem" />
-                                            {board.boardName}
-                                        </Span>
-                                    </Link>
-                                ))}
-                            </ul>
+                            {boards && (
+                                <ul>
+                                    {boards.map((board) => (
+                                        <Link to={`board/${board.id}`}>
+                                            <Span key={board.id}>
+                                                <Icon
+                                                    name="Board"
+                                                    margin="20rem"
+                                                />
+                                                {board.name}
+                                            </Span>
+                                        </Link>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </NavItem>
                     <NavItem last>

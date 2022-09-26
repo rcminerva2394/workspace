@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
+// import { v4 as uuidv4 } from 'uuid'
 import Button from '../../../UI/Button'
-import BoardsContext from '../../../contexts/boards-context'
+// import BoardsContext from '../../../contexts/boards-context'
+import { useBoards } from '../../../contexts/boards-context'
 import SubtasksList from './SubtasksList'
 import DeleteModal from '../../../UI/DeleteModal'
 
@@ -10,7 +11,7 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
     const [willAddSubtask, setWillAddSubtask] = useState(true)
     const [newSubtask, setNewSubtask] = useState('')
     const [willDeletSubtasks, setWillDeleteSubtasks] = useState(false)
-    const { setBoards } = useContext(BoardsContext)
+    const { setBoards } = useBoards()
 
     const submitAddedSubtaskHandler = (e) => {
         e.preventDefault()
@@ -25,7 +26,7 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
                                     subtasks: [
                                         ...cardItem.subtasks,
                                         {
-                                            id: uuidv4(),
+                                            // id: uuidv4(),
                                             title: newSubtask,
                                             completed: false,
                                         },
