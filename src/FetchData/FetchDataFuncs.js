@@ -2,7 +2,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db, auth } from '../firebase.config'
 
 // get the initial boards from the firestore
-const getBoards = async (setBoards) => {
+const getBoards = async (updateContext) => {
     const { uid } = auth.currentUser
 
     try {
@@ -16,11 +16,11 @@ const getBoards = async (setBoards) => {
             console.log(doc.id, ' => ', doc.data())
             boards.push(doc.data())
         })
+
         console.log(boards)
-        setBoards(boards)
+        updateContext([...boards])
     } catch (err) {
         console.log(err)
-        console.log(err.code)
     }
 }
 

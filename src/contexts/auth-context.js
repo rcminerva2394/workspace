@@ -15,6 +15,8 @@ import {
 
 import { auth } from '../firebase.config'
 import setData from '../UI/NewUserData'
+import { useBoards } from './boards-context'
+import getBoards from '../FetchData/FetchDataFuncs'
 
 const AuthContext = React.createContext()
 
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }) => {
     const githubProvider = new GithubAuthProvider()
     const [user, setUser] = useState()
     const navigate = useNavigate()
+    const { setBoards } = useBoards()
 
     const logInWithGoogle = async () => {
         try {
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }) => {
             if (isNewUser) {
                 setData(auth.currentUser)
             }
+            setBoards([])
             navigate('/dashboard')
         } catch (err) {
             console.log(err)
@@ -62,6 +66,7 @@ export const AuthProvider = ({ children }) => {
             if (isNewUser) {
                 setData(auth.currentUser)
             }
+            setBoards([])
             navigate('/dashboard')
         } catch (err) {
             console.log(err)
@@ -74,11 +79,13 @@ export const AuthProvider = ({ children }) => {
             email,
             password
         )
+        setBoards([])
         setData(result.user)
     }
 
     const signInWithEmailPassword = async (email, password) => {
         const result = await signInWithEmailAndPassword(auth, email, password)
+        setBoards([])
         console.log(result.user)
     }
 

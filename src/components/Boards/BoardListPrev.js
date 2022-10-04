@@ -1,55 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 import styled from 'styled-components'
-import { collection, getDocs, query, where } from 'firebase/firestore'
-import { db, auth } from '../../firebase.config'
 
 import SectionWrapper from '../../UI/SectionWrapper'
 import boardPhoto from '../../assets/night-view.png'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
-
-import Icon from '../../UI/Icon'
+// import getBoards from '../../FetchData/FetchDataFuncs'
 
 const BoardListPrev = () => {
-    const { boards, setBoards } = useBoards()
-    const [loading, setLoading] = useState(false)
-
-    // get the initial boards from the firestore
-    useEffect(
-        () => async () => {
-            setLoading(true)
-            const { uid } = auth.currentUser
-            const boardList = []
-            try {
-                const queryBoards = query(
-                    collection(db, 'users', uid, 'boards'),
-                    where(`members.${uid}`, '==', 'owner' || 'member')
-                )
-                const querySnapshot = await getDocs(queryBoards)
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id, ' => ', doc.data())
-                    boardList.push(doc.data())
-                })
-                setBoards(boardList)
-                console.log(boards)
-            } catch (err) {
-                console.log(err)
-                console.log(err.code)
-            }
-            setLoading(false)
-        },
-        []
-    )
+    const { boards } = useBoards()
+    console.log(boards)
 
     return (
         <SectionWrapper>
             <>
                 <h2>Your Boards</h2>
                 <BoardListWrapper>
-                    {loading ? (
-                        <Icon name="Spinner" />
+                    {boards === undefined ||
+                    boards === null ||
+                    boards.length === 0 ? (
+                        <Loader />
                     ) : (
                         boards.map((board) => (
                             <Link to={`board/${board.id}`}>
@@ -93,5 +65,32 @@ const BoardName = styled.p`
     padding-left: 10rem;
     font-weight: 500;
 `
+const Loader = styled.div`
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid blue;
+    border-bottom: 8px solid blue;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
 
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+`
 export default BoardListPrev

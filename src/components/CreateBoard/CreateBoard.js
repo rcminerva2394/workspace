@@ -15,6 +15,7 @@ const CreateBoard = () => {
     const addBoardHandler = () => {
         setIsCreatingBoard(true)
     }
+
     const createBoardHandler = (response) => {
         if (response.stat === true) {
             setBoards((prevState) => {
@@ -51,6 +52,7 @@ const CreateBoard = () => {
         </ContentWrap>
     )
 }
+
 const ContentWrap = styled.div`
     position: relative;
     display: flex;

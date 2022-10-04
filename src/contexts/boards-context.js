@@ -1,6 +1,9 @@
 import React, { useState, useContext, useMemo } from 'react'
 
-const BoardsContext = React.createContext()
+const BoardsContext = React.createContext({
+    boards: [],
+    setBoards: () => {},
+})
 
 export const useBoards = () => {
     return useContext(BoardsContext)
