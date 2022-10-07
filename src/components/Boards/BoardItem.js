@@ -1,16 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import BoardType from './BoardType'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
+import { getBoardType } from '../../FetchData/FetchDataFuncs'
+import Loader from '../../UI/Loader'
 
 const BoardItem = () => {
     const { id } = useParams()
-    const { boards } = useBoards()
+    const { boards, setBoards } = useBoards()
+
+    // fetch the todo, doing, and done subcollection
+    useEffect(() => {
+        getBoardType(id, 'todo', setBoards)
+        getBoardType(id, 'doing', setBoards)
+        getBoardType(id, 'done', setBoards)
+    }, [])
 
     const Board = boards.filter((board) => board.id === id)
+
+    if (Board === undefined || Board.length === 0) {
+        return <Loader />
+    }
+
+    console.log(boards)
 
     return (
         <ContentWrap>
@@ -19,17 +34,17 @@ const BoardItem = () => {
                 <BoardType
                     boardStatus="Todo"
                     id={Board[0].id}
-                    cards={Board[0].Todo}
+                    cards={Board[0].todo}
                 />
                 <BoardType
                     boardStatus="Doing"
                     id={Board[0].id}
-                    cards={Board[0].Doing}
+                    cards={Board[0].doing}
                 />
                 <BoardType
                     boardStatus="Done"
                     id={Board[0].id}
-                    cards={Board[0].Done}
+                    cards={Board[0].done}
                 />
             </BoardTypesWrapper>
         </ContentWrap>

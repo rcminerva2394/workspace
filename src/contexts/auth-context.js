@@ -16,7 +16,6 @@ import {
 import { auth } from '../firebase.config'
 import setData from '../UI/NewUserData'
 import { useBoards } from './boards-context'
-import getBoards from '../FetchData/FetchDataFuncs'
 
 const AuthContext = React.createContext()
 
@@ -39,6 +38,7 @@ export const AuthProvider = ({ children }) => {
             if (isNewUser) {
                 setData(auth.currentUser)
             }
+            setBoards([])
             navigate('/dashboard')
         } catch (err) {
             console.log(err)

@@ -20,5 +20,5 @@ export const analytics = getAnalytics(app)
 
 if (window.location.hostname.includes('localhost')) {
     connectAuthEmulator(auth, 'http://localhost:9099')
-    connectFirestoreEmulator(db, 'localhost', 8080)
+    connectFirestoreEmulator(db, 'localhost', 3010)
 }

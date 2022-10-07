@@ -52,16 +52,16 @@ const SideNav = ({ onClose }) => {
             <NavWrapper>
                 <BrandName>Workspace</BrandName>
                 <SettingsWrapper>
-                    <Link to="/dashboard">
-                        <NavItem>
-                            <Link to="/dashboard">
-                                <Span>
-                                    <Icon name="Home" padding margin="20rem" />
-                                    Dashboard
-                                </Span>
-                            </Link>
-                        </NavItem>
-                    </Link>
+                    <NavItem>
+                        <Link to="/dashboard">
+                            {/* <Link to="/dashboard"> */}
+                            <Span>
+                                <Icon name="Home" padding margin="20rem" />
+                                Dashboard
+                            </Span>
+                            {/* </Link> */}
+                        </Link>
+                    </NavItem>
 
                     <NavItem>
                         <div>

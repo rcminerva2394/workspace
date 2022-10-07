@@ -1,8 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import CardItem from './CardItem'
+import Loader from '../../UI/Loader'
 
 const Cards = ({ cards, boardId, boardStatus }) => {
+    if (cards === undefined || cards.length === 0) {
+        return <Loader />
+    }
     return (
         <CardsListWrapper>
             {cards.map((card) => (

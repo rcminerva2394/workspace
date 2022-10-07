@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import styled from 'styled-components'
 import { useBoards } from '../../contexts/boards-context'
@@ -7,10 +7,16 @@ import SectionWrapper from '../../UI/SectionWrapper'
 import Button from '../../UI/Button'
 import BoardListPrev from '../Boards/BoardListPrev'
 import device from '../../UI/Breakpoint'
+import { getBoards } from '../../FetchData/FetchDataFuncs'
 
 const CreateBoard = () => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
     const { setBoards } = useBoards()
+
+    // fetch the boards
+    useEffect(() => {
+        getBoards(setBoards)
+    }, [])
 
     const addBoardHandler = () => {
         setIsCreatingBoard(true)

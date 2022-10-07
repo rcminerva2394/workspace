@@ -51,6 +51,8 @@ const setData = async (authData) => {
             members: { [uid]: 'owner' },
         })
 
+        console.log(subBoards.id)
+
         // Subcollection Todo
         const subTodo = doc(
             collection(db, 'users', uid, 'boards', subBoards.id, 'todo')

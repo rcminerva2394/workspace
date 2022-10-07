@@ -7,10 +7,12 @@ import SectionWrapper from '../../UI/SectionWrapper'
 import boardPhoto from '../../assets/night-view.png'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
-// import getBoards from '../../FetchData/FetchDataFuncs'
+
+import Loader from '../../UI/Loader'
 
 const BoardListPrev = () => {
     const { boards } = useBoards()
+
     console.log(boards)
 
     return (
@@ -64,33 +66,5 @@ const BoardName = styled.p`
     z-index: 5;
     padding-left: 10rem;
     font-weight: 500;
-`
-const Loader = styled.div`
-    border: 8px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 8px solid blue;
-    border-bottom: 8px solid blue;
-    width: 60px;
-    height: 60px;
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-
-    @-webkit-keyframes spin {
-        0% {
-            -webkit-transform: rotate(0deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
-    }
 `
 export default BoardListPrev

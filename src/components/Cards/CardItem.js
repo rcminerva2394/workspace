@@ -1,43 +1,43 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from '../OpenedCardModal/OpenCardModal'
 // import BoardsContext from '../../contexts/boards-context'
-import { useBoards } from '../../contexts/boards-context'
+// import { useBoards } from '../../contexts/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {
     const [isCardOpened, setIsCardOpened] = useState(card.isCardOpen)
     const [isHold, setIsHold] = useState(false)
     const [displayStyle, setDisplayStyle] = useState('block')
-    const { setBoards } = useBoards()
+    // const { setBoards } = useBoards()
     const { dueDate } = card.date
 
-    // Update isCardOpen status for modal
-    useEffect(() => {
-        setBoards((prevState) => {
-            const updatedBoards = prevState.map((project) => {
-                if (project.id === boardId) {
-                    const updatedCardSet = project[boardStatus].map(
-                        (cardItem) => {
-                            if (cardItem.id === card.id) {
-                                return {
-                                    ...cardItem,
-                                    isCardOpen: isCardOpened,
-                                }
-                            }
-                            return cardItem
-                        }
-                    )
-                    return {
-                        ...project,
-                        [boardStatus]: updatedCardSet,
-                    }
-                }
-                return project
-            })
-            return updatedBoards
-        })
-    }, [isCardOpened])
+    // // Update isCardOpen status for modal
+    // useEffect(() => {
+    //     setBoards((prevState) => {
+    //         const updatedBoards = prevState.map((project) => {
+    //             if (project.id === boardId) {
+    //                 const updatedCardSet = project[boardStatus].map(
+    //                     (cardItem) => {
+    //                         if (cardItem.id === card.id) {
+    //                             return {
+    //                                 ...cardItem,
+    //                                 isCardOpen: isCardOpened,
+    //                             }
+    //                         }
+    //                         return cardItem
+    //                     }
+    //                 )
+    //                 return {
+    //                     ...project,
+    //                     [boardStatus]: updatedCardSet,
+    //                 }
+    //             }
+    //             return project
+    //         })
+    //         return updatedBoards
+    //     })
+    // }, [isCardOpened])
 
     const openCardHandler = () => {
         setIsCardOpened(true)
