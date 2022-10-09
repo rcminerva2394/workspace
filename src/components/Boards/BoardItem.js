@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import BoardType from './BoardType'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
-import { getBoardType } from '../../FetchData/FetchDataFuncs'
+import { getBoardType } from '../../utils/reads/FetchDataFuncs'
 import Loader from '../../UI/Loader'
 
 const BoardItem = () => {
@@ -17,7 +17,7 @@ const BoardItem = () => {
         getBoardType(id, 'todo', setBoards)
         getBoardType(id, 'doing', setBoards)
         getBoardType(id, 'done', setBoards)
-    }, [])
+    }, [id])
 
     const Board = boards.filter((board) => board.id === id)
 

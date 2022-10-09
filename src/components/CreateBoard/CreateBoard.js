@@ -7,7 +7,8 @@ import SectionWrapper from '../../UI/SectionWrapper'
 import Button from '../../UI/Button'
 import BoardListPrev from '../Boards/BoardListPrev'
 import device from '../../UI/Breakpoint'
-import { getBoards } from '../../FetchData/FetchDataFuncs'
+import { getBoards } from '../../utils/reads/FetchDataFuncs'
+import { addBoard } from '../../utils/writes/writeData'
 
 const CreateBoard = () => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
@@ -24,18 +25,7 @@ const CreateBoard = () => {
 
     const createBoardHandler = (response) => {
         if (response.stat === true) {
-            setBoards((prevState) => {
-                return [
-                    ...prevState,
-                    {
-                        // id: uuidv4(),
-                        boardName: response.name,
-                        Todo: [],
-                        Doing: [],
-                        Done: [],
-                    },
-                ]
-            })
+            addBoard(response.name, setBoards)
             setIsCreatingBoard(false)
         } else if (response.stat === false) {
             setIsCreatingBoard(false)

@@ -14,7 +14,8 @@ import {
 } from 'firebase/auth'
 
 import { auth } from '../firebase.config'
-import setData from '../UI/NewUserData'
+import setData from '../utils/writes/NewUserData'
+
 import { useBoards } from './boards-context'
 
 const AuthContext = React.createContext()

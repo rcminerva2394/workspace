@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { db, auth } from '../firebase.config'
+import { db, auth } from '../../firebase.config'
 
 // get the initial boards from the firestore
 export const getBoards = async (updateContext) => {

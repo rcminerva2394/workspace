@@ -8,6 +8,7 @@ import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
 import CreateBoardModal from '../CreateBoard/CreateBoardModal'
+import { addBoard } from '../../utils/writes/writeData'
 
 const SideNavBackdrop = ({ onClose }) => {
     return <Backdrop onClick={onClose} />
@@ -25,18 +26,7 @@ const SideNav = ({ onClose }) => {
     }
     const createBoardHandler = (response) => {
         if (response.stat === true) {
-            setBoards((prevState) => {
-                return [
-                    ...prevState,
-                    {
-                        // id: //uuidv4(),
-                        boardName: response.name,
-                        Todo: [],
-                        Doing: [],
-                        Done: [],
-                    },
-                ]
-            })
+            addBoard(response.name, setBoards)
             setIsCreatingBoard(false)
         } else if (response.stat === false) {
             setIsCreatingBoard(false)
@@ -54,12 +44,10 @@ const SideNav = ({ onClose }) => {
                 <SettingsWrapper>
                     <NavItem>
                         <Link to="/dashboard">
-                            {/* <Link to="/dashboard"> */}
                             <Span>
                                 <Icon name="Home" padding margin="20rem" />
                                 Dashboard
                             </Span>
-                            {/* </Link> */}
                         </Link>
                     </NavItem>
 

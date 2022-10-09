@@ -1,6 +1,6 @@
 import { doc, setDoc, collection } from 'firebase/firestore'
-import { db } from '../firebase.config'
-import { sampleTaskItem } from './exampleBoards'
+import { db } from '../../firebase.config'
+import { sampleTaskItem } from '../exampleData'
 
 // const subTaskFunc = (uid, boardId, type, taskId) => {
 //     const subtasks = doc(
