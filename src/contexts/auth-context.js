@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
             const result = await signInWithPopup(auth, googleProvider)
             const { isNewUser } = getAdditionalUserInfo(result)
             if (isNewUser) {
-                setData(auth.currentUser)
+                setData(auth.currentUser, setBoards)
             }
             setBoards([])
             navigate('/dashboard')
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
             const result = await signInWithPopup(auth, facebookProvider)
             const { isNewUser } = getAdditionalUserInfo(result)
             if (isNewUser) {
-                setData(auth.currentUser)
+                setData(auth.currentUser, setBoards)
             }
             setBoards([])
             navigate('/dashboard')
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
             const result = await signInWithPopup(auth, githubProvider)
             const { isNewUser } = getAdditionalUserInfo(result)
             if (isNewUser) {
-                setData(auth.currentUser)
+                setData(auth.currentUser, setBoards)
             }
             setBoards([])
             navigate('/dashboard')
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
             password
         )
         setBoards([])
-        setData(result.user)
+        setData(result.user, setBoards)
     }
 
     const signInWithEmailPassword = async (email, password) => {

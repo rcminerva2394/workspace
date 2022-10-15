@@ -4,7 +4,6 @@ import { sampleTaskItem } from '../exampleData'
 
 export const addBoard = async (title, setBoards) => {
     const { uid } = auth.currentUser
-
     // Subcollection board
     const subBoards = doc(collection(db, 'users', uid, 'boards'))
 
@@ -24,10 +23,14 @@ export const addBoard = async (title, setBoards) => {
     const todoObj = {
         ...sampleTaskItem,
         id: subTodo.id,
-        status: 'Todo',
+        status: 'todo',
         members: { [uid]: 'owner' },
     }
     await setDoc(subTodo, todoObj)
+
+    setBoards((prevState) => {
+        return [...prevState, boardObj]
+    })
 
     // Subcollection Doing
     const subDoing = doc(
@@ -37,7 +40,7 @@ export const addBoard = async (title, setBoards) => {
     const doingObj = {
         ...sampleTaskItem,
         id: subDoing.id,
-        status: 'Doing',
+        status: 'doing',
         members: { [uid]: 'owner' },
     }
 
@@ -51,22 +54,58 @@ export const addBoard = async (title, setBoards) => {
     const doneObj = {
         ...sampleTaskItem,
         id: subDone.id,
-        status: 'Done',
+        status: 'done',
         members: { [uid]: 'owner' },
     }
     await setDoc(subDone, doneObj)
 
     setBoards((prevState) => {
-        return [
-            ...prevState,
-            {
-                ...boardObj,
-                todo: [todoObj],
-                doing: [doingObj],
-                done: [doneObj],
-            },
-        ]
+        const updatedBoards = prevState.map((board) => {
+            if (board.id === boardObj.id) {
+                return {
+                    ...board,
+                    todo: [todoObj],
+                    doing: [doingObj],
+                    done: [doneObj],
+                }
+            }
+            return board
+        })
+        return updatedBoards
     })
 }
 
-export const setBoardType = () => {}
+export const setNewCardItem = async (
+    boardId,
+    boardStatus,
+    cardTitle,
+    setBoards
+) => {
+    const { uid } = auth.currentUser
+
+    const cardRef = doc(
+        collection(db, 'users', uid, 'boards', boardId, boardStatus)
+    )
+
+    const cardObj = {
+        ...sampleTaskItem,
+        title: cardTitle,
+        id: cardRef.id,
+        status: boardStatus,
+        members: { [uid]: 'owner' },
+    }
+    await setDoc(cardRef, cardObj)
+
+    setBoards((prevState) => {
+        const updatedBoards = prevState.map((board) => {
+            if (board.id === boardId) {
+                return {
+                    ...board,
+                    [boardStatus]: [...board[boardStatus], cardObj],
+                }
+            }
+            return board
+        })
+        return updatedBoards
+    })
+}

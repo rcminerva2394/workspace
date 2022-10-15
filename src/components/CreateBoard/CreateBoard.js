@@ -32,6 +32,7 @@ const CreateBoard = () => {
         }
     }
 
+    console.log('Check how many times this component was rendered')
     return (
         <ContentWrap>
             <SectionWrapper>

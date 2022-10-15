@@ -20,7 +20,7 @@ import { sampleTaskItem } from '../exampleData'
 // }
 
 // For new users, a function to create a user document including the subcollections of boards, todos, doings, and done
-const setData = async (authData) => {
+const setData = async (authData, setBoards) => {
     const { uid, email, displayName, photoURL, emailVerified, metadata } =
         authData
 
@@ -45,11 +45,13 @@ const setData = async (authData) => {
         // Subcollection board
         const subBoards = doc(collection(db, 'users', uid, 'boards'))
 
-        await setDoc(subBoards, {
+        const boardObj = {
             name: 'Sample Board Title',
             id: subBoards.id,
             members: { [uid]: 'owner' },
-        })
+        }
+
+        await setDoc(subBoards, boardObj)
 
         console.log(subBoards.id)
 
@@ -58,12 +60,13 @@ const setData = async (authData) => {
             collection(db, 'users', uid, 'boards', subBoards.id, 'todo')
         )
 
-        await setDoc(subTodo, {
+        const todoObj = {
             ...sampleTaskItem,
             id: subTodo.id,
-            status: 'Todo',
+            status: 'todo',
             members: { [uid]: 'owner' },
-        })
+        }
+        await setDoc(subTodo, todoObj)
 
         // subTaskFunc(uid, subBoards.id, 'todo', subTodo.id)
 
@@ -72,12 +75,13 @@ const setData = async (authData) => {
             collection(db, 'users', uid, 'boards', subBoards.id, 'doing')
         )
 
-        await setDoc(subDoing, {
+        const doingObj = {
             ...sampleTaskItem,
             id: subDoing.id,
-            status: 'Doing',
+            status: 'doing',
             members: { [uid]: 'owner' },
-        })
+        }
+        await setDoc(subDoing, doingObj)
 
         // subTaskFunc(uid, subBoards.id, 'doing', subTodo.id)
 
@@ -85,14 +89,26 @@ const setData = async (authData) => {
         const subDone = doc(
             collection(db, 'users', uid, 'boards', subBoards.id, 'done')
         )
-        await setDoc(subDone, {
+
+        const doneObj = {
             ...sampleTaskItem,
             id: subDone.id,
-            status: 'Done',
+            status: 'done',
             members: { [uid]: 'owner' },
-        })
+        }
+
+        await setDoc(subDone, doneObj)
 
         // subTaskFunc(uid, subBoards.id, 'done', subTodo.id)
+
+        setBoards([
+            {
+                ...boardObj,
+                todo: [todoObj],
+                doing: [doingObj],
+                done: [doneObj],
+            },
+        ])
     } catch (err) {
         console.log('Error setting a document', err)
     }

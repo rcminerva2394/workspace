@@ -6,11 +6,14 @@ import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
 import { useBoards } from '../../contexts/boards-context'
 import device from '../../UI/Breakpoint'
+import { setNewCardItem } from '../../utils/writes/writeData'
 
 const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
     const { setBoards } = useBoards()
+
+    const titleCard = boardStatus.charAt(0).toUpperCase() + boardStatus.slice(1)
 
     // Dropping the card into the desired board status
     const dragOverHandler = (e) => {
@@ -18,6 +21,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
             e.preventDefault()
         }
     }
+
     const dragEnterHandler = (e) => {
         e.preventDefault()
     }
@@ -30,8 +34,8 @@ const BoardType = ({ boardStatus, id, cards }) => {
             cardData.boardType !== boardStatus
         ) {
             e.preventDefault()
-            // Transfer and delete card to the new board type
 
+            // Transfer and delete card to the new board type
             const newCardItem = {
                 ...cardData.cardObj,
                 status: boardStatus,
@@ -79,32 +83,33 @@ const BoardType = ({ boardStatus, id, cards }) => {
     // Adding a new card item
     const submitNewCardHandler = (e) => {
         e.preventDefault()
-        setBoards((prevState) => {
-            const updatedBoards = prevState.map((project) => {
-                if (project.id === id) {
-                    return {
-                        ...project,
-                        [boardStatus]: [
-                            ...project[boardStatus],
-                            {
-                                // id: uuidv4(),
-                                title: cardTitle,
-                                status: [boardStatus],
-                                isCardOpen: false,
-                                date: {
-                                    startDate: '',
-                                    dueDate: '',
-                                    deadlineTime: '',
-                                    completed: false,
-                                },
-                            },
-                        ],
-                    }
-                }
-                return project
-            })
-            return updatedBoards
-        })
+        setNewCardItem(id, boardStatus, cardTitle, setBoards)
+        // setBoards((prevState) => {
+        //     const updatedBoards = prevState.map((project) => {
+        //         if (project.id === id) {
+        //             return {
+        //                 ...project,
+        //                 [boardStatus]: [
+        //                     ...project[boardStatus],
+        //                     {
+        //                         // id: uuidv4(),
+        //                         title: cardTitle,
+        //                         status: [boardStatus],
+        //                         isCardOpen: false,
+        //                         date: {
+        //                             startDate: '',
+        //                             dueDate: '',
+        //                             deadlineTime: '',
+        //                             completed: false,
+        //                         },
+        //                     },
+        //                 ],
+        //             }
+        //         }
+        //         return project
+        //     })
+        //     return updatedBoards
+        // })
         setIsAddCard(false)
     }
 
@@ -116,11 +121,11 @@ const BoardType = ({ boardStatus, id, cards }) => {
         >
             <IconTitle>
                 <Icon
-                    name={boardStatus}
+                    name={titleCard}
                     iconColor={color(boardStatus)}
                     size="24rem"
                 />
-                <Title>{boardStatus}</Title>
+                <Title>{titleCard}</Title>
             </IconTitle>
             <Cards cards={cards} boardId={id} boardStatus={boardStatus} />
             {isAddCard && (

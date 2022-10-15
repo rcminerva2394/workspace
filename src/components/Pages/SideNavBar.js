@@ -24,6 +24,7 @@ const SideNav = ({ onClose }) => {
     const addBoardHandler = () => {
         setIsCreatingBoard(true)
     }
+
     const createBoardHandler = (response) => {
         if (response.stat === true) {
             addBoard(response.name, setBoards)
@@ -168,6 +169,15 @@ const NavWrapper = styled.nav`
     top: 0;
     left: 0;
     padding-left: 20rem;
+    padding-bottom: 50rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    &::-webkit-scrollbar {
+        /** WebKit */
+        display: none;
+    }
 `
 const BrandName = styled.span`
     font-size: 22rem;

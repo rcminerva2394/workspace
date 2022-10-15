@@ -32,17 +32,17 @@ const BoardItem = () => {
             <h3>{Board[0].name}</h3>
             <BoardTypesWrapper>
                 <BoardType
-                    boardStatus="Todo"
+                    boardStatus="todo"
                     id={Board[0].id}
                     cards={Board[0].todo}
                 />
                 <BoardType
-                    boardStatus="Doing"
+                    boardStatus="doing"
                     id={Board[0].id}
                     cards={Board[0].doing}
                 />
                 <BoardType
-                    boardStatus="Done"
+                    boardStatus="done"
                     id={Board[0].id}
                     cards={Board[0].done}
                 />

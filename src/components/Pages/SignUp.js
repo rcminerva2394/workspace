@@ -102,10 +102,10 @@ const SignUp = () => {
                         <Icon name="Github" size="24px" />
                         <span>Sign up with Github</span>
                     </Button>
-                    <Button green fontSize="15rem" width="260px" flexStart>
+                    {/* <Button green fontSize="15rem" width="260px" flexStart>
                         <Icon name="Guest" size="24px" />
                         <span>Sign up as a guest</span>
-                    </Button>
+                    </Button> */}
                 </BtnGrp>
                 <LineBreak>or</LineBreak>
                 {signUpError && <Error>{signUpError}</Error>}

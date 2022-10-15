@@ -15,7 +15,6 @@ export const getBoards = async (updateContext) => {
             console.log(doc.id, ' => ', doc.data())
             boards.push(doc.data())
         })
-
         console.log(boards)
         updateContext([...boards])
     } catch (err) {
