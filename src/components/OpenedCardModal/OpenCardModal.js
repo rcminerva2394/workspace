@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
+
 import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
-// import BoardsContext from '../../contexts/boards-context'
 import { useBoards } from '../../contexts/boards-context'
 import SetDate from './Dates/SetDate'
 import Subtasks from './Subtasks/Subtasks'
@@ -31,7 +31,8 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [willDeleteCard, setWillDeleteCard] = useState(false)
     const { setBoards } = useBoards()
 
-    const dateHandler = (dateObj) => {
+    const dateHandler = async (dateObj) => {
+        // update context frontend
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
@@ -201,6 +202,8 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                     onUpdateDate={dateHandler}
                     onClose={() => setIsDeadlineOpen(false)}
                     card={card}
+                    boardId={boardId}
+                    boardStatus={boardStatus}
                 />
             )}
         </>

@@ -2,27 +2,28 @@ import { doc, setDoc, collection } from 'firebase/firestore'
 import { db } from '../../firebase.config'
 import { sampleTaskItem } from '../exampleData'
 
-// const subTaskFunc = (uid, boardId, type, taskId) => {
-//     const subtasks = doc(
-//         collection(
-//             db,
-//             'users',
-//             uid,
-//             'boards',
-//             boardId,
-//             type,
-//             taskId,
-//             'subtasks'
-//         )
-//     )
-
-//     return subtasks
-// }
-
 // For new users, a function to create a user document including the subcollections of boards, todos, doings, and done
 const setData = async (authData, setBoards) => {
     const { uid, email, displayName, photoURL, emailVerified, metadata } =
         authData
+
+    // // subtask function
+
+    // const subTaskFunc = async (boardId, type, taskId) => {
+    //     await doc(
+    //         collection(
+    //             db,
+    //             'users',
+    //             uid,
+    //             'boards',
+    //             boardId,
+    //             type,
+    //             taskId,
+    //             'subtasks'
+    //         )
+    //     )
+    //     setDoc(doc)
+    // }
 
     try {
         const docRef = doc(db, 'users', uid)
@@ -68,7 +69,20 @@ const setData = async (authData, setBoards) => {
         }
         await setDoc(subTodo, todoObj)
 
-        // subTaskFunc(uid, subBoards.id, 'todo', subTodo.id)
+        // // subTasks
+
+        // doc(
+        //     collection(
+        //         db,
+        //         'users',
+        //         uid,
+        //         'boards',
+        //         subBoards.id,
+        //         'todo',
+        //         subTodo.id,
+        //         'subtasks'
+        //     )
+        // )
 
         // Subcollection Doing
         const subDoing = doc(
@@ -83,7 +97,19 @@ const setData = async (authData, setBoards) => {
         }
         await setDoc(subDoing, doingObj)
 
-        // subTaskFunc(uid, subBoards.id, 'doing', subTodo.id)
+        // subTasks
+        // doc(
+        //     collection(
+        //         db,
+        //         'users',
+        //         uid,
+        //         'boards',
+        //         subBoards.id,
+        //         'doing',
+        //         subDoing.id,
+        //         'subtasks'
+        //     )
+        // )
 
         // Subcollection Done
         const subDone = doc(
@@ -99,7 +125,19 @@ const setData = async (authData, setBoards) => {
 
         await setDoc(subDone, doneObj)
 
-        // subTaskFunc(uid, subBoards.id, 'done', subTodo.id)
+        // subTasks
+        // doc(
+        //     collection(
+        //         db,
+        //         'users',
+        //         uid,
+        //         'boards',
+        //         subBoards.id,
+        //         'done',
+        //         subDone.id,
+        //         'subtasks'
+        //     )
+        // )
 
         setBoards([
             {

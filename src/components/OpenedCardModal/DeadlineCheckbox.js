@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-// import BoardsContext from '../../contexts/boards-context'
+
+import { doc, updateDoc } from 'firebase/firestore'
+import { db, auth } from '../../firebase.config'
+
 import { useBoards } from '../../contexts/boards-context'
 
 const DeadlineCheckbox = ({ card, boardId, boardStatus }) => {
@@ -9,9 +12,27 @@ const DeadlineCheckbox = ({ card, boardId, boardStatus }) => {
     )
     const { startDate, dueDate, deadlineTime } = card.date
     const { setBoards } = useBoards()
+    const { uid } = auth.currentUser
 
     // Updating the completion status of the duedate / deadline
+
     useEffect(() => {
+        const cardDateRef = doc(
+            db,
+            'users',
+            uid,
+            'boards',
+            boardId,
+            boardStatus,
+            card.id
+        )
+
+        // Update the completion status of the date deadline in firestore server
+        updateDoc(cardDateRef, {
+            'date.completed': isDueDateCompleted,
+        })
+
+        // Update the context frontend
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {

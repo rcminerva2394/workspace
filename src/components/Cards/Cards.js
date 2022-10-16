@@ -4,19 +4,22 @@ import CardItem from './CardItem'
 import Loader from '../../UI/Loader'
 
 const Cards = ({ cards, boardId, boardStatus }) => {
-    if (cards === undefined || cards.length === 0) {
-        return <Loader />
-    }
     return (
         <CardsListWrapper>
-            {cards.map((card) => (
-                <CardItem
-                    card={card}
-                    key={card.id}
-                    boardId={boardId}
-                    boardStatus={boardStatus}
-                />
-            ))}
+            {cards === undefined ? (
+                <Loader />
+            ) : cards.length === 0 ? (
+                <p>No Card Listed</p>
+            ) : (
+                cards.map((card) => (
+                    <CardItem
+                        card={card}
+                        key={card.id}
+                        boardId={boardId}
+                        boardStatus={boardStatus}
+                    />
+                ))
+            )}
         </CardsListWrapper>
     )
 }

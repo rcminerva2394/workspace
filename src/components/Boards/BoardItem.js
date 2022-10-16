@@ -6,7 +6,6 @@ import BoardType from './BoardType'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
 import { getBoardType } from '../../utils/reads/FetchDataFuncs'
-import Loader from '../../UI/Loader'
 
 const BoardItem = () => {
     const { id } = useParams()
@@ -20,12 +19,6 @@ const BoardItem = () => {
     }, [id])
 
     const Board = boards.filter((board) => board.id === id)
-
-    if (Board === undefined || Board.length === 0) {
-        return <Loader />
-    }
-
-    console.log(boards)
 
     return (
         <ContentWrap>

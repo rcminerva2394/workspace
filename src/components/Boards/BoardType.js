@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
+import { doc, deleteDoc, setDoc } from 'firebase/firestore'
+import { db, auth } from '../../firebase.config'
+
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
 import Cards from '../Cards/Cards'
@@ -27,6 +30,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
     }
 
     const dropHandler = (e) => {
+        const { uid } = auth.currentUser
         const stringData = e.dataTransfer.getData('custom-type')
         const cardData = JSON.parse(stringData)
         if (
@@ -41,7 +45,36 @@ const BoardType = ({ boardStatus, id, cards }) => {
                 status: boardStatus,
             }
 
-            // Deleting the card item from its first board type and moving it to the target board type
+            // Deleting the card item from its first board type and move it to the the new board type
+            const moveCard = async () => {
+                await deleteDoc(
+                    doc(
+                        db,
+                        'users',
+                        uid,
+                        'boards',
+                        id,
+                        cardData.boardType,
+                        cardData.cardObj.id
+                    )
+                )
+                await setDoc(
+                    doc(
+                        db,
+                        'users',
+                        uid,
+                        'boards',
+                        id,
+                        boardStatus,
+                        cardData.cardObj.id
+                    ),
+                    newCardItem
+                )
+            }
+
+            moveCard()
+
+            // Update the context frontend
             setBoards((prevState) => {
                 const updatedBoards = prevState.map((project) => {
                     if (project.id === cardData.idBoard) {
@@ -67,14 +100,13 @@ const BoardType = ({ boardStatus, id, cards }) => {
     }
 
     // Color function for the Icon
-    const color = (boardType) => {
-        const boardTypeName = boardType.toLowerCase()
+    const color = () => {
         let colorOfIcon
-        if (boardTypeName === 'todo') {
+        if (boardStatus === 'todo') {
             colorOfIcon = '#FFE600'
-        } else if (boardTypeName === 'doing') {
+        } else if (boardStatus === 'doing') {
             colorOfIcon = '#3E8BFF'
-        } else if (boardTypeName === 'done') {
+        } else if (boardStatus === 'done') {
             colorOfIcon = '#19E446'
         }
         return colorOfIcon
@@ -84,32 +116,6 @@ const BoardType = ({ boardStatus, id, cards }) => {
     const submitNewCardHandler = (e) => {
         e.preventDefault()
         setNewCardItem(id, boardStatus, cardTitle, setBoards)
-        // setBoards((prevState) => {
-        //     const updatedBoards = prevState.map((project) => {
-        //         if (project.id === id) {
-        //             return {
-        //                 ...project,
-        //                 [boardStatus]: [
-        //                     ...project[boardStatus],
-        //                     {
-        //                         // id: uuidv4(),
-        //                         title: cardTitle,
-        //                         status: [boardStatus],
-        //                         isCardOpen: false,
-        //                         date: {
-        //                             startDate: '',
-        //                             dueDate: '',
-        //                             deadlineTime: '',
-        //                             completed: false,
-        //                         },
-        //                     },
-        //                 ],
-        //             }
-        //         }
-        //         return project
-        //     })
-        //     return updatedBoards
-        // })
         setIsAddCard(false)
     }
 
@@ -127,7 +133,9 @@ const BoardType = ({ boardStatus, id, cards }) => {
                 />
                 <Title>{titleCard}</Title>
             </IconTitle>
+
             <Cards cards={cards} boardId={id} boardStatus={boardStatus} />
+
             {isAddCard && (
                 <form onSubmit={submitNewCardHandler}>
                     <AddCardInput

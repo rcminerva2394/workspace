@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db, auth } from '../../../firebase.config'
+
 import Button from '../../../UI/Button'
 import Icon from '../../../UI/Icon'
 import device from '../../../UI/Breakpoint'
 
 const DateBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
-const SetDate = ({ onUpdateDate, onClose, card }) => {
+const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
+    const { uid } = auth.currentUser
     const todayDate = new Date().toISOString().substring(0, 10)
     const [startDateVal, setStartDateVal] = useState(card.date.startDate)
     const [dueDateVal, setDueDateVal] = useState(card.date.dueDate)
@@ -64,7 +68,7 @@ const SetDate = ({ onUpdateDate, onClose, card }) => {
         const dateReg = /^\d{4}[./-]\d{2}[./-]\d{2}$/
         return dateReg.test(date)
     }
-    const submitDateHandler = (e) => {
+    const submitDateHandler = async (e) => {
         e.preventDefault()
 
         const regexCheckStartDate = dateRegexPatternCheck(startDateVal)
@@ -103,6 +107,22 @@ const SetDate = ({ onUpdateDate, onClose, card }) => {
         } else if (isDueDateChecked && isStartDateChecked) {
             onUpdateDate(dateObj)
         }
+
+        // Update date in firestore database
+        const cardDateRef = doc(
+            db,
+            'users',
+            uid,
+            'boards',
+            boardId,
+            boardStatus,
+            card.id
+        )
+
+        await updateDoc(cardDateRef, {
+            date: dateObj,
+        })
+
         onClose()
     }
 

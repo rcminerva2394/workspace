@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import Icon from '../../UI/Icon'
 import OpenCardModal from '../OpenedCardModal/OpenCardModal'
-// import BoardsContext from '../../contexts/boards-context'
 // import { useBoards } from '../../contexts/boards-context'
 
 const CardItem = ({ card, boardId, boardStatus }) => {

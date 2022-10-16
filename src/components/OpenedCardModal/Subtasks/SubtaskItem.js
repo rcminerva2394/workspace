@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Icon from '../../../UI/Icon'
-// import BoardsContext from '../../../contexts/boards-context'
 import { useBoards } from '../../../contexts/boards-context'
 import device from '../../../UI/Breakpoint'
 

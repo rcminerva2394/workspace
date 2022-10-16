@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-// import { v4 as uuidv4 } from 'uuid'
+
+import { doc, setDoc, collection } from 'firebase/firestore'
+import { db, auth } from '../../../firebase.config'
+
 import Button from '../../../UI/Button'
-// import BoardsContext from '../../../contexts/boards-context'
 import { useBoards } from '../../../contexts/boards-context'
 import SubtasksList from './SubtasksList'
 import DeleteModal from '../../../UI/DeleteModal'
@@ -12,39 +14,64 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
     const [newSubtask, setNewSubtask] = useState('')
     const [willDeletSubtasks, setWillDeleteSubtasks] = useState(false)
     const { setBoards } = useBoards()
+    const { uid } = auth.currentUser
 
-    const submitAddedSubtaskHandler = (e) => {
+    const submitAddedSubtaskHandler = async (e) => {
         e.preventDefault()
-        setBoards((prevState) => {
-            const updatedBoards = prevState.map((project) => {
-                if (project.id === boardId) {
-                    const updatedCardSet = project[boardStatus].map(
-                        (cardItem) => {
-                            if (cardItem.id === card.id) {
-                                return {
-                                    ...cardItem,
-                                    subtasks: [
-                                        ...cardItem.subtasks,
-                                        {
-                                            // id: uuidv4(),
-                                            title: newSubtask,
-                                            completed: false,
-                                        },
-                                    ],
-                                }
-                            }
-                            return cardItem
-                        }
-                    )
-                    return {
-                        ...project,
-                        [boardStatus]: updatedCardSet,
-                    }
-                }
-                return project
-            })
-            return updatedBoards
-        })
+
+        // Subcollection Subtasks
+        const subtaskRef = doc(
+            collection(
+                db,
+                'users',
+                uid,
+                'boards',
+                boardId,
+                boardStatus,
+                card.id,
+                'subtasks'
+            )
+        )
+
+        const subtaskObj = {
+            id: subtaskRef.id,
+            completed: false,
+            title: newSubtask,
+            members: { [uid]: 'owner' },
+        }
+
+        await setDoc(subtaskRef, subtaskObj)
+
+        // setBoards((prevState) => {
+        //     const updatedBoards = prevState.map((project) => {
+        //         if (project.id === boardId) {
+        //             const updatedCardSet = project[boardStatus].map(
+        //                 (cardItem) => {
+        //                     if (cardItem.id === card.id) {
+        //                         return {
+        //                             ...cardItem,
+        //                             subtasks: [
+        //                                 ...cardItem.subtasks,
+        //                                 {
+        //                                     // id: uuidv4(),
+        //                                     title: newSubtask,
+        //                                     completed: false,
+        //                                 },
+        //                             ],
+        //                         }
+        //                     }
+        //                     return cardItem
+        //                 }
+        //             )
+        //             return {
+        //                 ...project,
+        //                 [boardStatus]: updatedCardSet,
+        //             }
+        //         }
+        //         return project
+        //     })
+        //     return updatedBoards
+        // })
         onShow(true)
     }
 

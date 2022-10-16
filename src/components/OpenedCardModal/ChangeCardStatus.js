@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-// import BoardsContext from '../../contexts/boards-context'
+
+import { doc, deleteDoc, setDoc } from 'firebase/firestore'
+import { db, auth } from '../../firebase.config'
 import { useBoards } from '../../contexts/boards-context'
 
 const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     const [selected, setSelected] = useState(card.status)
     const { setBoards } = useBoards()
+    const { uid } = auth.currentUser
 
     // Card Status Options
-    const cardStatusArr = ['Todo', 'Doing', 'Done']
+    const cardStatusArr = ['todo', 'doing', 'done']
     const filteredStatus = cardStatusArr.filter(
         (status) => status !== card.status
     )
@@ -21,15 +24,34 @@ const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     })
 
     // Change the status of the card
-    const changeCardStatusHandler = (e) => {
+    const changeCardStatusHandler = async (e) => {
         setSelected(e.target.value)
 
         if (card.status !== e.target.value) {
-            const newCardItem = {
+            // Set new card details with changed status
+            const newCardStat = {
                 ...card,
-                isCardOpen: true,
                 status: e.target.value,
             }
+
+            // Deleting the card item from its first board type and move it to the the new board type/status
+            await deleteDoc(
+                doc(db, 'users', uid, 'boards', boardId, boardStatus, card.id)
+            )
+            await setDoc(
+                doc(
+                    db,
+                    'users',
+                    uid,
+                    'boards',
+                    boardId,
+                    e.target.value,
+                    card.id
+                ),
+                newCardStat
+            )
+
+            // Update frontend of the card status
             setBoards((prevState) => {
                 const updatedBoards = prevState.map((project) => {
                     if (project.id === boardId) {
@@ -41,7 +63,7 @@ const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
                             [boardStatus]: updatedCardSet,
                             [e.target.value]: [
                                 ...project[e.target.value],
-                                newCardItem,
+                                newCardStat,
                             ],
                         }
                     }
