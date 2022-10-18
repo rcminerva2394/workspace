@@ -37,13 +37,54 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
             boardType.push(doc.data())
         })
 
-        // Update the Board Context which includes the board types
+        // also fetch subtasks if there are already
+        const updatedBoardType = boardType.map(async (task) => {
+            const querySubtasks = query(
+                collection(
+                    db,
+                    'users',
+                    uid,
+                    'boards',
+                    boardId,
+                    boardStatus,
+                    task.id,
+                    'subtasks'
+                ),
+                where(`members.${uid}`, '==', 'owner' || 'member')
+            )
+            const querySubtasksSnapshot = await getDocs(querySubtasks)
+            const subtasksList = []
+            querySubtasksSnapshot.forEach((doc) => {
+                console.log(doc.id, doc.data())
+                subtasksList.push(doc.data())
+            })
+            console.log(subtasksList)
+            return {
+                ...task,
+                subtasks: subtasksList,
+            }
+        })
+
+        // // Update the Board Context which includes the board types
+        // updateContext((prevState) => {
+        //     const updatedBoards = prevState.map((project) => {
+        //         if (project.id === boardId) {
+        //             return {
+        //                 ...project,
+        //                 [boardStatus]: boardType,
+        //             }
+        //         }
+        //         return project
+        //     })
+        //     return updatedBoards
+        // })
+
         updateContext((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
                     return {
                         ...project,
-                        [boardStatus]: boardType,
+                        [boardStatus]: updatedBoardType,
                     }
                 }
                 return project

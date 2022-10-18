@@ -68,6 +68,18 @@ const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
         const dateReg = /^\d{4}[./-]\d{2}[./-]\d{2}$/
         return dateReg.test(date)
     }
+
+    // cardDate reference in the firestore
+    const cardDateRef = doc(
+        db,
+        'users',
+        uid,
+        'boards',
+        boardId,
+        boardStatus,
+        card.id
+    )
+
     const submitDateHandler = async (e) => {
         e.preventDefault()
 
@@ -109,16 +121,6 @@ const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
         }
 
         // Update date in firestore database
-        const cardDateRef = doc(
-            db,
-            'users',
-            uid,
-            'boards',
-            boardId,
-            boardStatus,
-            card.id
-        )
-
         await updateDoc(cardDateRef, {
             date: dateObj,
         })
@@ -126,7 +128,7 @@ const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
         onClose()
     }
 
-    const removeDateHandler = () => {
+    const removeDateHandler = async () => {
         const dateObj = {
             startDate: '',
             dueDate: '',
@@ -134,6 +136,10 @@ const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
             completed: false,
         }
         onUpdateDate(dateObj)
+
+        await updateDoc(cardDateRef, {
+            date: dateObj,
+        })
         onClose()
     }
 

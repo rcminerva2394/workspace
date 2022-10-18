@@ -42,36 +42,32 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
 
         await setDoc(subtaskRef, subtaskObj)
 
-        // setBoards((prevState) => {
-        //     const updatedBoards = prevState.map((project) => {
-        //         if (project.id === boardId) {
-        //             const updatedCardSet = project[boardStatus].map(
-        //                 (cardItem) => {
-        //                     if (cardItem.id === card.id) {
-        //                         return {
-        //                             ...cardItem,
-        //                             subtasks: [
-        //                                 ...cardItem.subtasks,
-        //                                 {
-        //                                     // id: uuidv4(),
-        //                                     title: newSubtask,
-        //                                     completed: false,
-        //                                 },
-        //                             ],
-        //                         }
-        //                     }
-        //                     return cardItem
-        //                 }
-        //             )
-        //             return {
-        //                 ...project,
-        //                 [boardStatus]: updatedCardSet,
-        //             }
-        //         }
-        //         return project
-        //     })
-        //     return updatedBoards
-        // })
+        setBoards((prevState) => {
+            const updatedBoards = prevState.map((project) => {
+                if (project.id === boardId) {
+                    const updatedCardSet = project[boardStatus].map(
+                        (cardItem) => {
+                            if (cardItem.id === card.id) {
+                                return {
+                                    ...cardItem,
+                                    subtasks: [
+                                        ...cardItem.subtasks,
+                                        subtaskObj,
+                                    ],
+                                }
+                            }
+                            return cardItem
+                        }
+                    )
+                    return {
+                        ...project,
+                        [boardStatus]: updatedCardSet,
+                    }
+                }
+                return project
+            })
+            return updatedBoards
+        })
         onShow(true)
     }
 
