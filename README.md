@@ -43,7 +43,7 @@ I chose the root-level collections as suggested by firestore. The reason is my a
 
 I am not pretty sure if this is faster since the app could have thousands of boards and it might take longer time to fetch one by one. However since this is just for practice, I guess this is not a bad data structure for my case.
 
-(./screenshots/data-structure.png)
+![data structure of this app](./screenshots/data-structure.png)
 
 ## Learnings
 
