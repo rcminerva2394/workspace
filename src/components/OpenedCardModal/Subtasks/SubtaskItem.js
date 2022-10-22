@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { db } from '../../../firebase.config'
+
 import Icon from '../../../UI/Icon'
 import { useBoards } from '../../../contexts/boards-context'
 import device from '../../../UI/Breakpoint'
@@ -11,9 +15,29 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
         subtask.completed
     )
     const { setBoards } = useBoards()
+    // const { uid } = auth.currentUser
+
+    const subtaskTitleRef = doc(
+        db,
+        'boards',
+        boardId,
+        boardStatus,
+        card.id,
+        'subtasks',
+        subtask.id
+    )
 
     // Update subtask item status
     useEffect(() => {
+        // Update subtask item on status on firestore too
+        const updateStatus = async () => {
+            await updateDoc(subtaskTitleRef, {
+                completed: isSubtaskCompleted,
+            })
+        }
+
+        updateStatus()
+
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
@@ -51,8 +75,14 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
     }, [isSubtaskCompleted])
 
     // Update Edited Subtask Title
-    const submitEditedTaskHandler = (e) => {
+    const submitEditedTaskHandler = async (e) => {
         e.preventDefault()
+
+        // Set the new title of the subtask item in firestore server
+        await updateDoc(subtaskTitleRef, {
+            title: editedSubtask,
+        })
+
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
@@ -93,6 +123,23 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
 
     // Delete subtask item
     const delSubtaskItemHandler = () => {
+        // delete subtask item on firestore
+        const delSubtaskItem = async () => {
+            await deleteDoc(
+                doc(
+                    db,
+                    'boards',
+                    boardId,
+                    boardStatus,
+                    card.id,
+                    'subtasks',
+                    subtask.id
+                )
+            )
+        }
+
+        delSubtaskItem()
+
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {

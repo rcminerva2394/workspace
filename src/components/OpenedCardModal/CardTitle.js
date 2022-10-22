@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { doc, updateDoc } from 'firebase/firestore'
-import { db, auth } from '../../firebase.config'
+import { db } from '../../firebase.config'
 
 import { useBoards } from '../../contexts/boards-context'
 import Button from '../../UI/Button'
@@ -11,21 +11,13 @@ const CardTitle = ({ card, boardId, boardStatus }) => {
     const [isChangeCardTitle, setIsChangeCardTitle] = useState(false)
     const [newCardTitle, setNewCardTitle] = useState(card.title)
     const { setBoards } = useBoards()
-    const { uid } = auth.currentUser
+    // const { uid } = auth.currentUser
 
     // Renaming Card Title
     const submitNewCardTitleHandler = async (e) => {
         e.preventDefault()
 
-        const cardTitleRef = doc(
-            db,
-            'users',
-            uid,
-            'boards',
-            boardId,
-            boardStatus,
-            card.id
-        )
+        const cardTitleRef = doc(db, 'boards', boardId, boardStatus, card.id)
 
         // Set the new title of the card in firestore server
         await updateDoc(cardTitleRef, {

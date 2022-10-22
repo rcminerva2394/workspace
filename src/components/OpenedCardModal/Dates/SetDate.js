@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db, auth } from '../../../firebase.config'
+import { db } from '../../../firebase.config'
 
 import Button from '../../../UI/Button'
 import Icon from '../../../UI/Icon'
@@ -10,7 +10,7 @@ import device from '../../../UI/Breakpoint'
 const DateBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
 const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
-    const { uid } = auth.currentUser
+    // const { uid } = auth.currentUser
     const todayDate = new Date().toISOString().substring(0, 10)
     const [startDateVal, setStartDateVal] = useState(card.date.startDate)
     const [dueDateVal, setDueDateVal] = useState(card.date.dueDate)
@@ -70,15 +70,7 @@ const SetDate = ({ onUpdateDate, onClose, card, boardId, boardStatus }) => {
     }
 
     // cardDate reference in the firestore
-    const cardDateRef = doc(
-        db,
-        'users',
-        uid,
-        'boards',
-        boardId,
-        boardStatus,
-        card.id
-    )
+    const cardDateRef = doc(db, 'boards', boardId, boardStatus, card.id)
 
     const submitDateHandler = async (e) => {
         e.preventDefault()

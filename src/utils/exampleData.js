@@ -26,6 +26,14 @@ export const exampleBoards = [
                 //         completed: false,
                 //     }
                 // ],
+                // comments: [
+                //     {
+                //         id: uuidv4(),
+                //         from: '',
+                //         message: '',
+                //         date: '',
+                //         members: { userId: 'creator', userId: 'member'
+                //      }]
             },
             {
                 // id: uuidv4(),

@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
+import { doc, deleteDoc } from 'firebase/firestore'
+import { db } from '../../firebase.config'
+
 import Button from '../../UI/Button'
 import Icon from '../../UI/Icon'
 import device from '../../UI/Breakpoint'
@@ -13,6 +16,7 @@ import CardTitle from './CardTitle'
 import DeadlineCheckbox from './DeadlineCheckbox'
 import CardDescription from './CardDescription'
 import ChangeCardStatus from './ChangeCardStatus'
+import Comments from './Comments/Comments'
 
 const ModalBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
@@ -30,6 +34,7 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [hasSubtasks, setHasSubtasks] = useState(subtasksLength())
     const [willDeleteCard, setWillDeleteCard] = useState(false)
     const { setBoards } = useBoards()
+    // const { uid } = auth.currentUser
 
     const dateHandler = async (dateObj) => {
         // update context frontend
@@ -60,29 +65,6 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
 
     // Adding Subtasks
     const addSubtasksHandler = () => {
-        setBoards((prevState) => {
-            const updatedBoards = prevState.map((project) => {
-                if (project.id === boardId) {
-                    const updatedCardSet = project[boardStatus].map(
-                        (cardItem) => {
-                            if (cardItem.id === card.id) {
-                                return {
-                                    ...cardItem,
-                                    subtasks: [],
-                                }
-                            }
-                            return cardItem
-                        }
-                    )
-                    return {
-                        ...project,
-                        [boardStatus]: updatedCardSet,
-                    }
-                }
-                return project
-            })
-            return updatedBoards
-        })
         setHasSubtasks(true)
     }
 
@@ -91,6 +73,30 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     }
 
     const deleteItem = () => {
+        // delete card item on firestore and it's subcollection subtask (later on including comments)
+        const deleteCard = async () => {
+            // delete the  card
+            await deleteDoc(doc(db, 'boards', boardId, boardStatus, card.id))
+
+            // delete its subtasks
+            await Promise.all(
+                card.subtasks.forEach(async (subtask) => {
+                    await deleteDoc(
+                        doc(
+                            db,
+                            'boards',
+                            boardId,
+                            boardStatus,
+                            card.id,
+                            'subtasks',
+                            subtask.id
+                        )
+                    )
+                })
+            )
+        }
+
+        deleteCard()
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
@@ -145,6 +151,11 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                             />
                         )}
                         <ChangeCardStatus
+                            card={card}
+                            boardId={boardId}
+                            boardStatus={boardStatus}
+                        />
+                        <Comments
                             card={card}
                             boardId={boardId}
                             boardStatus={boardStatus}

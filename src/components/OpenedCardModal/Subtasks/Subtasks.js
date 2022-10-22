@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { doc, setDoc, collection } from 'firebase/firestore'
+import { doc, setDoc, collection, deleteDoc } from 'firebase/firestore'
 import { db, auth } from '../../../firebase.config'
 
 import Button from '../../../UI/Button'
@@ -21,16 +21,7 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
 
         // Subcollection Subtasks
         const subtaskRef = doc(
-            collection(
-                db,
-                'users',
-                uid,
-                'boards',
-                boardId,
-                boardStatus,
-                card.id,
-                'subtasks'
-            )
+            collection(db, 'boards', boardId, boardStatus, card.id, 'subtasks')
         )
 
         const subtaskObj = {
@@ -72,6 +63,28 @@ const Subtasks = ({ card, boardId, boardStatus, onShow }) => {
     }
 
     const deleteEntireSubtasks = () => {
+        // Delete all subtasks from the firestore (firestore doesn't allow deleting entire subcollection)
+        const delSubtasks = async () => {
+            await Promise.all(
+                card.subtasks.forEach(async (subtask) => {
+                    await deleteDoc(
+                        doc(
+                            db,
+                            'boards',
+                            boardId,
+                            boardStatus,
+                            card.id,
+                            'subtasks',
+                            subtask.id
+                        )
+                    )
+                })
+            )
+        }
+
+        delSubtasks()
+
+        // delete subtasks on frontend
         setBoards((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {

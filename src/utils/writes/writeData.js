@@ -4,21 +4,20 @@ import { sampleTaskItem } from '../exampleData'
 
 export const addBoard = async (title, setBoards) => {
     const { uid } = auth.currentUser
+
     // Subcollection board
-    const subBoards = doc(collection(db, 'users', uid, 'boards'))
+    const boardsCol = doc(collection(db, 'boards'))
 
     const boardObj = {
         name: title,
-        id: subBoards.id,
+        id: boardsCol.id,
         members: { [uid]: 'owner' },
     }
 
-    await setDoc(subBoards, boardObj)
+    await setDoc(boardsCol, boardObj)
 
     // Subcollection Todo
-    const subTodo = doc(
-        collection(db, 'users', uid, 'boards', subBoards.id, 'todo')
-    )
+    const subTodo = doc(collection(db, 'boards', boardObj.id, 'todo'))
 
     const todoObj = {
         ...sampleTaskItem,
@@ -33,9 +32,7 @@ export const addBoard = async (title, setBoards) => {
     })
 
     // Subcollection Doing
-    const subDoing = doc(
-        collection(db, 'users', uid, 'boards', subBoards.id, 'doing')
-    )
+    const subDoing = doc(collection(db, 'boards', boardObj.id, 'doing'))
 
     const doingObj = {
         ...sampleTaskItem,
@@ -47,9 +44,7 @@ export const addBoard = async (title, setBoards) => {
     await setDoc(subDoing, doingObj)
 
     // Subcollection Done
-    const subDone = doc(
-        collection(db, 'users', uid, 'boards', subBoards.id, 'done')
-    )
+    const subDone = doc(collection(db, 'boards', boardObj.id, 'done'))
 
     const doneObj = {
         ...sampleTaskItem,
@@ -83,9 +78,7 @@ export const setNewCardItem = async (
 ) => {
     const { uid } = auth.currentUser
 
-    const cardRef = doc(
-        collection(db, 'users', uid, 'boards', boardId, boardStatus)
-    )
+    const cardRef = doc(collection(db, 'boards', boardId, boardStatus))
 
     const cardObj = {
         ...sampleTaskItem,

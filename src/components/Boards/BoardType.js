@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { doc, deleteDoc, setDoc } from 'firebase/firestore'
-import { db, auth } from '../../firebase.config'
+import { db } from '../../firebase.config'
 
 import Icon from '../../UI/Icon'
 import Button from '../../UI/Button'
@@ -30,7 +30,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
     }
 
     const dropHandler = (e) => {
-        const { uid } = auth.currentUser
+        // const { uid } = auth.currentUser
         const stringData = e.dataTransfer.getData('custom-type')
         const cardData = JSON.parse(stringData)
         if (
@@ -50,8 +50,6 @@ const BoardType = ({ boardStatus, id, cards }) => {
                 await deleteDoc(
                     doc(
                         db,
-                        'users',
-                        uid,
                         'boards',
                         id,
                         cardData.boardType,
@@ -59,15 +57,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
                     )
                 )
                 await setDoc(
-                    doc(
-                        db,
-                        'users',
-                        uid,
-                        'boards',
-                        id,
-                        boardStatus,
-                        cardData.cardObj.id
-                    ),
+                    doc(db, 'boards', id, boardStatus, cardData.cardObj.id),
                     newCardItem
                 )
             }

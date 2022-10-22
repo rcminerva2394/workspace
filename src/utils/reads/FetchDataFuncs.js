@@ -7,7 +7,7 @@ export const getBoards = async (updateContext) => {
     try {
         const boards = []
         const queryBoards = query(
-            collection(db, 'users', uid, 'boards'),
+            collection(db, 'boards'),
             where(`members.${uid}`, '==', 'owner' || 'member')
         )
         const querySnapshot = await getDocs(queryBoards)
@@ -26,71 +26,59 @@ export const getBoards = async (updateContext) => {
 export const getBoardType = async (boardId, boardStatus, updateContext) => {
     const { uid } = auth.currentUser
     try {
-        const boardType = []
         const queryBoardType = query(
-            collection(db, 'users', uid, 'boards', boardId, boardStatus),
+            collection(db, 'boards', boardId, boardStatus),
             where(`members.${uid}`, '==', 'owner' || 'member')
         )
         const querySnapshot = await getDocs(queryBoardType)
-        querySnapshot.forEach((doc) => {
-            console.log(doc.id, doc.data())
-            boardType.push(doc.data())
+        const boardTypeTasks = []
+        querySnapshot.forEach((docTask) => {
+            boardTypeTasks.push(docTask.data())
         })
 
-        // also fetch subtasks if there are already
-        const updatedBoardType = boardType.map(async (task) => {
-            const querySubtasks = query(
-                collection(
-                    db,
-                    'users',
-                    uid,
-                    'boards',
-                    boardId,
-                    boardStatus,
-                    task.id,
-                    'subtasks'
-                ),
-                where(`members.${uid}`, '==', 'owner' || 'member')
-            )
-            const querySubtasksSnapshot = await getDocs(querySubtasks)
-            const subtasksList = []
-            querySubtasksSnapshot.forEach((doc) => {
-                console.log(doc.id, doc.data())
-                subtasksList.push(doc.data())
+        // Fetch subtasks if there are too :)
+        const boardType = await Promise.all(
+            boardTypeTasks.map(async (doc) => {
+                const querySubtasks = query(
+                    collection(
+                        db,
+                        'boards',
+                        boardId,
+                        boardStatus,
+                        doc.id,
+                        'subtasks'
+                    ),
+                    where(`members.${uid}`, '==', 'owner' || 'member')
+                )
+                const querySubtasksSnapshot = await getDocs(querySubtasks)
+                const subtasksList = []
+                querySubtasksSnapshot.forEach((task) => {
+                    subtasksList.push(task.data())
+                })
+                return {
+                    ...doc,
+                    subtasks: subtasksList,
+                }
             })
-            console.log(subtasksList)
-            return {
-                ...task,
-                subtasks: subtasksList,
-            }
-        })
+        )
+        console.log(boardTypeTasks)
 
-        // // Update the Board Context which includes the board types
-        // updateContext((prevState) => {
-        //     const updatedBoards = prevState.map((project) => {
-        //         if (project.id === boardId) {
-        //             return {
-        //                 ...project,
-        //                 [boardStatus]: boardType,
-        //             }
-        //         }
-        //         return project
-        //     })
-        //     return updatedBoards
-        // })
-
+        // Update the Board Context which includes the board types
         updateContext((prevState) => {
             const updatedBoards = prevState.map((project) => {
                 if (project.id === boardId) {
                     return {
                         ...project,
-                        [boardStatus]: updatedBoardType,
+                        [boardStatus]: boardType,
                     }
                 }
+
                 return project
             })
             return updatedBoards
         })
+
+        console.log(boardType)
     } catch (err) {
         console.log(err)
         console.log(err.message)

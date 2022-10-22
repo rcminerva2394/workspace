@@ -39,6 +39,12 @@ The goal is to practice React with Firebase integration.
 
 ### Database and Data Structure
 
+I chose the root-level collections as suggested by firestore. The reason is my app has a distinct need of sharing the boards to other users. Since copying a board to another user (a member) doesn't sound efficient, I opted to separate the boards collection and users collection. In this case, the users who share a board will only edit one board and its subcollections. Each board in boards collection will hold members (either the owner or a member). When a user logs in, frontend will query the boards collection one by one to fetch only the boards wherein users id are listed in the members object.
+
+I am not pretty sure if this is faster since the app could have thousands of boards and it might take longer time to fetch one by one. However since this is just for practice, I guess this is not a bad data structure for my case.
+
+(./screenshots/data-structure.png)
+
 ## Learnings
 
 ## Areas for Improvement

@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { doc, deleteDoc, setDoc } from 'firebase/firestore'
-import { db, auth } from '../../firebase.config'
+import { db } from '../../firebase.config'
 import { useBoards } from '../../contexts/boards-context'
 
 const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     const [selected, setSelected] = useState(card.status)
     const { setBoards } = useBoards()
-    const { uid } = auth.currentUser
+    // const { uid } = auth.currentUser
 
     // Card Status Options
     const cardStatusArr = ['todo', 'doing', 'done']
@@ -35,19 +35,9 @@ const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
             }
 
             // Deleting the card item from its first board type and move it to the the new board type/status
-            await deleteDoc(
-                doc(db, 'users', uid, 'boards', boardId, boardStatus, card.id)
-            )
+            await deleteDoc(doc(db, 'boards', boardId, boardStatus, card.id))
             await setDoc(
-                doc(
-                    db,
-                    'users',
-                    uid,
-                    'boards',
-                    boardId,
-                    e.target.value,
-                    card.id
-                ),
+                doc(db, 'boards', boardId, e.target.value, card.id),
                 newCardStat
             )
 

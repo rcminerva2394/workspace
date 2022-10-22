@@ -1,65 +1,54 @@
 import { doc, setDoc, collection } from 'firebase/firestore'
 import { db } from '../../firebase.config'
 import { sampleTaskItem } from '../exampleData'
+import { useColors } from '../../Theme/Themes'
 
-// For new users, a function to create a user document including the subcollections of boards, todos, doings, and done
+// For new users, a function to create a collection of boards with subcollections todos, doings, and done
 const setData = async (authData, setBoards) => {
     const { uid, email, displayName, photoURL, emailVerified, metadata } =
         authData
+    const { setColors } = useColors()
 
-    // // subtask function
-
-    // const subTaskFunc = async (boardId, type, taskId) => {
-    //     await doc(
-    //         collection(
-    //             db,
-    //             'users',
-    //             uid,
-    //             'boards',
-    //             boardId,
-    //             type,
-    //             taskId,
-    //             'subtasks'
-    //         )
-    //     )
-    //     setDoc(doc)
-    // }
+    // Set color of the profile pic
+    const rgbColorGenerator = () => {
+        const r = Math.floor(Math.random() * 250)
+        const g = Math.floor(Math.random() * 250)
+        const b = Math.floor(Math.random() * 250)
+        return `rgb(${r}, ${g}, ${b})`
+    }
 
     try {
         const docRef = doc(db, 'users', uid)
+        const userObj = {
+            userId: uid,
+            name: displayName,
+            color: rgbColorGenerator(),
+            userEmail: email,
+            photo: photoURL,
+            isEmailVerified: emailVerified,
+            created: metadata.creationTime || null,
+            lastSignIn: metadata.lastSignInTime,
+        }
 
         // Set it
-        await setDoc(
-            docRef,
-            {
-                userId: uid,
-                name: displayName,
-                userEmail: email,
-                photo: photoURL,
-                isEmailVerified: emailVerified,
-                created: metadata.creationTime || null,
-                lastSignIn: metadata.lastSignInTime,
-            },
-            { merge: true }
-        )
+        await setDoc(docRef, userObj, { merge: true })
+        setColors((prevColors) => {
+            return { ...prevColors, userColor: userObj.color }
+        })
 
-        // Subcollection board
-        const subBoards = doc(collection(db, 'users', uid, 'boards'))
+        // board collection
+        const boardCol = doc(collection(db, 'boards'))
 
         const boardObj = {
             name: 'Sample Board Title',
-            id: subBoards.id,
+            id: boardCol.id,
             members: { [uid]: 'owner' },
         }
 
-        await setDoc(subBoards, boardObj)
-
-        console.log(subBoards.id)
+        await setDoc(boardCol, boardObj)
 
         // Subcollection Todo
-        const subTodo = doc(
-            collection(db, 'users', uid, 'boards', subBoards.id, 'todo')
-        )
+        const subTodo = doc(collection(db, 'boards', boardObj.id, 'todo'))
 
         const todoObj = {
             ...sampleTaskItem,
@@ -69,25 +58,8 @@ const setData = async (authData, setBoards) => {
         }
         await setDoc(subTodo, todoObj)
 
-        // // subTasks
-
-        // doc(
-        //     collection(
-        //         db,
-        //         'users',
-        //         uid,
-        //         'boards',
-        //         subBoards.id,
-        //         'todo',
-        //         subTodo.id,
-        //         'subtasks'
-        //     )
-        // )
-
         // Subcollection Doing
-        const subDoing = doc(
-            collection(db, 'users', uid, 'boards', subBoards.id, 'doing')
-        )
+        const subDoing = doc(collection(db, 'boards', boardObj.id, 'doing'))
 
         const doingObj = {
             ...sampleTaskItem,
@@ -97,24 +69,8 @@ const setData = async (authData, setBoards) => {
         }
         await setDoc(subDoing, doingObj)
 
-        // subTasks
-        // doc(
-        //     collection(
-        //         db,
-        //         'users',
-        //         uid,
-        //         'boards',
-        //         subBoards.id,
-        //         'doing',
-        //         subDoing.id,
-        //         'subtasks'
-        //     )
-        // )
-
         // Subcollection Done
-        const subDone = doc(
-            collection(db, 'users', uid, 'boards', subBoards.id, 'done')
-        )
+        const subDone = doc(collection(db, 'boards', boardObj.id, 'done'))
 
         const doneObj = {
             ...sampleTaskItem,
@@ -124,20 +80,6 @@ const setData = async (authData, setBoards) => {
         }
 
         await setDoc(subDone, doneObj)
-
-        // subTasks
-        // doc(
-        //     collection(
-        //         db,
-        //         'users',
-        //         uid,
-        //         'boards',
-        //         subBoards.id,
-        //         'done',
-        //         subDone.id,
-        //         'subtasks'
-        //     )
-        // )
 
         setBoards([
             {

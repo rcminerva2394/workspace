@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db, auth } from '../../firebase.config'
+import { db } from '../../firebase.config'
 
 import Button from '../../UI/Button'
 import { useBoards } from '../../contexts/boards-context'
@@ -10,21 +10,13 @@ const CardDescription = ({ card, boardId, boardStatus }) => {
     const [isWriteDescription, setIsWriteDescription] = useState(false)
     const [cardDescription, setCardDescription] = useState(card.description)
     const { setBoards } = useBoards()
-    const { uid } = auth.currentUser
+    // const { uid } = auth.currentUser
 
     // Adding Description
     const addDescriptionHandler = async (e) => {
         e.preventDefault()
 
-        const cardDescrRef = doc(
-            db,
-            'users',
-            uid,
-            'boards',
-            boardId,
-            boardStatus,
-            card.id
-        )
+        const cardDescrRef = doc(db, 'boards', boardId, boardStatus, card.id)
 
         // Set the new title of the card in firestore server
         await updateDoc(cardDescrRef, {
