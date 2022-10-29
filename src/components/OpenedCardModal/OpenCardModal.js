@@ -34,7 +34,6 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
     const [hasSubtasks, setHasSubtasks] = useState(subtasksLength())
     const [willDeleteCard, setWillDeleteCard] = useState(false)
     const { setBoards } = useBoards()
-    // const { uid } = auth.currentUser
 
     const dateHandler = async (dateObj) => {
         // update context frontend
@@ -90,6 +89,23 @@ const Main = ({ card, onClose, boardId, boardStatus }) => {
                             card.id,
                             'subtasks',
                             subtask.id
+                        )
+                    )
+                })
+            )
+
+            // delete its comments too
+            await Promise.all(
+                card.comments.forEach(async (comment) => {
+                    await deleteDoc(
+                        doc(
+                            db,
+                            'boards',
+                            boardId,
+                            boardStatus,
+                            card.id,
+                            'comments',
+                            comment.id
                         )
                     )
                 })

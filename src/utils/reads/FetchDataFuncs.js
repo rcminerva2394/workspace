@@ -22,7 +22,7 @@ export const getBoards = async (updateContext) => {
     }
 }
 
-// function to fetch the Board type (Todos, Doings, Dones)
+// function to fetch the Board type (Todos, Doings, Dones and its subtasks and comments)
 export const getBoardType = async (boardId, boardStatus, updateContext) => {
     const { uid } = auth.currentUser
     try {
@@ -39,6 +39,7 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
         // Fetch subtasks if there are too :)
         const boardType = await Promise.all(
             boardTypeTasks.map(async (doc) => {
+                // Fetch Subtasks
                 const querySubtasks = query(
                     collection(
                         db,
@@ -55,9 +56,40 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
                 querySubtasksSnapshot.forEach((task) => {
                     subtasksList.push(task.data())
                 })
+
+                // Fetch comments if there are too :)
+                const queryComments = query(
+                    collection(
+                        db,
+                        'boards',
+                        boardId,
+                        boardStatus,
+                        doc.id,
+                        'comments'
+                    ),
+                    where(`members.${uid}`, '==', 'creator' || 'member')
+                )
+                const queryCommentsSnapshot = await getDocs(queryComments)
+                const commentList = []
+                queryCommentsSnapshot.forEach((comment) => {
+                    // to convert the time from fireStore to a date Object
+                    const time = new Date(
+                        comment.data().date.seconds * 1000 +
+                            comment.data().date.nanoseconds / 1000000
+                    )
+
+                    const commentObj = {
+                        ...comment.data(),
+                        date: time,
+                    }
+
+                    commentList.push(commentObj)
+                })
+
                 return {
                     ...doc,
                     subtasks: subtasksList,
+                    comments: commentList,
                 }
             })
         )

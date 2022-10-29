@@ -9,10 +9,13 @@ import BoardListPrev from '../Boards/BoardListPrev'
 import device from '../../UI/Breakpoint'
 import { getBoards } from '../../utils/reads/FetchDataFuncs'
 import { addBoard } from '../../utils/writes/writeData'
+import { useAuth } from '../../contexts/auth-context'
 
 const CreateBoard = () => {
     const [isCreatingBoard, setIsCreatingBoard] = useState(false)
     const { setBoards } = useBoards()
+    const { user } = useAuth()
+    console.log(user)
 
     // fetch the boards
     useEffect(() => {

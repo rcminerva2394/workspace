@@ -1,40 +1,29 @@
 import { doc, setDoc, collection } from 'firebase/firestore'
 import { db } from '../../firebase.config'
 import { sampleTaskItem } from '../exampleData'
-import { useColors } from '../../Theme/Themes'
 
 // For new users, a function to create a collection of boards with subcollections todos, doings, and done
 const setData = async (authData, setBoards) => {
     const { uid, email, displayName, photoURL, emailVerified, metadata } =
         authData
-    const { setColors } = useColors()
 
-    // Set color of the profile pic
-    const rgbColorGenerator = () => {
-        const r = Math.floor(Math.random() * 250)
-        const g = Math.floor(Math.random() * 250)
-        const b = Math.floor(Math.random() * 250)
-        return `rgb(${r}, ${g}, ${b})`
-    }
+    // Set the creation time if metadata creation time is not available
+    const today = new Date()
 
     try {
         const docRef = doc(db, 'users', uid)
         const userObj = {
             userId: uid,
             name: displayName,
-            color: rgbColorGenerator(),
             userEmail: email,
             photo: photoURL,
             isEmailVerified: emailVerified,
-            created: metadata.creationTime || null,
+            created: metadata.creationTime || today,
             lastSignIn: metadata.lastSignInTime,
         }
 
         // Set it
         await setDoc(docRef, userObj, { merge: true })
-        setColors((prevColors) => {
-            return { ...prevColors, userColor: userObj.color }
-        })
 
         // board collection
         const boardCol = doc(collection(db, 'boards'))

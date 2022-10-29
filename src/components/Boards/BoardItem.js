@@ -6,10 +6,13 @@ import BoardType from './BoardType'
 import device from '../../UI/Breakpoint'
 import { useBoards } from '../../contexts/boards-context'
 import { getBoardType } from '../../utils/reads/FetchDataFuncs'
+import { useAuth } from '../../contexts/auth-context'
 
 const BoardItem = () => {
     const { id } = useParams()
     const { boards, setBoards } = useBoards()
+    const { user } = useAuth()
+    console.log(user)
 
     // fetch the todo, doing, and done subcollection
     useEffect(() => {

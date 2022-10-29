@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from 'react'
+// import React, { useState, useContext, useMemo } from 'react'
 
 const COLORS = {
     darkestGray: '#252727',
@@ -24,22 +24,24 @@ const COLORS = {
     },
 }
 
-const ThemesContext = React.createContext({
-    colors: COLORS,
-    setColors: () => {},
-})
+// const ThemesContext = React.createContext({
+//     colors: COLORS,
+//     setColors: () => {},
+// })
 
-export const useColors = () => {
-    return useContext(ThemesContext)
-}
+// export const useColors = () => {
+//     return useContext(ThemesContext)
+// }
 
-export const ThemesProvider = ({ children }) => {
-    const [themes, setThemes] = useState()
-    const themesValue = useMemo(() => ({ themes, setThemes }), [themes])
+// export const ThemesProvider = ({ children }) => {
+//     const [themes, setThemes] = useState()
+//     const themesValue = useMemo(() => ({ themes, setThemes }), [themes])
 
-    return (
-        <ThemesContext.Provider value={themesValue}>
-            {children}
-        </ThemesContext.Provider>
-    )
-}
+//     return (
+//         <ThemesContext.Provider value={themesValue}>
+//             {children}
+//         </ThemesContext.Provider>
+//     )
+// }
+
+export default COLORS

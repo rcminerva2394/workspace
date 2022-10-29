@@ -6,6 +6,7 @@ import SideNavBar from './SideNavBar'
 
 const PrivateRoutes = () => {
     const user = auth.currentUser
+    console.log(user)
 
     if (user) {
         return (
