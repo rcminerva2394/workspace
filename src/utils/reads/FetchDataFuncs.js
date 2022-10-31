@@ -72,7 +72,7 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
                 const queryCommentsSnapshot = await getDocs(queryComments)
                 const commentList = []
                 queryCommentsSnapshot.forEach((comment) => {
-                    // to convert the time from fireStore to a date Object
+                    // to convert the firestore timestamp  to a date Object
                     const time = new Date(
                         comment.data().date.seconds * 1000 +
                             comment.data().date.nanoseconds / 1000000

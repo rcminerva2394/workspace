@@ -1,10 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
 import Comment from './Comment'
 
 const CommentList = ({ card, boardId, boardStatus }) => {
     return (
-        <ListWrapper>
+        <ul>
             {card.comments.map((comment) => (
                 <Comment
                     commentItem={comment}
@@ -14,12 +13,8 @@ const CommentList = ({ card, boardId, boardStatus }) => {
                     boardStatus={boardStatus}
                 />
             ))}
-        </ListWrapper>
+        </ul>
     )
 }
-
-const ListWrapper = styled.ul`
-    padding: 15rem 0;
-`
 
 export default CommentList

@@ -15,7 +15,6 @@ const SubtaskItem = ({ card, subtask, boardId, boardStatus }) => {
         subtask.completed
     )
     const { setBoards } = useBoards()
-    // const { uid } = auth.currentUser
 
     const subtaskTitleRef = doc(
         db,

@@ -15,6 +15,11 @@ const DELETETYPES = {
         message:
             'Deleting subtasks is permanent and there is no way to undo it',
     },
+    comment: {
+        title: 'Delete Comment?',
+        message:
+            'Deleting a comment is permanent and there is no way to undo it',
+    },
 }
 
 const DeleteBackdrop = ({ onCancel }) => <Backdrop onClick={onCancel} />
