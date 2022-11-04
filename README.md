@@ -60,7 +60,7 @@ I am not pretty sure if this is faster since the app could have thousands of boa
 | Can use Firestore auto-generated ID  | Yes    | Yes (by creating document reference) |
 
 Both can be used to write a doc to a collection.
-But setDoc can overwrite a document or update the document if you specify to merge the data. They said, use addDoc if you want a Firestore auto-generated ID, while use setDoc to specify a document with a custom ID. Just make sure you have the collection within that code too.
+But setDoc can overwrite a document or update the document if you specify to merge the data. They said, use addDoc if you want a Firestore auto-generated ID, while use setDoc to specify a document with a custom ID. However, in this app, I use setDoc a lot because I can use fireStore auto-generated ID too by creating a document reference. Just make sure you have the collection within that code too.
 
 Example:
 
