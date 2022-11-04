@@ -30,7 +30,6 @@ const BoardType = ({ boardStatus, id, cards }) => {
     }
 
     const dropHandler = (e) => {
-        // const { uid } = auth.currentUser
         const stringData = e.dataTransfer.getData('custom-type')
         const cardData = JSON.parse(stringData)
         if (
@@ -39,13 +38,57 @@ const BoardType = ({ boardStatus, id, cards }) => {
         ) {
             e.preventDefault()
 
+            // Destructure the comments and subtasks out of the card obj because in firestore they are subcollections
+            const { comments, subtasks, ...rest } = cardData.cardObj
+            console.log(subtasks)
+
             // Transfer and delete card to the new board type
             const newCardItem = {
-                ...cardData.cardObj,
+                ...rest,
                 status: boardStatus,
             }
 
+            // function to delete subcollections
+            const deleteSubOldBoardType = async (subColl, subCollName) => {
+                await Promise.all(
+                    subColl.forEach(async (subCollItem) => {
+                        await deleteDoc(
+                            doc(
+                                db,
+                                'boards',
+                                id,
+                                cardData.boardType,
+                                cardData.cardObj.id,
+                                subCollName,
+                                subCollItem.id
+                            )
+                        )
+                    })
+                )
+            }
+
+            // function to set subscollection for comments and subtasks
+            const setSubCollection = async (subColl, subCollName) => {
+                await Promise.all(
+                    subColl.map(async (subCollItem) => {
+                        await setDoc(
+                            doc(
+                                db,
+                                'boards',
+                                id,
+                                boardStatus,
+                                cardData.cardObj.id,
+                                subCollName,
+                                subCollItem.id
+                            ),
+                            subCollItem
+                        )
+                    })
+                )
+            }
+
             // Deleting the card item from its first board type and move it to the the new board type
+            // First delete the card in the board status, and create a new one in desired boardStatus
             const moveCard = async () => {
                 await deleteDoc(
                     doc(
@@ -56,15 +99,31 @@ const BoardType = ({ boardStatus, id, cards }) => {
                         cardData.cardObj.id
                     )
                 )
+
+                // Copy them to desired boardStatus
                 await setDoc(
                     doc(db, 'boards', id, boardStatus, cardData.cardObj.id),
                     newCardItem
                 )
+
+                // Now set the subcollection subtasks and comments to its new boardType
+                setSubCollection(subtasks, 'subtasks')
+                setSubCollection(comments, 'comments')
+
+                // Delete the subcollection subtasks and comments from its old boardType
+                deleteSubOldBoardType(subtasks, 'subtasks')
+                deleteSubOldBoardType(comments, 'comments')
             }
 
             moveCard()
 
             // Update the context frontend
+            const updatedCardItem = {
+                ...newCardItem,
+                subtasks,
+                comments,
+            }
+
             setBoards((prevState) => {
                 const updatedBoards = prevState.map((project) => {
                     if (project.id === cardData.idBoard) {
@@ -78,7 +137,7 @@ const BoardType = ({ boardStatus, id, cards }) => {
                             [cardData.boardType]: updatedCardSet,
                             [boardStatus]: [
                                 ...project[boardStatus],
-                                newCardItem,
+                                updatedCardItem,
                             ],
                         }
                     }

@@ -47,6 +47,57 @@ I am not pretty sure if this is faster since the app could have thousands of boa
 
 ## Learnings
 
+### Firestore
+
+#### addDoc vs. setDoc
+
+| Differences                          | addDoc | setDoc                               |
+| ------------------------------------ | ------ | ------------------------------------ |
+| Can create a doc                     | Yes    | Yes                                  |
+| Can use to overwrite a doc           | No     | Yes                                  |
+| Can data be merged with existing doc | No     | Yes                                  |
+| Can create custom ID                 | No     | Yes                                  |
+| Can use Firestore auto-generated ID  | Yes    | Yes (by creating document reference) |
+
+Both can be used to write a doc to a collection.
+But setDoc can overwrite a document or update the document if you specify to merge the data. They said, use addDoc if you want a Firestore auto-generated ID, while use setDoc to specify a document with a custom ID. Just make sure you have the collection within that code too.
+
+Example:
+
+**setDoc using Firestore auto-generated ID**
+
+```
+// board collection
+        const boardCol = doc(collection(db, 'boards'))
+
+        const boardObj = {
+            name: 'Sample Board Title',
+            id: boardCol.id,
+            members: { [uid]: 'owner' },
+        }
+
+        await setDoc(boardCol, boardObj)
+```
+
+As you can see here, if I want to use an auto-generated id from firestore using setDoc, all I have to do is to call doc and mention collection. It is like saying, create a doc inside the collection boards. Then, in my boardObj, I used the boardCol reference as an id.
+
+**SetDoc using custom ID**
+
+```
+await setDoc(doc(db, ‘boards’, ‘boardIDSample’), boardObj)
+```
+
+Here I’m just creating a doc by using setDoc. It is like saying, create a doc in my database, inside boards using this id.
+
+#### setDoc vs. updateDoc
+
+| Differences          | setDoc                                                                                 | updateDoc                                             |
+| -------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| If doc exists        | With merge, you are updating the fields. Without merge, you are overwriting the fields | You can update the fields without overwriting the doc |
+| If doc doesn’t exist | With or without merge, you are creating the doc                                        | It will fail                                          |
+
+I opted to use updateDoc, because I don’t want to automatically create a doc if the doc I’m trying to update doesn’t exist, especially for event listeners catered for updating data.
+
 ## Areas for Improvement
 
 -   Additional features in the future

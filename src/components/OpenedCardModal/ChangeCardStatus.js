@@ -8,7 +8,6 @@ import { useBoards } from '../../contexts/boards-context'
 const ChangeCardStatus = ({ card, boardId, boardStatus }) => {
     const [selected, setSelected] = useState(card.status)
     const { setBoards } = useBoards()
-    // const { uid } = auth.currentUser
 
     // Card Status Options
     const cardStatusArr = ['todo', 'doing', 'done']
