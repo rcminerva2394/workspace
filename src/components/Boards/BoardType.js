@@ -11,6 +11,11 @@ import { useBoards } from '../../contexts/boards-context'
 import device from '../../UI/Breakpoint'
 import { setNewCardItem } from '../../utils/writes/writeData'
 
+import {
+    deleteSubCollection,
+    setSubCollection,
+} from '../../utils/firestoreMethods'
+
 const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
@@ -40,51 +45,11 @@ const BoardType = ({ boardStatus, id, cards }) => {
 
             // Destructure the comments and subtasks out of the card obj because in firestore they are subcollections
             const { comments, subtasks, ...rest } = cardData.cardObj
-            console.log(subtasks)
 
             // Transfer and delete card to the new board type
             const newCardItem = {
                 ...rest,
                 status: boardStatus,
-            }
-
-            // function to delete subcollections
-            const deleteSubOldBoardType = async (subColl, subCollName) => {
-                await Promise.all(
-                    subColl.forEach(async (subCollItem) => {
-                        await deleteDoc(
-                            doc(
-                                db,
-                                'boards',
-                                id,
-                                cardData.boardType,
-                                cardData.cardObj.id,
-                                subCollName,
-                                subCollItem.id
-                            )
-                        )
-                    })
-                )
-            }
-
-            // function to set subscollection for comments and subtasks
-            const setSubCollection = async (subColl, subCollName) => {
-                await Promise.all(
-                    subColl.map(async (subCollItem) => {
-                        await setDoc(
-                            doc(
-                                db,
-                                'boards',
-                                id,
-                                boardStatus,
-                                cardData.cardObj.id,
-                                subCollName,
-                                subCollItem.id
-                            ),
-                            subCollItem
-                        )
-                    })
-                )
             }
 
             // Deleting the card item from its first board type and move it to the the new board type
@@ -107,12 +72,37 @@ const BoardType = ({ boardStatus, id, cards }) => {
                 )
 
                 // Now set the subcollection subtasks and comments to its new boardType
-                setSubCollection(subtasks, 'subtasks')
-                setSubCollection(comments, 'comments')
+                setSubCollection(
+                    id,
+                    boardStatus,
+                    cardData.cardObj.id,
+                    subtasks,
+                    'subtasks'
+                )
+                setSubCollection(
+                    id,
+                    boardStatus,
+                    cardData.cardObj.id,
+                    comments,
+                    'comments'
+                )
 
                 // Delete the subcollection subtasks and comments from its old boardType
-                deleteSubOldBoardType(subtasks, 'subtasks')
-                deleteSubOldBoardType(comments, 'comments')
+                deleteSubCollection(
+                    id,
+                    cardData.boardType,
+                    cardData.cardObj.id,
+                    subtasks,
+                    'subtasks'
+                )
+                // deleteSubOldBoardType(subtasks, 'subtasks')
+                deleteSubCollection(
+                    id,
+                    cardData.boardType,
+                    cardData.cardObj.id,
+                    comments,
+                    'comments'
+                )
             }
 
             moveCard()

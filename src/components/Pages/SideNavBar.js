@@ -65,8 +65,11 @@ const SideNav = ({ onClose }) => {
                             {boards && (
                                 <ul>
                                     {boards.map((board) => (
-                                        <Link to={`board/${board.id}`}>
-                                            <Span key={board.id}>
+                                        <Link
+                                            to={`board/${board.id}`}
+                                            key={board.id}
+                                        >
+                                            <Span>
                                                 <Icon
                                                     name="Board"
                                                     margin="20rem"

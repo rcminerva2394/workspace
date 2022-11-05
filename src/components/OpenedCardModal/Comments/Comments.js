@@ -49,7 +49,7 @@ const Comments = ({ card, boardId, boardStatus }) => {
             id: commentRef.id,
             comment: userComment,
             from: uid,
-            date: new Date(),
+            date: new Date().toISOString(),
             members: { [uid]: membershipStatus },
             photo: photoURL,
             madeBy: displayName,

@@ -26,7 +26,7 @@ const BoardListPrev = () => {
                         <Loader />
                     ) : (
                         boards.map((board) => (
-                            <Link to={`board/${board.id}`}>
+                            <Link to={`board/${board.id}`} key={board.id}>
                                 <li key={board.id}>
                                     <BoardName>{board.name}</BoardName>
                                     <BGPhoto

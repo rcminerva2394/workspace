@@ -12,7 +12,8 @@ const Comment = ({ commentItem, card, boardId, boardStatus }) => {
     const [willDeleteComment, setwillDeleteComment] = useState(false)
     const { setBoards } = useBoards()
 
-    const timeComment = `${date.toDateString()} at ${date.toLocaleTimeString()}`
+    const dateFormat = new Date(date)
+    const timeComment = `${dateFormat.toDateString()} at ${dateFormat.toLocaleTimeString()}`
 
     const commentItemRef = doc(
         db,
@@ -30,7 +31,7 @@ const Comment = ({ commentItem, card, boardId, boardStatus }) => {
         const updateComment = async () => {
             await updateDoc(commentItemRef, {
                 comment: editedComment,
-                date: new Date(),
+                date: new Date().toISOString(),
             })
         }
 
@@ -49,6 +50,7 @@ const Comment = ({ commentItem, card, boardId, boardStatus }) => {
                                             return {
                                                 ...comnt,
                                                 comment: editedComment,
+                                                date: new Date().toISOString(),
                                             }
                                         }
                                         return comnt
