@@ -264,7 +264,7 @@ const Backdrop = styled.div`
     width: 100%;
     height: 100vh;
     z-index: 52;
-    background-color: hsla(0, 0%, 22%, 0.83);
+    background: rgba(0, 0, 0, 0.72);
 `
 const Close = styled.span`
     display: flex;

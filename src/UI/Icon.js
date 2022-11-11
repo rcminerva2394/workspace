@@ -17,6 +17,7 @@ import {
     FaUserAlt,
     FaPlus,
     FaHome,
+    FaUserPlus,
 } from 'react-icons/fa'
 
 import { ImCross, ImSpinner6 } from 'react-icons/im'
@@ -46,6 +47,7 @@ const icons = {
     Home: FaHome,
     Board: MdOutlineSpaceDashboard,
     Spinner: ImSpinner6,
+    AddUser: FaUserPlus,
 }
 
 const Icon = ({ name, onClick, iconColor, hoverColor, size, margin }) => {

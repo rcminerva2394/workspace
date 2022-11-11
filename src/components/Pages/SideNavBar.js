@@ -145,7 +145,8 @@ const Backdrop = styled.div`
     width: 100%;
     height: 100vh;
     z-index: 10;
-    background-color: hsla(0, 0%, 22%, 0.83);
+    background: rgba(0, 0, 0, 0.72);
+    ${'' /* background-color: hsla(0, 0%, 22%, 0.83); */}
     @media only screen and ${device.laptop} {
         display: none;
     } ;

@@ -10,6 +10,21 @@ const setData = async (authData, setBoards) => {
     // Set the creation time if metadata creation time is not available
     const today = new Date()
 
+    // For User initials
+    // Check if displayName is one word or more
+    let initialsName
+    if (displayName === null) {
+        initialsName = email[0].toUpperCase()
+    } else if (/\s/g.test(displayName) === true) {
+        initialsName = displayName
+            .split(' ')
+            .map((word) => word[0])
+            .join('')
+            .toUpperCase()
+    } else if (/\s/g.test(displayName) === false) {
+        initialsName = displayName[0].toUpperCase()
+    }
+
     try {
         const docRef = doc(db, 'users', uid)
         const userObj = {
@@ -17,6 +32,7 @@ const setData = async (authData, setBoards) => {
             name: displayName,
             userEmail: email,
             photo: photoURL,
+            initials: initialsName,
             isEmailVerified: emailVerified,
             created: metadata.creationTime || today,
             lastSignIn: metadata.lastSignInTime,

@@ -45,6 +45,15 @@ I am not pretty sure if this is faster since the app could have thousands of boa
 
 ![data structure of this app](./screenshots/data-structure.png)
 
+### Invite System
+
+I now faced the biggest hurdle so far in using firestore. I couldn't find a better and cheaper way for searching/filter asubstring. Firestore doesn't have methods like .includes of JS or Firestore just don't support querying substrings of a strings in fields per document. Firestore suggests using third party solutions like Algolia.
+
+I intend to make this app cost-free and yet secure. My app needed to safely query/filter substrings in the users collection in the database as I can't compromise the users data in the client-side.
+
+I needed it for inviting other users to access a board, and therefore, leave comments.
+I'm still searching what workarounds I can use...
+
 ## Learnings
 
 ### Firestore
