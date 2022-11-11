@@ -49,6 +49,7 @@ h3 {
 
 button {
     font-family: inherit;
+   
 }
 
 label {
@@ -62,6 +63,7 @@ input {
     border-color: ${({ theme }) => theme.lightGray};
     border-radius: 4px;
     padding: 8rem;
+
 }
 
 ul {

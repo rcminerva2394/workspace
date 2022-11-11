@@ -47,12 +47,38 @@ I am not pretty sure if this is faster since the app could have thousands of boa
 
 ### Invite System
 
-I now faced the biggest hurdle so far in using firestore. I couldn't find a better and cheaper way for searching/filter asubstring. Firestore doesn't have methods like .includes of JS or Firestore just don't support querying substrings of a strings in fields per document. Firestore suggests using third party solutions like Algolia.
+I now faced the biggest hurdle so far in using firestore. I couldn't find a better and cheaper way for searching/filter a substring. Firestore doesn't have methods like .includes of JS or Firestore just don't support querying substrings of a strings in fields per document. Firestore suggests using third party solutions like Algolia.
 
 I intend to make this app cost-free and yet secure. My app needed to safely query/filter substrings in the users collection in the database as I can't compromise the users data in the client-side.
 
 I needed it for inviting other users to access a board, and therefore, leave comments.
-I'm still searching what workarounds I can use...
+
+I found a temporary solution suggested by Nick Carducci on [Stackoverflow] (https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search).
+When a user signs in, I also include a name array where I will be using it in fetching the user doc by calling array-contains
+
+```
+    const name = email
+        .split('@')[0]
+        .split(/[^a-z]/i)
+        .join(' ')
+
+    const arr = []
+    const e = (displayName || name).toLowerCase()
+
+    for (let i = 1; i < e.length + 1; i++) {
+        arr.push(e.substring(0, i))
+    }
+
+   // for filtering the users
+    const matchedUser = 'the value inputted by the user'
+    const queryUsers = query(
+                collection(db, 'users'),
+                where('nameArray', 'array-contains', matchedUser)
+            )
+
+```
+
+I used this implying the user doesn't have a long name/last name because for free tier, the max dept for maps or array is 20 only.
 
 ## Learnings
 

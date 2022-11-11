@@ -25,17 +25,36 @@ const setData = async (authData, setBoards) => {
         initialsName = displayName[0].toUpperCase()
     }
 
+    // For extracting the names from the email
+    const name = email.split('@')[0].split(/[^a-z]/i)
+
+    // For namearray that I will use for searching users later when another user wants to invite or add a user
+    const arr = []
+    const e = (displayName || name.join(' ')).toLowerCase()
+
+    /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
+    for (let i = 1; i < e.length + 1; i++) {
+        arr.push(e.substring(0, i))
+    }
+
+    const capitalizedName = name
+        .map((nameItem) => {
+            return nameItem.charAt(0).toUpperCase() + nameItem.slice(1)
+        })
+        .join(' ')
+
     try {
         const docRef = doc(db, 'users', uid)
         const userObj = {
             userId: uid,
-            name: displayName,
+            name: displayName || capitalizedName,
             userEmail: email,
             photo: photoURL,
             initials: initialsName,
             isEmailVerified: emailVerified,
             created: metadata.creationTime || today,
             lastSignIn: metadata.lastSignInTime,
+            nameArray: arr,
         }
 
         // Set it

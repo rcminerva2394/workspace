@@ -12,10 +12,8 @@ export const getBoards = async (updateContext) => {
         )
         const querySnapshot = await getDocs(queryBoards)
         querySnapshot.forEach((doc) => {
-            console.log(doc.id, ' => ', doc.data())
             boards.push(doc.data())
         })
-        console.log(boards)
         updateContext([...boards])
     } catch (err) {
         console.log(err)
@@ -86,7 +84,6 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
                 }
             })
         )
-        console.log(boardTypeTasks)
 
         // Update the Board Context which includes the board types
         updateContext((prevState) => {
@@ -102,8 +99,6 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
             })
             return updatedBoards
         })
-
-        console.log(boardType)
     } catch (err) {
         console.log(err)
         console.log(err.message)
