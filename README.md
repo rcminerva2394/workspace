@@ -53,7 +53,7 @@ I intend to make this app cost-free and yet secure. My app needed to safely quer
 
 I needed it for inviting other users to access a board, and therefore, leave comments.
 
-I found a temporary solution suggested by Nick Carducci on [Stackoverflow] (https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search).
+I found a temporary solution suggested by Nick Carducci on [Stackoverflow](https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search).
 When a user signs in, I also include a name array where I will be using it in fetching the user doc by calling array-contains
 
 ```
