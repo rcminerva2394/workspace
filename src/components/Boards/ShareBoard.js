@@ -7,6 +7,7 @@ import { db, auth } from '../../firebase.config'
 
 import device from '../../UI/Breakpoint'
 import Button from '../../UI/Button'
+import barfadeloader from '../../assets/bars-scale-fade.svg'
 
 const ShareBoardBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
@@ -19,17 +20,24 @@ const Main = () => {
         height: 0,
         left: 0,
     })
+    const [isSearching, setIsSearching] = useState(false) // this is to hide the search results if they found a user and click on it to add on user tags
+    const [isLoading, setIsLoading] = useState(false)
     const { displayName } = auth.currentUser
-    console.log(displayName)
+    const searchName = displayName.toLowerCase()
+
+    // needs to fix the feature of disabling button or hover when they see their name, have to find a way to get the user name/displayName
+    // to compare those.
 
     const searchUserHandler = async (e) => {
         const matchedUser = e.target.value.toLowerCase()
+        setIsSearching(true)
+        setIsLoading(true)
         try {
             const matchedUsers = []
             const queryUsers = query(
                 collection(db, 'users'),
                 where('nameArray', 'array-contains', matchedUser),
-                where('nameArray', '!=', displayName.toLowerCase()) // this is to avoid fetching or seeing own account
+                where('nameArray', '!=', searchName) // this is to avoid fetching or seeing own account
             )
             const querySnapshot = await getDocs(queryUsers)
             querySnapshot.forEach((doc) => {
@@ -43,8 +51,8 @@ const Main = () => {
                 matchedUsers.push(userObj)
             })
             setUsers(matchedUsers)
+            setIsLoading(false)
             console.log(matchedUsers)
-            console.log(users)
         } catch (err) {
             console.log(err)
         }
@@ -84,32 +92,37 @@ const Main = () => {
                     </Button>
                 </Form>
             </OverlayWrapper>
-            {users ? (
+            {isSearching && (
                 <FoundUsers size={inputMeasure}>
-                    {users.map((user) => {
-                        return (
-                            <List key={user.id}>
-                                {user.photo != null ? (
-                                    <Img
-                                        src={user.photo}
-                                        alt="profile pic"
-                                        style={{ width: '50px' }}
-                                    />
-                                ) : (
-                                    <ProfilePic>{user.initials}</ProfilePic>
-                                )}
-                                <Text>{user.name}</Text>
-                            </List>
-                        )
-                    })}
+                    {isLoading ? (
+                        <Loader>
+                            <img src={barfadeloader} alt="loader" />
+                        </Loader>
+                    ) : users.length === 0 ? (
+                        <span>
+                            Looks like the person is not a workspace member yet.
+                            Share a link to invite them
+                        </span>
+                    ) : (
+                        users.length !== 0 &&
+                        users.map((user) => {
+                            return (
+                                <List key={user.id}>
+                                    {user.photo != null ? (
+                                        <Img
+                                            src={user.photo}
+                                            alt="profile pic"
+                                            style={{ width: '50px' }}
+                                        />
+                                    ) : (
+                                        <ProfilePic>{user.initials}</ProfilePic>
+                                    )}
+                                    <Text>{user.name}</Text>
+                                </List>
+                            )
+                        })
+                    )}
                 </FoundUsers>
-            ) : users.length === 0 ? (
-                <FoundUsers size={inputMeasure}>
-                    Looks like the person is not a workspace member yet. Share a
-                    link to invite them
-                </FoundUsers>
-            ) : (
-                ''
             )}
         </>
     )
@@ -143,7 +156,7 @@ const Backdrop = styled.div`
 const OverlayWrapper = styled.div`
     z-index: 90;
     background-color: ${({ theme }) => theme.darkerGray};
-    padding: 30rem 30rem 30rem 30rem;
+    padding: 20rem 30rem 30rem 30rem;
     width: 100vw;
     top: 50%;
     left: 50%;
@@ -209,12 +222,14 @@ const Text = styled.p`
 const ProfilePic = styled.p`
     background-color: ${({ theme }) => theme.user};
     border-radius: 50%;
-    width: 50px;
+    padding: 10px;
     text-align: center;
-    padding: 12px;
-    align-self: flex-start;
+    padding: 5px;
+    width: 34px;
+    height: 34px;
     font-weight: 600;
     color: #000000;
+    background-color: #d9d9d9;
 `
 const FoundUsers = styled.ul`
     background-color: #b6b6b6;
@@ -230,6 +245,9 @@ const FoundUsers = styled.ul`
     position: fixed;
     color: #000000;
     font-weight: 300;
+    display: flex;
+    margin-top: 5rem;
+    flex-wrap: wrap;
 `
 const List = styled.li`
     color: #000000;
@@ -237,5 +255,15 @@ const List = styled.li`
     display: flex;
     align-items: center;
     gap: 10rem;
+    &:hover {
+        background-color: #ffffff;
+    }
+    cursor: pointer;
+    width: 100%;
+    border-radius: 4px;
 `
+const Loader = styled.div`
+    margin-left: 46%;
+`
+
 export default ShareBoard

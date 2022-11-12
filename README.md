@@ -78,7 +78,7 @@ When a user signs in, I also include a name array where I will be using it in fe
 
 ```
 
-I used this implying the user doesn't have a long name/last name because for free tier, the max dept for maps or array is 20 only.
+I used this implying the user doesn't have a long name/last name because for free tier, the max depth for maps or array is 20 only.
 
 ## Learnings
 
