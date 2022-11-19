@@ -48,7 +48,6 @@ const setData = async (authData, setBoards) => {
         const userObj = {
             userId: uid,
             name: displayName || capitalizedName,
-            userEmail: email,
             photo: photoURL,
             initials: initialsName,
             isEmailVerified: emailVerified,
@@ -57,8 +56,12 @@ const setData = async (authData, setBoards) => {
             nameArray: arr,
         }
 
-        // Set it
+        // Set the user doc to users collection
         await setDoc(docRef, userObj, { merge: true })
+
+        // For private data subcollection in users collection
+        const privateDataRef = doc(collection(db, 'users', uid, 'private'))
+        await setDoc(privateDataRef, { [email]: uid })
 
         // board collection
         const boardCol = doc(collection(db, 'boards'))

@@ -8,11 +8,12 @@ import { db, auth } from '../../firebase.config'
 import device from '../../UI/Breakpoint'
 import Button from '../../UI/Button'
 import barfadeloader from '../../assets/bars-scale-fade.svg'
+import Icon from '../../UI/Icon'
 
 const ShareBoardBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
 const Main = () => {
-    const [users, setUsers] = useState('')
+    const [users, setUsers] = useState([])
     const inputSize = useRef(null)
     const [inputMeasure, setInputMeasure] = useState({
         width: 0,
@@ -22,36 +23,44 @@ const Main = () => {
     })
     const [isSearching, setIsSearching] = useState(false) // this is to hide the search results if they found a user and click on it to add on user tags
     const [isLoading, setIsLoading] = useState(false)
-    const { displayName } = auth.currentUser
-    const searchName = displayName.toLowerCase()
-
-    // needs to fix the feature of disabling button or hover when they see their name, have to find a way to get the user name/displayName
-    // to compare those.
+    const [userTags, setUserTags] = useState([])
+    const { uid } = auth.currentUser
 
     const searchUserHandler = async (e) => {
         const matchedUser = e.target.value.toLowerCase()
         setIsSearching(true)
         setIsLoading(true)
+
         try {
             const matchedUsers = []
             const queryUsers = query(
                 collection(db, 'users'),
-                where('nameArray', 'array-contains', matchedUser),
-                where('nameArray', '!=', searchName) // this is to avoid fetching or seeing own account
+                where('nameArray', 'array-contains', matchedUser)
             )
             const querySnapshot = await getDocs(queryUsers)
             querySnapshot.forEach((doc) => {
-                console.log(doc.data())
                 const userObj = {
                     id: doc.data().userId,
                     name: doc.data().name,
                     photo: doc.data().photo,
                     initials: doc.data().initials,
                 }
-                matchedUsers.push(userObj)
+
+                // This part is to check first if the object is already in the user tag, if undefined, then push it to the array and show the matchedUsers
+                const checkObj = userTags.find(
+                    (userTag) => userTag.id === userObj.id
+                )
+
+                if (checkObj === undefined) {
+                    matchedUsers.push(userObj)
+                }
+
+                console.log(matchedUsers)
             })
+
             setUsers(matchedUsers)
             setIsLoading(false)
+            console.log(users)
             console.log(matchedUsers)
         } catch (err) {
             console.log(err)
@@ -75,14 +84,47 @@ const Main = () => {
         return () => window.removeEventListener('resize', resizeHandler)
     }, [])
 
+    const addUserTagHandler = (val) => {
+        setUserTags((prevState) => {
+            return [...prevState, val]
+        })
+        setIsSearching(false)
+        console.log(userTags)
+    }
+
+    const closeUserTagHandler = (tag) => {
+        const updatedTags = userTags.filter((userTag) => userTag.id !== tag.id)
+        setUserTags(updatedTags)
+    }
+
     return (
         <>
             <OverlayWrapper>
                 <ShareBoardText>Share Board</ShareBoardText>
                 <Form>
                     <FilterWrap ref={inputSize}>
+                        {userTags && (
+                            <UserTagList>
+                                {userTags.map((userTag) => {
+                                    return (
+                                        <Usertag key={userTag.id}>
+                                            <span>{userTag.name}</span>
+                                            <Icon
+                                                name="Close"
+                                                size="12rem"
+                                                iconColor="#9c9a97"
+                                                hoverColor="#000000"
+                                                onClick={() =>
+                                                    closeUserTagHandler(userTag)
+                                                }
+                                            />
+                                        </Usertag>
+                                    )
+                                })}
+                            </UserTagList>
+                        )}
                         <Input
-                            onKeyDown={searchUserHandler}
+                            onChange={searchUserHandler}
                             placeholder="Search by name or email address"
                             type="text"
                         />
@@ -106,8 +148,33 @@ const Main = () => {
                     ) : (
                         users.length !== 0 &&
                         users.map((user) => {
+                            if (user.id === uid) {
+                                return (
+                                    <List key={user.id} disable>
+                                        {user.photo != null ? (
+                                            <Img
+                                                src={user.photo}
+                                                alt="profile pic"
+                                                style={{ width: '50px' }}
+                                            />
+                                        ) : (
+                                            <ProfilePic>
+                                                {user.initials}
+                                            </ProfilePic>
+                                        )}
+                                        <Wrap>
+                                            <Text>{user.name}</Text>
+                                            <BoardOwner>Board Owner</BoardOwner>
+                                        </Wrap>
+                                    </List>
+                                )
+                            }
                             return (
-                                <List key={user.id}>
+                                <List
+                                    key={user.id}
+                                    disable={false}
+                                    onClick={() => addUserTagHandler(user)}
+                                >
                                     {user.photo != null ? (
                                         <Img
                                             src={user.photo}
@@ -193,10 +260,10 @@ const Form = styled.form`
 `
 const FilterWrap = styled.div`
     border: 1px solid #cccccc;
-    padding: 6rem;
     width: 100%;
     border-radius: 4px;
     margin-bottom: -4rem;
+    padding: 2rem;
 `
 const Input = styled.input`
     outline: none;
@@ -205,6 +272,7 @@ const Input = styled.input`
     border: 0;
     color: #ffffff;
     font-weight: 300;
+    padding: 5rem;
 `
 const ShareBoardText = styled.p`
     font-size: 20rem;
@@ -258,12 +326,41 @@ const List = styled.li`
     &:hover {
         background-color: #ffffff;
     }
-    cursor: pointer;
+    cursor: ${(props) => (props.disable === true ? 'not-allowed' : 'pointer')};
     width: 100%;
     border-radius: 4px;
 `
 const Loader = styled.div`
     margin-left: 46%;
 `
+const BoardOwner = styled.span`
+    font-size: 12rem;
+`
+const Wrap = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
 
+    align-items: center;
+`
+const Usertag = styled.li`
+    padding: 3rem;
+    background-color: #ffffff;
+    color: #000000;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 2px;
+    font-weight: 400;
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+`
+const UserTagList = styled.ul`
+    display: flex;
+    gap: 5rem;
+    width: inherit;
+    flex-wrap: wrap;
+    padding: auto;
+    padding-top: -2rem;
+`
 export default ShareBoard

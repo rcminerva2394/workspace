@@ -27,9 +27,11 @@ const Home = () => {
                         You can now break down your projects into managaeble
                         pieces. Reach productivity peaks without any cost.
                     </SubText>
-                    <Button primary fontSize="16rem" width="inherit">
-                        <Link to="/signup">Sign up for free</Link>
-                    </Button>
+                    <Link to="/signup">
+                        <Button primary fontSize="16rem" width="inherit">
+                            Sign up for free{' '}
+                        </Button>
+                    </Link>
                 </TextDiv>
             </HomeWrapper>
         </>

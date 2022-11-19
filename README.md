@@ -47,14 +47,14 @@ I am not pretty sure if this is faster since the app could have thousands of boa
 
 ### Invite System
 
-I now faced the biggest hurdle so far in using firestore. I couldn't find a better and cheaper way for searching/filter a substring. Firestore doesn't have methods like .includes of JS or Firestore just don't support querying substrings of a strings in fields per document. Firestore suggests using third party solutions like Algolia.
+I now faced the biggest hurdle so far in using firestore. I couldn't find a better and cheaper way for searching/filter a substring. Firestore doesn't have methods like .includes of JS or Firestore just doesn't support querying substrings of a string in fields per document. Firestore suggests using third-party solutions like Algolia.
 
-I intend to make this app cost-free and yet secure. My app needed to safely query/filter substrings in the users collection in the database as I can't compromise the users data in the client-side.
+I intend to make this app cost-free and yet secure. My app needed to safely query/filter substrings in the users collection in the database as I can't compromise the users' data on the client side.
 
 I needed it for inviting other users to access a board, and therefore, leave comments.
 
 I found a temporary solution suggested by Nick Carducci on [Stackoverflow](https://stackoverflow.com/questions/46568142/google-firestore-query-on-substring-of-a-property-value-text-search).
-When a user signs in, I also include a name array where I will be using it in fetching the user doc by calling array-contains
+When a user signs in, I also include a name array where I will be using in fetching the user doc by calling array-contains
 
 ```
     const name = email
@@ -78,7 +78,46 @@ When a user signs in, I also include a name array where I will be using it in fe
 
 ```
 
-I used this implying the user doesn't have a long name/last name because for free tier, the max depth for maps or array is 20 only.
+I used this to imply the user doesn't have a long name/last name because, for the free tier, the max depth for maps or array is 20 only.
+
+However, I have to make some changes in order not to allow accessing sensitive data within the document or at the field level. As we all know, firestore is document-based, and this can pose security issues as other users can see or access the contents of the document. My user doc contains sensitive data like email addresses.
+
+As part of the solution, I came across the idea of creating a subcollection of private data within the doc because I want the email field to be hidden from the document. I got this idea from [Allowing Read Access From Specific Fields by Firestore](https://firebase.google.com/docs/firestore/security/rules-fields#allowing_read_access_only_for_specific_fields).
+
+Security rule:
+
+```
+// subcollection of private data
+      match /private/{privateDoc} {
+        allow create: if request.auth != null
+        allow read, update, delete: if request.auth != null && resource.data.email == request.auth.uid
+
+      }
+```
+
+Document created on private subcollection within user doc
+
+```
+const docRef = doc(db, 'users', uid)
+        const userObj = {
+            userId: uid,
+            name: displayName || capitalizedName,
+            photo: photoURL,
+            initials: initialsName,
+            isEmailVerified: emailVerified,
+            created: metadata.creationTime || today,
+            lastSignIn: metadata.lastSignInTime,
+            nameArray: arr,
+        }
+
+        // Set the user doc to users collection
+        await setDoc(docRef, userObj, { merge: true })
+
+        // For private data subcollection in users collection
+        const privateDataRef = doc(collection(db, 'users', uid, 'private'))
+        await setDoc(privateDataRef, { [email]: uid })
+
+```
 
 ## Learnings
 
