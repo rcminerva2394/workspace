@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
@@ -9,18 +9,14 @@ import device from '../../UI/Breakpoint'
 import Button from '../../UI/Button'
 import barfadeloader from '../../assets/bars-scale-fade.svg'
 import Icon from '../../UI/Icon'
+import useElementSize from '../../utils/hooks/useElementSize'
 
 const ShareBoardBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
 const Main = () => {
     const [users, setUsers] = useState([])
     const inputSize = useRef(null)
-    const [inputMeasure, setInputMeasure] = useState({
-        width: 0,
-        top: 0,
-        height: 0,
-        left: 0,
-    })
+    const elementSize = useElementSize(inputSize)
     const [isSearching, setIsSearching] = useState(false) // this is to hide the search results if they found a user and click on it to add on user tags
     const [isLoading, setIsLoading] = useState(false)
     const [userTags, setUserTags] = useState([])
@@ -54,42 +50,23 @@ const Main = () => {
                 if (checkObj === undefined) {
                     matchedUsers.push(userObj)
                 }
-
-                console.log(matchedUsers)
             })
 
             setUsers(matchedUsers)
             setIsLoading(false)
-            console.log(users)
-            console.log(matchedUsers)
+            if (matchedUser.length === 0) {
+                setIsSearching(false)
+            }
         } catch (err) {
             console.log(err)
         }
     }
-
-    // setting same length for search results and input being on top of the form or modal itself
-    useEffect(() => {
-        const resizeHandler = () => {
-            const { x, y } = inputSize.current.getBoundingClientRect()
-            setInputMeasure({
-                width: inputSize.current.offsetWidth,
-                height: inputSize.current.offsetHeight,
-                top: Math.floor(y),
-                left: Math.floor(x),
-            })
-        }
-
-        window.addEventListener('resize', resizeHandler)
-        resizeHandler()
-        return () => window.removeEventListener('resize', resizeHandler)
-    }, [])
 
     const addUserTagHandler = (val) => {
         setUserTags((prevState) => {
             return [...prevState, val]
         })
         setIsSearching(false)
-        console.log(userTags)
     }
 
     const closeUserTagHandler = (tag) => {
@@ -125,17 +102,17 @@ const Main = () => {
                         )}
                         <Input
                             onChange={searchUserHandler}
-                            placeholder="Search by name or email address"
+                            placeholder="Name or email address"
                             type="text"
                         />
                     </FilterWrap>
-                    <Button primary fontSize="13rem" padding="12rem">
+                    <Button primary fontSize="13rem" padding="5rem">
                         Share
                     </Button>
                 </Form>
             </OverlayWrapper>
             {isSearching && (
-                <FoundUsers size={inputMeasure}>
+                <FoundUsers size={elementSize}>
                     {isLoading ? (
                         <Loader>
                             <img src={barfadeloader} alt="loader" />
@@ -146,48 +123,59 @@ const Main = () => {
                             Share a link to invite them
                         </span>
                     ) : (
-                        users.length !== 0 &&
-                        users.map((user) => {
-                            if (user.id === uid) {
-                                return (
-                                    <List key={user.id} disable>
-                                        {user.photo != null ? (
-                                            <Img
-                                                src={user.photo}
-                                                alt="profile pic"
-                                                style={{ width: '50px' }}
-                                            />
-                                        ) : (
-                                            <ProfilePic>
-                                                {user.initials}
-                                            </ProfilePic>
-                                        )}
-                                        <Wrap>
+                        users.length !== 0 && (
+                            <UserList>
+                                {users.map((user) => {
+                                    if (user.id === uid) {
+                                        return (
+                                            <List key={user.id} disable>
+                                                {user.photo != null ? (
+                                                    <Img
+                                                        src={user.photo}
+                                                        alt="profile pic"
+                                                        style={{
+                                                            width: '50px',
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <ProfilePic>
+                                                        {user.initials}
+                                                    </ProfilePic>
+                                                )}
+                                                <Wrap>
+                                                    <Text>{user.name}</Text>
+                                                    <BoardOwner>
+                                                        Board Owner
+                                                    </BoardOwner>
+                                                </Wrap>
+                                            </List>
+                                        )
+                                    }
+                                    return (
+                                        <List
+                                            key={user.id}
+                                            disable={false}
+                                            onClick={() =>
+                                                addUserTagHandler(user)
+                                            }
+                                        >
+                                            {user.photo != null ? (
+                                                <Img
+                                                    src={user.photo}
+                                                    alt="profile pic"
+                                                    style={{ width: '50px' }}
+                                                />
+                                            ) : (
+                                                <ProfilePic>
+                                                    {user.initials}
+                                                </ProfilePic>
+                                            )}
                                             <Text>{user.name}</Text>
-                                            <BoardOwner>Board Owner</BoardOwner>
-                                        </Wrap>
-                                    </List>
-                                )
-                            }
-                            return (
-                                <List
-                                    key={user.id}
-                                    disable={false}
-                                    onClick={() => addUserTagHandler(user)}
-                                >
-                                    {user.photo != null ? (
-                                        <Img
-                                            src={user.photo}
-                                            alt="profile pic"
-                                            style={{ width: '50px' }}
-                                        />
-                                    ) : (
-                                        <ProfilePic>{user.initials}</ProfilePic>
-                                    )}
-                                    <Text>{user.name}</Text>
-                                </List>
-                            )
-                        })
+                                        </List>
+                                    )
+                                })}
+                            </UserList>
+                        )
                     )}
                 </FoundUsers>
             )}
@@ -248,11 +236,10 @@ const OverlayWrapper = styled.div`
 `
 
 const Form = styled.form`
-    padding: 5rem;
     display: flex;
     place-items: center;
     width: 100%;
-    gap: 15rem;
+    gap: 10rem;
     flex-wrap: wrap;
     @media only screen and ${device.mobileL} {
         flex-wrap: nowrap;
@@ -263,12 +250,14 @@ const FilterWrap = styled.div`
     width: 100%;
     border-radius: 4px;
     margin-bottom: -4rem;
-    padding: 2rem;
+    display: flex;
+    justify-content: stretch;
+    flex-wrap: wrap;
+    padding: 0 10rem;
 `
 const Input = styled.input`
     outline: none;
     background-color: transparent;
-    min-width: 100%;
     border: 0;
     color: #ffffff;
     font-weight: 300;
@@ -290,9 +279,8 @@ const Text = styled.p`
 const ProfilePic = styled.p`
     background-color: ${({ theme }) => theme.user};
     border-radius: 50%;
-    padding: 10px;
+    padding: 7px;
     text-align: center;
-    padding: 5px;
     width: 34px;
     height: 34px;
     font-weight: 600;
@@ -307,15 +295,13 @@ const FoundUsers = styled.ul`
     top: ${(props) => `${props.size.top + props.size.height}px`};
     left: ${(props) => `${props.size.left}px`};
     z-index: 100;
-    transform: translate
-        ${(props) =>
-            `${props.size.top + props.size.height}px, ${props.size.left}px`};
     position: fixed;
     color: #000000;
     font-weight: 300;
     display: flex;
     margin-top: 5rem;
     flex-wrap: wrap;
+    max-height: 200px;
 `
 const List = styled.li`
     color: #000000;
@@ -323,12 +309,14 @@ const List = styled.li`
     display: flex;
     align-items: center;
     gap: 10rem;
+    font-size: 12rem;
     &:hover {
         background-color: #ffffff;
     }
     cursor: ${(props) => (props.disable === true ? 'not-allowed' : 'pointer')};
-    width: 100%;
+    min-width: 100%;
     border-radius: 4px;
+    padding-left: 5rem;
 `
 const Loader = styled.div`
     margin-left: 46%;
@@ -354,13 +342,21 @@ const Usertag = styled.li`
     display: flex;
     gap: 5rem;
     align-items: center;
+    white-space: no-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 const UserTagList = styled.ul`
     display: flex;
     gap: 5rem;
-    width: inherit;
     flex-wrap: wrap;
-    padding: auto;
-    padding-top: -2rem;
+    align-items: start;
+    align-self: start;
+`
+const UserList = styled.ul`
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 190px;
 `
 export default ShareBoard
