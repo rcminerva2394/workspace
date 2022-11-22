@@ -2,6 +2,7 @@ export const exampleBoards = [
     {
         // id: uuidv4(),
         name: 'Project Sunrise',
+        members: {},
         Todo: [
             {
                 // id: uuidv4(),

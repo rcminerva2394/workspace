@@ -8,7 +8,7 @@ export const getBoards = async (updateContext) => {
         const boards = []
         const queryBoards = query(
             collection(db, 'boards'),
-            where(`members.${uid}`, '==', 'owner' || 'member')
+            where(`members.${uid}`, '==', 'owner')
         )
         const querySnapshot = await getDocs(queryBoards)
         querySnapshot.forEach((doc) => {
@@ -65,7 +65,7 @@ export const getBoardType = async (boardId, boardStatus, updateContext) => {
                         doc.id,
                         'comments'
                     ),
-                    where(`members.${uid}`, '==', 'creator' || 'member')
+                    where(`members.${uid}`, '==', 'owner' || 'member')
                 )
                 const queryCommentsSnapshot = await getDocs(queryComments)
                 const commentList = []

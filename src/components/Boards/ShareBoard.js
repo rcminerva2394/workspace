@@ -2,7 +2,14 @@ import React, { useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    doc,
+    updateDoc,
+} from 'firebase/firestore'
 import { db, auth } from '../../firebase.config'
 
 import device from '../../UI/Breakpoint'
@@ -10,10 +17,11 @@ import Button from '../../UI/Button'
 import barfadeloader from '../../assets/bars-scale-fade.svg'
 import Icon from '../../UI/Icon'
 import useElementSize from '../../utils/hooks/useElementSize'
+import { updateMembers } from '../../utils/firestoreMethods'
 
 const ShareBoardBackdrop = ({ onClose }) => <Backdrop onClick={onClose} />
 
-const Main = () => {
+const Main = ({ board, onClose }) => {
     const [users, setUsers] = useState([])
     const inputSize = useRef(null)
     const elementSize = useElementSize(inputSize)
@@ -34,12 +42,12 @@ const Main = () => {
                 where('nameArray', 'array-contains', matchedUser)
             )
             const querySnapshot = await getDocs(queryUsers)
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((docu) => {
                 const userObj = {
-                    id: doc.data().userId,
-                    name: doc.data().name,
-                    photo: doc.data().photo,
-                    initials: doc.data().initials,
+                    id: docu.data().userId,
+                    name: docu.data().name,
+                    photo: docu.data().photo,
+                    initials: docu.data().initials,
                 }
 
                 // This part is to check first if the object is already in the user tag, if undefined, then push it to the array and show the matchedUsers
@@ -74,11 +82,34 @@ const Main = () => {
         setUserTags(updatedTags)
     }
 
+    const submitUserTagsHandler = (e) => {
+        e.preventDefault()
+
+        // add the userTags as new members
+        const boardRef = doc(db, 'boards', board.id)
+        const updatedMembers = {}
+        userTags.forEach((userTag) => {
+            updatedMembers[`members.${userTag.id}`] = 'member'
+        })
+
+        const updateBoard = async () => {
+            await updateDoc(boardRef, updatedMembers)
+        }
+
+        updateBoard()
+        updateMembers(board.todo, board.id, 'todo', updatedMembers)
+        updateMembers(board.doing, board.id, 'doing', updatedMembers)
+        updateMembers(board.done, board.id, 'done', updatedMembers)
+        onClose()
+
+        // this is fixed already, but have to check if the user is already in the board as member, else,
+    }
+
     return (
         <>
             <OverlayWrapper>
                 <ShareBoardText>Share Board</ShareBoardText>
-                <Form>
+                <Form onSubmit={(e) => submitUserTagsHandler(e)}>
                     <FilterWrap ref={inputSize}>
                         {userTags && (
                             <UserTagList>
@@ -106,7 +137,12 @@ const Main = () => {
                             type="text"
                         />
                     </FilterWrap>
-                    <Button primary fontSize="13rem" padding="5rem">
+                    <Button
+                        primary
+                        fontSize="13rem"
+                        padding="5rem"
+                        type="submit"
+                    >
                         Share
                     </Button>
                 </Form>
@@ -183,7 +219,7 @@ const Main = () => {
     )
 }
 
-const ShareBoard = ({ onClose }) => {
+const ShareBoard = ({ onClose, board }) => {
     return (
         <>
             {ReactDOM.createPortal(
@@ -191,7 +227,7 @@ const ShareBoard = ({ onClose }) => {
                 document.getElementById('modal-backdrop')
             )}
             {ReactDOM.createPortal(
-                <Main />,
+                <Main board={board} onClose={onClose} />,
                 document.getElementById('modal-overlay')
             )}
         </>
@@ -322,7 +358,7 @@ const Loader = styled.div`
     margin-left: 46%;
 `
 const BoardOwner = styled.span`
-    font-size: 12rem;
+    font-size: 11rem;
 `
 const Wrap = styled.div`
     display: flex;

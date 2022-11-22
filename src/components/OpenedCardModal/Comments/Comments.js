@@ -35,7 +35,7 @@ const Comments = ({ card, boardId, boardStatus }) => {
         // Check whether the one creating a comment is an owner or a member only
         let membershipStatus
         if (card.members[uid] === 'owner') {
-            membershipStatus = 'creator'
+            membershipStatus = 'owner'
         } else if (card.members[uid] === 'member') {
             membershipStatus = 'member'
         }

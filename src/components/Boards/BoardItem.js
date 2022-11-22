@@ -27,7 +27,10 @@ const BoardItem = () => {
     return (
         <>
             {willShareBoard && (
-                <ShareBoard onClose={() => setWillShareBoard(false)} />
+                <ShareBoard
+                    onClose={() => setWillShareBoard(false)}
+                    board={Board[0]}
+                />
             )}
             <ContentWrap>
                 <TitleBtnWrap>
@@ -44,16 +47,19 @@ const BoardItem = () => {
                 </TitleBtnWrap>
                 <BoardTypesWrapper>
                     <BoardType
+                        board={Board[0]}
                         boardStatus="todo"
                         id={Board[0].id}
                         cards={Board[0].todo}
                     />
                     <BoardType
+                        board={Board[0]}
                         boardStatus="doing"
                         id={Board[0].id}
                         cards={Board[0].doing}
                     />
                     <BoardType
+                        board={Board[0]}
                         boardStatus="done"
                         id={Board[0].id}
                         cards={Board[0].done}

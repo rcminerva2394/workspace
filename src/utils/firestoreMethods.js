@@ -1,4 +1,4 @@
-import { doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase.config'
 
 // function to delete subcollections
@@ -48,6 +48,53 @@ export const setSubCollection = async (
                 ),
                 subCollItem
             )
+        })
+    )
+}
+
+// function to update the members for boardtypes
+export const updateMembers = async (
+    boardTypeSubColl,
+    boardId,
+    boardType,
+    updatedMembers
+) => {
+    await Promise.all(
+        boardTypeSubColl.map(async (boardTypeSubCollItem) => {
+            await updateDoc(
+                doc(db, 'boards', boardId, boardType, boardTypeSubCollItem.id),
+                updatedMembers
+            )
+
+            boardTypeSubCollItem.subtasks.map(async (subtask) => {
+                await updateDoc(
+                    doc(
+                        db,
+                        'boards',
+                        boardId,
+                        boardType,
+                        boardTypeSubCollItem.id,
+                        'subtasks',
+                        subtask.id
+                    ),
+                    updatedMembers
+                )
+            })
+
+            boardTypeSubCollItem.comments.map(async (commentItem) => {
+                await updateDoc(
+                    doc(
+                        db,
+                        'boards',
+                        boardId,
+                        boardType,
+                        boardTypeSubCollItem.id,
+                        'comments',
+                        commentItem.id
+                    ),
+                    updatedMembers
+                )
+            })
         })
     )
 }

@@ -19,10 +19,9 @@ import {
 const BoardType = ({ boardStatus, id, cards }) => {
     const [isAddCard, setIsAddCard] = useState(false)
     const [cardTitle, setCardTitle] = useState('')
-    const { setBoards } = useBoards()
-
+    const { boards, setBoards } = useBoards()
     const titleCard = boardStatus.charAt(0).toUpperCase() + boardStatus.slice(1)
-
+    console.log(boards)
     // Dropping the card into the desired board status
     const dragOverHandler = (e) => {
         if (e.dataTransfer.types.includes('custom-type')) {

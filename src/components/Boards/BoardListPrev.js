@@ -12,6 +12,7 @@ import Loader from '../../UI/Loader'
 
 const BoardListPrev = () => {
     const { boards } = useBoards()
+    console.log(boards)
 
     return (
         <SectionWrapper>

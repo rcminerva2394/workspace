@@ -102,3 +102,31 @@ export const setNewCardItem = async (
         return updatedBoards
     })
 }
+
+// export const updateMembers = (updatedMembers, board, boardtype) => {
+//     // board
+//     const boardTypeRef = doc(db, 'boards', board.id, boardtype)
+//     const updateBoard = async () => {
+//         await updateDoc(boardRef, updatedMembers)
+//     }
+// }
+
+// also to boardtypes, subtasks, and comments
+
+// Delete all subtasks from the firestore (firestore doesn't allow deleting entire subcollection)
+// const delSubtasks = async () => {
+//     await Promise.all(
+//         card.subtasks.forEach(async (subtask) => {
+//             await deleteDoc(
+//                 doc(
+//                     db,
+//                     'boards',
+//                     boardId,
+//                     boardStatus,
+//                     card.id,
+//                     'subtasks',
+//                     subtask.id
+//                 )
+//             )
+//         })
+//     )
